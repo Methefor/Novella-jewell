@@ -1,0 +1,10 @@
+﻿src/app/checkout/CheckoutClient.tsx(10,10): error TS2305: Module '"@/lib/shopier"' has no exported member 'shopierClient'.
+src/components/FeaturedProducts.tsx(140,28): error TS2345: Argument of type '{ id: string; name: string; price: number; category: string; images: string[]; }' is not assignable to parameter of type 'Product'.
+  Property 'slug' is missing in type '{ id: string; name: string; price: number; category: string; images: string[]; }' but required in type 'Product'.
+src/components/FeaturedProducts.tsx(159,26): error TS2345: Argument of type '{ id: string; name: string; price: number; category: string; images: string[]; }' is not assignable to parameter of type 'Product'.
+  Property 'slug' is missing in type '{ id: string; name: string; price: number; category: string; images: string[]; }' but required in type 'Product'.
+src/lib/products.ts(103,46): error TS2304: Cannot find name 'SanityCategory'.
+src/lib/products.ts(104,7): error TS2304: Cannot find name 'allCategoriesQuery'.
+src/lib/utils.ts(1,39): error TS2307: Cannot find module 'clsx' or its corresponding type declarations.
+src/lib/utils.ts(2,25): error TS2307: Cannot find module 'tailwind-merge' or its corresponding type declarations.
+src/sanity/lib/live.ts(4,28): error TS2307: Cannot find module 'next-sanity/live' or its corresponding type declarations.

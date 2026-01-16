@@ -1,0 +1,82 @@
+/**
+ * NOVELLA - Additional CSS Utilities
+ * Badge ve ek utility class'ları
+ */
+
+/* Badge Styles */
+.badge-new {
+  @apply inline-flex px-2 py-1 text-xs font-medium rounded-md;
+  @apply bg-gold text-white;
+}
+
+.badge-sale {
+  @apply inline-flex px-2 py-1 text-xs font-medium rounded-md;
+  @apply bg-red-600 text-white;
+}
+
+.badge-bestseller {
+  @apply inline-flex px-2 py-1 text-xs font-medium rounded-md;
+  @apply bg-black text-white;
+}
+
+.badge-out-of-stock {
+  @apply inline-flex px-2 py-1 text-xs font-medium rounded-md;
+  @apply bg-gray-500 text-white;
+}
+
+/* Button Styles (eğer yoksa) */
+.btn-primary {
+  @apply px-6 py-3 bg-gold text-white rounded-lg;
+  @apply hover:bg-gold/90 transition-colors duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-gold/20;
+}
+
+.btn-outline {
+  @apply px-6 py-3 bg-transparent border-2 border-gold text-gold rounded-lg;
+  @apply hover:bg-gold hover:text-white transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-gold/20;
+}
+
+/* Animate utilities (Framer Motion alternatif) */
+.animate-in {
+  animation: animateIn 0.3s ease-in-out;
+}
+
+@keyframes animateIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-in-from-top-2 {
+  animation: slideInFromTop 0.2s ease-out;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

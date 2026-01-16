@@ -1,0 +1,434 @@
+[
+  {
+    "id": "1",
+    "name": "Zarif Minimal Yüzük",
+    "slug": "zarif-minimal-yuzuk",
+    "category": "Yüzük",
+    "price": 149,
+    "originalPrice": 199,
+    "material": "Çelik, Altın Kaplama",
+    "description": "Minimalist tasarımıyla her stile uyum sağlayan zarif yüzük. Günlük kulanım için ideal.",
+    "isNew": true,
+    "isBestSeller": true,
+    "stock": 50,
+    "rating": 4.8,
+    "reviewCount": 24,
+    "defaultVariant": "24",
+    "variants": [
+      {
+        "id": "24",
+        "color": "altin",
+        "stock": 50,
+        "images": [
+          "/products/yuzuk/yuzuk-1.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "2",
+    "name": "Taşlı Zarif Yüzük",
+    "slug": "tasli-zarif-yuzuk",
+    "category": "Yüzük",
+    "price": 199,
+    "originalPrice": 249,
+    "material": "Çelik, Zirkon Taş",
+    "description": "Parlak zirkon taşlarla süslenmiş zarif yüzük. Özel günler için mükemmel.",
+    "isNew": true,
+    "isBestSeller": false,
+    "stock": 40,
+    "rating": 4.7,
+    "reviewCount": 18,
+    "defaultVariant": "18",
+    "variants": [
+      {
+        "id": "18",
+        "color": "altin",
+        "stock": 40,
+        "images": [
+          "/products/yuzuk/yuzuk-2.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "3",
+    "name": "Modern Geometrik Yüzük",
+    "slug": "modern-geometrik-yuzuk",
+    "category": "Yüzük",
+    "price": 169,
+    "originalPrice": 219,
+    "material": "Çelik, Altın Kaplama",
+    "description": "Modern geometrik tasarımıyla dikkat çeken trend yüzük.",
+    "isNew": false,
+    "isBestSeller": true,
+    "stock": 35,
+    "rating": 4.9,
+    "reviewCount": 31,
+    "defaultVariant": "31",
+    "variants": [
+      {
+        "id": "31",
+        "color": "altin",
+        "stock": 35,
+        "images": [
+          "/products/yuzuk/yuzuk-3.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "4",
+    "name": "Vintage İnci Yüzük",
+    "slug": "vintage-inci-yuzuk",
+    "category": "Yüzük",
+    "price": 229,
+    "originalPrice": 279,
+    "material": "Çelik, İnci Detay",
+    "description": "Vintage tarzı seven kadınlar için inci detaylı şık yüzük.",
+    "isNew": false,
+    "isBestSeller": false,
+    "stock": 25,
+    "rating": 4.6,
+    "reviewCount": 12,
+    "defaultVariant": "12",
+    "variants": [
+      {
+        "id": "12",
+        "color": "altin",
+        "stock": 25,
+        "images": [
+          "/products/yuzuk/yuzuk-4.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "5",
+    "name": "İnce Zincir Bilezik",
+    "slug": "ince-zincir-bilezik",
+    "category": "Bilezik",
+    "price": 179,
+    "originalPrice": 229,
+    "material": "Çelik, Altın Kaplama",
+    "description": "İnce ve zarif zincir bilezik. Tek başına veya kombinlerde kullanılabilir.",
+    "isNew": true,
+    "isBestSeller": true,
+    "stock": 60,
+    "rating": 4.8,
+    "reviewCount": 28,
+    "defaultVariant": "28",
+    "variants": [
+      {
+        "id": "28",
+        "color": "altin",
+        "stock": 60,
+        "images": [
+          "/products/bilezik/bilezik-5.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "6",
+    "name": "Taşlı Şık Bilezik",
+    "slug": "tasli-sik-bilezik",
+    "category": "Bilezik",
+    "price": 249,
+    "originalPrice": 299,
+    "material": "Çelik, Zirkon Taş",
+    "description": "Parlak taşlarla süslenmiş şık bilezik. Özel davetler için ideal.",
+    "isNew": true,
+    "isBestSeller": false,
+    "stock": 45,
+    "rating": 4.7,
+    "reviewCount": 22,
+    "defaultVariant": "22",
+    "variants": [
+      {
+        "id": "22",
+        "color": "altin",
+        "stock": 45,
+        "images": [
+          "/products/bilezik/bilezik-6.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "7",
+    "name": "Kalın Halka Bilezik",
+    "slug": "kalin-halka-bilezik",
+    "category": "Bilezik",
+    "price": 199,
+    "originalPrice": 249,
+    "material": "Çelik, Rose Gold",
+    "description": "Bold ve cesur tasarımıyla dikkat çeken kalın bilezik.",
+    "isNew": false,
+    "isBestSeller": true,
+    "stock": 55,
+    "rating": 4.9,
+    "reviewCount": 35,
+    "defaultVariant": "35",
+    "variants": [
+      {
+        "id": "35",
+        "color": "altin",
+        "stock": 55,
+        "images": [
+          "/products/bilezik/bilezik-7.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "8",
+    "name": "Çiçek Motifli Bilezik",
+    "slug": "cicek-motifli-bilezik",
+    "category": "Bilezik",
+    "price": 219,
+    "originalPrice": 269,
+    "material": "Çelik, Altın Kaplama",
+    "description": "Romantik çiçek motifleriyle bezeli zarif bilezik.",
+    "isNew": false,
+    "isBestSeller": false,
+    "stock": 30,
+    "rating": 4.5,
+    "reviewCount": 15,
+    "defaultVariant": "15",
+    "variants": [
+      {
+        "id": "15",
+        "color": "altin",
+        "stock": 30,
+        "images": [
+          "/products/bilezik/bilezik-8.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "9",
+    "name": "Mini Halka Küpe",
+    "slug": "mini-halka-kupe",
+    "category": "Küpe",
+    "price": 129,
+    "originalPrice": 169,
+    "material": "Çelik, Altın Kaplama",
+    "description": "Minimal ve şık mini halka küpe. Günlük kullanım için mükemmel.",
+    "isNew": true,
+    "isBestSeller": true,
+    "stock": 80,
+    "rating": 4.9,
+    "reviewCount": 42,
+    "defaultVariant": "42",
+    "variants": [
+      {
+        "id": "42",
+        "color": "altin",
+        "stock": 80,
+        "images": [
+          "/products/kupe/kupe-9.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "10",
+    "name": "Taşlı Damla Küpe",
+    "slug": "tasli-damla-kupe",
+    "category": "Küpe",
+    "price": 189,
+    "originalPrice": 239,
+    "material": "Çelik, Zirkon Taş",
+    "description": "Parlak taşlarla süslenmiş zarif damla küpe. Özel günler için ideal.",
+    "isNew": true,
+    "isBestSeller": true,
+    "stock": 70,
+    "rating": 4.8,
+    "reviewCount": 38,
+    "defaultVariant": "38",
+    "variants": [
+      {
+        "id": "38",
+        "color": "altin",
+        "stock": 70,
+        "images": [
+          "/products/kupe/kupe-10.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "11",
+    "name": "Uzun Zincir Küpe",
+    "slug": "uzun-zincir-kupe",
+    "category": "Küpe",
+    "price": 169,
+    "originalPrice": 219,
+    "material": "Çelik, Altın Kaplama",
+    "description": "Uzun ve zarif zincir detaylı modern küpe.",
+    "isNew": true,
+    "isBestSeller": false,
+    "stock": 65,
+    "rating": 4.7,
+    "reviewCount": 29,
+    "defaultVariant": "29",
+    "variants": [
+      {
+        "id": "29",
+        "color": "altin",
+        "stock": 65,
+        "images": [
+          "/products/kupe/kupe-11.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "12",
+    "name": "Geometrik Üçgen Küpe",
+    "slug": "geometrik-ucgen-kupe",
+    "category": "Küpe",
+    "price": 149,
+    "originalPrice": 199,
+    "material": "Çelik, Rose Gold",
+    "description": "Modern geometrik tasarımıyla dikkat çeken üçgen küpe.",
+    "isNew": false,
+    "isBestSeller": true,
+    "stock": 75,
+    "rating": 4.9,
+    "reviewCount": 44,
+    "defaultVariant": "44",
+    "variants": [
+      {
+        "id": "44",
+        "color": "altin",
+        "stock": 75,
+        "images": [
+          "/products/kupe/kupe-12.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "13",
+    "name": "İnci Detaylı Küpe",
+    "slug": "inci-detayli-kupe",
+    "category": "Küpe",
+    "price": 209,
+    "originalPrice": 259,
+    "material": "Çelik, İnci",
+    "description": "Klasik ve zarif inci detaylı küpe. Her yaşa uygun.",
+    "isNew": false,
+    "isBestSeller": false,
+    "stock": 50,
+    "rating": 4.6,
+    "reviewCount": 21,
+    "defaultVariant": "21",
+    "variants": [
+      {
+        "id": "21",
+        "color": "altin",
+        "stock": 50,
+        "images": [
+          "/products/kupe/kupe-13.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "14",
+    "name": "Vintage Oval Küpe",
+    "slug": "vintage-oval-kupe",
+    "category": "Küpe",
+    "price": 199,
+    "originalPrice": 249,
+    "material": "Çelik, Antik Detay",
+    "description": "Vintage tarzı seven kadınlar için oval küpe.",
+    "isNew": false,
+    "isBestSeller": true,
+    "stock": 60,
+    "rating": 4.8,
+    "reviewCount": 33,
+    "defaultVariant": "33",
+    "variants": [
+      {
+        "id": "33",
+        "color": "altin",
+        "stock": 60,
+        "images": [
+          "/products/kupe/kupe-14.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "15",
+    "name": "Modern Kare Küpe",
+    "slug": "modern-kare-kupe",
+    "category": "Küpe",
+    "price": 159,
+    "originalPrice": 209,
+    "material": "Çelik, Altın Kaplama",
+    "description": "Keskin hatlarıyla modern ve şık kare küpe.",
+    "isNew": true,
+    "isBestSeller": false,
+    "stock": 70,
+    "rating": 4.7,
+    "reviewCount": 27,
+    "defaultVariant": "27",
+    "variants": [
+      {
+        "id": "27",
+        "color": "altin",
+        "stock": 70,
+        "images": [
+          "/products/kupe/kupe-15.jpg"
+        ]
+      }
+    ],
+    "features": []
+  },
+  {
+    "id": "16",
+    "name": "Çiçek Formlu Küpe",
+    "slug": "cicek-formlu-kupe",
+    "category": "Küpe",
+    "price": 179,
+    "originalPrice": 229,
+    "material": "Çelik, Zirkon Taş",
+    "description": "Romantik çiçek formunda parlak taşlı küpe.",
+    "isNew": false,
+    "isBestSeller": true,
+    "stock": 85,
+    "rating": 4.9,
+    "reviewCount": 46,
+    "defaultVariant": "46",
+    "variants": [
+      {
+        "id": "46",
+        "color": "altin",
+        "stock": 85,
+        "images": [
+          "/products/kupe/kupe-16.jpg"
+        ]
+      }
+    ],
+    "features": []
+  }
+]
