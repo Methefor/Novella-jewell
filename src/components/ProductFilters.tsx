@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Filter, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 export interface FilterOptions {
   category?: string;
@@ -10,8 +10,8 @@ export interface FilterOptions {
   maxPrice?: number;
   sortBy?: 'price-asc' | 'price-desc' | 'newest' | 'oldest' | 'name-asc';
   featured?: boolean;
-  bestseller?: boolean;
-  new?: boolean;
+  isBestSeller?: boolean;
+  isNew?: boolean;
 }
 
 interface ProductFiltersProps {
@@ -181,8 +181,8 @@ export default function ProductFilters({
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={filters.bestseller || false}
-                  onChange={(e) => handleFilterChange('bestseller', e.target.checked)}
+                  checked={filters.isBestSeller || false}
+                  onChange={(e) => handleFilterChange('isBestSeller', e.target.checked)}
                   className="h-4 w-4 rounded border-white/20 text-gold focus:ring-gold"
                 />
                 <span className="font-inter text-sm text-white/80">Çok Satan</span>
@@ -190,8 +190,8 @@ export default function ProductFilters({
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={filters.new || false}
-                  onChange={(e) => handleFilterChange('new', e.target.checked)}
+                  checked={filters.isNew || false}
+                  onChange={(e) => handleFilterChange('isNew', e.target.checked)}
                   className="h-4 w-4 rounded border-white/20 text-gold focus:ring-gold"
                 />
                 <span className="font-inter text-sm text-white/80">Yeni Ürün</span>

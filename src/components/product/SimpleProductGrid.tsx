@@ -5,11 +5,11 @@
 
 'use client';
 
-import type { Product } from '@/types/product';
+import { NovellaProduct } from '@/lib/sanity.types';
 import ProductCard from './ProductCard';
 
 interface SimpleProductGridProps {
-  products: Product[];
+  products: NovellaProduct[];
   columns?: 2 | 3 | 4;
 }
 

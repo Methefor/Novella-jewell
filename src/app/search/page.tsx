@@ -1,19 +1,18 @@
+import SearchResults from '@/components/SearchResults';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import SearchResults from '@/components/SearchResults';
 
 export const metadata: Metadata = {
   title: 'Arama | NOVELLA',
   description: 'Ürünlerde arama yapın',
 };
 
-interface SearchPageProps {
-  searchParams: Promise<{ q?: string }>;
-}
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const { q } = await searchParams;
-  const searchQuery = q || '';
+export default async function SearchPage(props: { searchParams: SearchParams }) {
+  const searchParams = await props.searchParams;
+  const q = searchParams.q;
+  const searchQuery = typeof q === 'string' ? q : '';
 
   return (
     <div className="min-h-screen bg-[#0F0F0F] pt-24 pb-20">
@@ -41,4 +40,3 @@ function SearchLoading() {
     </div>
   );
 }
-

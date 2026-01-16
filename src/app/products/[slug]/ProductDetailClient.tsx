@@ -9,22 +9,22 @@ import ReviewForm from '@/components/product/ReviewForm';
 import ReviewList from '@/components/product/ReviewList';
 import ReviewStats from '@/components/product/ReviewStats';
 import { calculateReviewStats, getReviewsByProductId } from '@/data/reviews';
+import { NovellaProduct } from '@/lib/sanity.types';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
-import type { Product } from '@/types/product';
 import { Heart, Minus, Plus, Share2, ShoppingBag, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
 interface ProductDetailClientProps {
-  product: Product;
+  product: NovellaProduct;
 }
 
 export default function ProductDetailClient({
   product,
 }: ProductDetailClientProps) {
   const [selectedVariantId, setSelectedVariantId] = useState(
-    product.defaultVariant
+    product.variants?.[0]?.id || 'default'
   );
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -36,9 +36,13 @@ export default function ProductDetailClient({
     state.isInWishlist(product.id)
   );
 
+  const variants = product.variants || [];
   const selectedVariant =
-    product.variants.find((v) => v.id === selectedVariantId) ||
-    product.variants[0];
+    variants.find((v) => v.id === selectedVariantId) ||
+    variants[0] || { id: 'default', stock: 0 };
+
+  const productImages = product.images || ['/placeholder-product.jpg'];
+  const mainImage = productImages[selectedImageIndex] || productImages[0];
 
   const hasDiscount =
     product.originalPrice && product.originalPrice > product.price;
@@ -78,7 +82,7 @@ export default function ProductDetailClient({
             {/* Main Image */}
             <div className="relative aspect-square bg-gray-800 rounded-2xl overflow-hidden border border-white/10">
               <Image
-                src={selectedVariant.images[selectedImageIndex]}
+                src={mainImage}
                 alt={product.name}
                 fill
                 className="object-cover"
@@ -86,7 +90,7 @@ export default function ProductDetailClient({
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
 
-              {/* Badges - Icon + Küçük */}
+              {/* Badges */}
               <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                 {hasDiscount ? (
                   <span className="badge badge-sale">
@@ -136,7 +140,7 @@ export default function ProductDetailClient({
 
             {/* Thumbnail Images */}
             <div className="grid grid-cols-4 gap-3">
-              {selectedVariant.images.map((image, index) => (
+              {productImages.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImageIndex(index)}
@@ -223,13 +227,13 @@ export default function ProductDetailClient({
             </p>
 
             {/* Color Selection */}
-            {product.variants.length > 1 && (
+            {variants.length > 1 && (
               <div>
                 <h3 className="text-sm font-semibold text-white mb-3">
                   Renk: {selectedVariant.color}
                 </h3>
                 <div className="flex items-center gap-3">
-                  {product.variants.map((variant) => (
+                  {variants.map((variant) => (
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariantId(variant.id)}
@@ -243,15 +247,15 @@ export default function ProductDetailClient({
                       `}
                       style={{
                         backgroundColor:
-                          variant.color === 'altin'
+                          variant.color === 'altin' || variant.color === 'gold'
                             ? '#D4AF37'
-                            : variant.color === 'gumus'
+                            : variant.color === 'gumus' || variant.color === 'silver'
                             ? '#C0C0C0'
                             : variant.color === 'rose-gold'
                             ? '#B76E79'
-                            : variant.color === 'siyah'
+                            : variant.color === 'siyah' || variant.color === 'black'
                             ? '#0F0F0F'
-                            : variant.color === 'beyaz'
+                            : variant.color === 'beyaz' || variant.color === 'white'
                             ? '#FFFFFF'
                             : '#D4AF37',
                       }}
@@ -287,13 +291,6 @@ export default function ProductDetailClient({
                 </button>
               </div>
             </div>
-
-            {/* Stock Status */}
-            {isInStock && selectedVariant.stock <= 10 && (
-              <p className="text-orange-400 text-sm font-medium">
-                ⚠️ Son {selectedVariant.stock} ürün!
-              </p>
-            )}
 
             {/* Action Buttons */}
             <div className="flex gap-4">

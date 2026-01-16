@@ -1,11 +1,11 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export interface CartItem {
-  id: string; // Changed to string for slug compatibility
+  id: string; 
   name: string;
   price: number;
-  image?: string; // Made optional
+  image?: string;
   category: string;
   quantity: number;
 }
@@ -80,7 +80,7 @@ export const useCart = create<CartStore>()(
       },
     }),
     {
-      name: 'novella-cart',
+      name: 'novella-cart-v2', // Updated name to avoid conflicts with other store
       storage: createJSONStorage(() => localStorage),
     }
   )

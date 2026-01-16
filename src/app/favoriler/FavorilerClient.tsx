@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 export default function FavorilerClient() {
   const items = useWishlistStore((state) => state.items);
-  const clearAll = useWishlistStore((state) => state.clearAll);
+  const clearWishlist = useWishlistStore((state) => state.clearWishlist);
 
   if (items.length === 0) {
     return (
@@ -52,7 +52,7 @@ export default function FavorilerClient() {
 
           {items.length > 0 && (
             <button
-              onClick={clearAll}
+              onClick={clearWishlist}
               className="px-4 py-2 border-2 border-cream-300 rounded-lg hover:border-red-500 hover:text-red-500 transition-colors text-sm font-medium"
             >
               Tümünü Temizle

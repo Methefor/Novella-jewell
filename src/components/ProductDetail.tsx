@@ -1,16 +1,16 @@
 'use client';
 
+import { useCart } from '@/lib/cart';
+import { NovellaProduct } from '@/lib/sanity.types';
+import { formatPrice } from '@/lib/sanity.utils';
+import { useWishlist } from '@/lib/wishlist';
 import { motion } from 'framer-motion';
-import { Heart, Minus, Plus, ShoppingCart, Star } from 'lucide-react';
+import { Heart, Minus, Plus, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useCart } from '@/lib/cart';
-import { useWishlist } from '@/lib/wishlist';
-import { Product } from '@/lib/sanity.types';
-import { formatPrice } from '@/lib/sanity.utils';
 
 interface ProductDetailProps {
-  product: Product;
+  product: NovellaProduct;
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
@@ -97,12 +97,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <span className="rounded-full border border-gold/30 bg-gold/10 px-4 py-1 font-inter text-xs font-medium text-gold">
               {product.category}
             </span>
-            {product.bestseller && (
+            {product.isBestSeller && (
               <span className="rounded-full bg-rose-gold px-3 py-1 font-inter text-xs font-semibold text-white">
                 Çok Satan
               </span>
             )}
-            {product.new && (
+            {product.isNew && (
               <span className="rounded-full bg-gold px-3 py-1 font-inter text-xs font-semibold text-black">
                 Yeni
               </span>

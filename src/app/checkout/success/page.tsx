@@ -1,21 +1,20 @@
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { CheckCircle } from 'lucide-react';
 import CheckoutSuccessClient from '@/components/CheckoutSuccessClient';
+import { CheckCircle } from 'lucide-react';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Sipariş Başarılı | NOVELLA',
   description: 'Siparişiniz başarıyla alındı',
 };
 
-interface CheckoutSuccessPageProps {
-  searchParams: Promise<{ orderId?: string; method?: string }>;
-}
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-export default async function CheckoutSuccessPage({
-  searchParams,
-}: CheckoutSuccessPageProps) {
-  const { orderId, method } = await searchParams;
+export default async function CheckoutSuccessPage(props: {
+  searchParams: SearchParams;
+}) {
+  const searchParams = await props.searchParams;
+  const orderId = typeof searchParams.orderId === 'string' ? searchParams.orderId : undefined;
+  const method = typeof searchParams.method === 'string' ? searchParams.method : undefined;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#0F0F0F] px-4">
@@ -57,4 +56,3 @@ export default async function CheckoutSuccessPage({
     </div>
   );
 }
-

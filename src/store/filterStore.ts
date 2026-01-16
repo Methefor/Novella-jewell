@@ -5,26 +5,43 @@
 
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import type { 
-  FilterState, 
-  ProductCategory, 
-  ProductMaterial, 
-  ProductColor,
-  SortOption 
-} from '@/types/product';
+
+export type SortOption =
+  | 'newest' // En yeni
+  | 'popular' // En popüler
+  | 'price-asc' // Fiyat: Düşükten yükseğe
+  | 'price-desc' // Fiyat: Yüksekten düşüğe
+  | 'name-asc' // İsim: A-Z
+  | 'name-desc'; // İsim: Z-A
+
+export interface FilterState {
+  categories: string[];
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  materials: string[];
+  colors: string[];
+  isNew: boolean;
+  isBestSeller: boolean;
+  isCustomizable: boolean;
+  inStock: boolean;
+  sortBy: SortOption;
+  searchQuery: string;
+}
 
 interface FilterStore extends FilterState {
   // Actions
-  setCategories: (categories: ProductCategory[]) => void;
-  toggleCategory: (category: ProductCategory) => void;
+  setCategories: (categories: string[]) => void;
+  toggleCategory: (category: string) => void;
   
   setPriceRange: (min: number, max: number) => void;
   
-  setMaterials: (materials: ProductMaterial[]) => void;
-  toggleMaterial: (material: ProductMaterial) => void;
+  setMaterials: (materials: string[]) => void;
+  toggleMaterial: (material: string) => void;
   
-  setColors: (colors: ProductColor[]) => void;
-  toggleColor: (color: ProductColor) => void;
+  setColors: (colors: string[]) => void;
+  toggleColor: (color: string) => void;
   
   setIsNew: (value: boolean) => void;
   setIsBestSeller: (value: boolean) => void;

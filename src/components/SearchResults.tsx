@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { Search, X } from 'lucide-react';
 import { searchProducts } from '@/lib/products';
-import { Product } from '@/lib/sanity.types';
+import { NovellaProduct } from '@/lib/sanity.types';
+import { Search, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import ProductGrid from './ProductGrid';
 
 interface SearchResultsProps {
@@ -14,7 +14,7 @@ interface SearchResultsProps {
 export default function SearchResults({ query: initialQuery }: SearchResultsProps) {
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [results, setResults] = useState<Product[]>([]);
+  const [results, setResults] = useState<NovellaProduct[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(!!initialQuery);
 

@@ -1,18 +1,17 @@
 'use client';
 
-import { memo } from 'react';
+import { useCart } from '@/lib/cart';
+import { NovellaProduct } from '@/lib/sanity.types';
+import { formatPrice } from '@/lib/sanity.utils';
+import { useWishlist } from '@/lib/wishlist';
 import { motion } from 'framer-motion';
 import { Eye, Heart, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCart } from '@/lib/cart';
-import { useWishlist } from '@/lib/wishlist';
-import { Product } from '@/lib/sanity.types';
-import { formatPrice } from '@/lib/sanity.utils';
-import LoadingSpinner from './LoadingSpinner';
+import { memo } from 'react';
 
 interface ProductGridProps {
-  products: Product[];
+  products: NovellaProduct[];
 }
 
 export default function ProductGrid({ products }: ProductGridProps) {
@@ -52,7 +51,7 @@ const ProductCard = memo(function ProductCard({
   product,
   index,
 }: {
-  product: Product;
+  product: NovellaProduct;
   index: number;
 }) {
   const { addItem, toggleCart } = useCart();
@@ -81,14 +80,14 @@ const ProductCard = memo(function ProductCard({
       className="group relative"
     >
       {/* Badge */}
-      {product.bestseller && (
+      {product.isBestSeller && (
         <div className="absolute left-4 top-4 z-10">
           <span className="rounded-full bg-rose-gold px-3 py-1 font-inter text-xs font-semibold text-white shadow-lg">
             Çok Satan
           </span>
         </div>
       )}
-      {product.new && (
+      {product.isNew && (
         <div className="absolute left-4 top-4 z-10">
           <span className="rounded-full bg-gold px-3 py-1 font-inter text-xs font-semibold text-black shadow-lg">
             Yeni

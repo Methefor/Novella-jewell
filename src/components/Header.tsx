@@ -1,5 +1,6 @@
 'use client';
 
+import SearchOverlay from '@/components/search/SearchOverlay';
 import { useCart } from '@/lib/cart';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Heart, Menu, Search, ShoppingCart, X } from 'lucide-react';
@@ -16,6 +17,7 @@ const navLinks = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { items, toggleCart } = useCart();
 
   useEffect(() => {
@@ -100,15 +102,15 @@ export default function Header() {
 
             {/* Right - Action Icons */}
             <div className="flex flex-1 items-center justify-end gap-4">
-              <motion.a
-                href="/search"
+              <motion.button
+                onClick={() => setIsSearchOpen(true)}
                 whileHover={{ scale: 1.15, rotate: 10 }}
                 whileTap={{ scale: 0.9 }}
                 className="hidden rounded-full bg-white/10 p-2.5 text-white/90 transition-all hover:bg-white/20 hover:text-white lg:block"
                 title="Ara"
               >
                 <Search className="h-5 w-5" />
-              </motion.a>
+              </motion.button>
 
               <motion.a
                 href="/wishlist"
@@ -201,6 +203,10 @@ export default function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+      <SearchOverlay 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
     </>
   );
 }

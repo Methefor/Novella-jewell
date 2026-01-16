@@ -1,4 +1,4 @@
-import type { Product } from '@/types/product';
+import { NovellaProduct } from '@/lib/sanity.types';
 import { useMemo, useState } from 'react';
 
 export interface ProductFilters {
@@ -10,7 +10,7 @@ export interface ProductFilters {
   sortBy?: 'price-asc' | 'price-desc' | 'name' | 'newest';
 }
 
-export function useProductFilters(products: Product[]) {
+export function useProductFilters(products: NovellaProduct[]) {
   const [filters, setFilters] = useState<ProductFilters>({});
 
   // Update single filter
@@ -43,14 +43,14 @@ export function useProductFilters(products: Product[]) {
     // Material filter
     if (filters.materials && filters.materials.length > 0) {
       result = result.filter((p) =>
-        filters.materials!.some((m) => p.material.includes(m))
+        filters.materials!.some((m) => p.material?.includes(m))
       );
     }
 
     // Color filter
     if (filters.colors && filters.colors.length > 0) {
       result = result.filter((p) =>
-        p.variants.some((v) => filters.colors!.includes(v.color))
+        p.variants?.some((v) => v.color && filters.colors!.includes(v.color))
       );
     }
 

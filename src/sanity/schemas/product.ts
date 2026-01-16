@@ -189,6 +189,14 @@ export default defineType({
       initialValue: false,
     }),
     
+    // Kişiselleştirilebilir
+    defineField({
+      name: 'isCustomizable',
+      title: 'Kişiselleştirilebilir',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    
     // Değerlendirme (Rating)
     defineField({
       name: 'rating',

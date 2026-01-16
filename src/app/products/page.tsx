@@ -1,6 +1,6 @@
 import ProductsClient from '@/components/ProductsClient';
 import { getAllCategories, getAllProducts } from '@/lib/products';
-import { Product } from '@/lib/sanity.types';
+import { NovellaProduct } from '@/lib/sanity.types';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function ProductsPage() {
   // For now, we'll use fallback data if Sanity is not configured
   // In production, this will fetch from Sanity
-  let products: Product[] = [];
+  let products: NovellaProduct[] = [];
   let categories: any[] = [];
   
   try {

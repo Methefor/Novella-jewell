@@ -3,14 +3,20 @@
  * Sepet state management
  */
 
-import type { Product, ProductVariant } from '@/types/product';
+import { NovellaProduct } from '@/lib/sanity.types';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
 export interface CartItem {
   id: string; // Unique: productId + variantId
-  product: Product;
-  variant: ProductVariant;
+  product: NovellaProduct;
+  variant: {
+    id: string;
+    color?: string;
+    size?: string;
+    stock: number;
+    sku?: string;
+  };
   quantity: number;
   customization?: string; // İsim baskısı
 }
@@ -29,7 +35,7 @@ interface CartStore {
 
   // Actions
   addItem: (
-    product: Product,
+    product: NovellaProduct,
     variantId: string,
     quantity?: number,
     customization?: string
@@ -50,7 +56,7 @@ interface CartStore {
 
 // Kargo ücreti hesaplama
 const calculateShipping = (subtotal: number): number => {
-  if (subtotal >= 400) return 0; // 400₺ üzeri ücretsiz (eski: 300)
+  if (subtotal >= 400) return 0; // 400₺ üzeri ücretsiz
   return 29.9;
 };
 
@@ -69,7 +75,7 @@ export const useCartStore = create<CartStore>()(
 
         // Add item to cart
         addItem: (product, variantId, quantity = 1, customization) => {
-          const variant = product.variants.find((v) => v.id === variantId);
+          const variant = product.variants?.find((v) => v.id === variantId);
           if (!variant) return;
 
           const itemId = `${product.id}-${variantId}${

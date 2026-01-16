@@ -1,19 +1,20 @@
 import ProductDetail from '@/components/ProductDetail';
 import { getProductBySlug } from '@/lib/products';
-import { Metadata } from 'next';
+import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-interface ProductPageProps {
+interface Props {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-
-export async function generateMetadata({
-  params,
-}: ProductPageProps): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = (await params).slug;
   const product = await getProductBySlug(slug);
 
   if (!product) {
@@ -33,8 +34,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = await params;
+export default async function ProductPage({ params, searchParams }: Props) {
+  const slug = (await params).slug;
   const product = await getProductBySlug(slug);
 
   if (!product && process.env.NODE_ENV === 'production') {
@@ -55,4 +56,3 @@ export default async function ProductPage({ params }: ProductPageProps) {
     </div>
   );
 }
-

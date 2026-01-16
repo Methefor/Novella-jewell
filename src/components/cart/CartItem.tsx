@@ -30,7 +30,7 @@ export default function CartItem({ item }: CartItemProps) {
   const removeItem = useCartStore((state) => state.removeItem);
 
   const itemTotal = item.product.price * item.quantity;
-  const colorLabel = colorLabels[item.variant.color] || item.variant.color;
+  const colorLabel = item.variant.color ? (colorLabels[item.variant.color] || item.variant.color) : 'Varsayılan';
 
   return (
     <div className="flex gap-4 py-4 border-b border-cream-200">
@@ -38,7 +38,7 @@ export default function CartItem({ item }: CartItemProps) {
       <Link href={`/products/${item.product.slug}`} className="flex-shrink-0">
         <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-cream-50">
           <Image
-            src={item.variant.images[0]}
+            src={item.product.images?.[0] || '/placeholder-product.jpg'}
             alt={item.product.name}
             fill
             className="object-cover"

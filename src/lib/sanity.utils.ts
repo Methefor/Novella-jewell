@@ -1,29 +1,42 @@
 // Utility functions for Sanity data transformation
 
-import { SanityProduct, Product } from './sanity.types';
 import { urlFor } from './sanity';
+import { NovellaProduct, SanityProduct } from './sanity.types';
 
 /**
  * Transform Sanity product to frontend product format
  */
-export function transformSanityProduct(sanityProduct: SanityProduct): Product {
+export function transformSanityProduct(sanityProduct: SanityProduct): NovellaProduct {
   return {
     id: sanityProduct._id,
     name: sanityProduct.name,
     slug: sanityProduct.slug.current,
     description: sanityProduct.description,
+    detailedDescription: sanityProduct.detailedDescription,
     price: sanityProduct.price,
-    category: sanityProduct.category.name,
+    originalPrice: sanityProduct.originalPrice,
+    category: sanityProduct.category?.name || 'Genel',
+    categorySlug: sanityProduct.category?.slug?.current,
     images: sanityProduct.images?.map((img) => {
       if (img.asset?._ref) {
-        return urlFor(img.asset).width(800).url() || '';
+        return urlFor(img.asset).width(1200).url() || '';
       }
       return '';
     }).filter(Boolean),
-    stock: sanityProduct.stock,
+    material: sanityProduct.material,
+    variants: sanityProduct.variants,
+    stock: sanityProduct.totalStock || 0,
     featured: sanityProduct.featured,
-    bestseller: sanityProduct.bestseller,
-    new: sanityProduct.new,
+    isNew: sanityProduct.isNew,
+    isBestSeller: sanityProduct.isBestSeller,
+    rating: sanityProduct.rating,
+    reviewCount: sanityProduct.reviewCount,
+    features: sanityProduct.features,
+    isCustomizable: sanityProduct.isCustomizable,
+    metaTitle: sanityProduct.metaTitle,
+    metaDescription: sanityProduct.metaDescription,
+    createdAt: sanityProduct._createdAt,
+    updatedAt: sanityProduct._updatedAt,
   };
 }
 
@@ -56,4 +69,3 @@ export function formatPrice(price: number): string {
     minimumFractionDigits: 0,
   }).format(price);
 }
-

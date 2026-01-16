@@ -1,8 +1,8 @@
 'use client';
 
+import { NovellaProduct } from '@/lib/sanity.types';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
-import type { Product } from '@/types/product';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Eye, Heart, ShoppingBag, Star } from 'lucide-react';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 interface ProductCardProps {
-  product: Product;
+  product: NovellaProduct;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -18,18 +18,15 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
-  const addToCart = useCartStore((state) => state.addItem);
-  const addToWishlist = useWishlistStore((state) => state.addItem);
-  const removeFromWishlist = useWishlistStore((state) => state.removeItem);
+  const addItemToCart = useCartStore((state) => state.addItem);
+  const addItemToWishlist = useWishlistStore((state) => state.addItem);
+  const removeItemFromWishlist = useWishlistStore((state) => state.removeItem);
   const isInWishlist = useWishlistStore((state) =>
     state.isInWishlist(product.id)
   );
 
-  const defaultVariant =
-    product.variants.find((v) => v.id === product.defaultVariant) ||
-    product.variants[0];
-  const currentImage =
-    defaultVariant.images[currentImageIndex] || defaultVariant.images[0];
+  const variants = product.variants || [];
+  const currentImage = product.images?.[currentImageIndex] || product.images?.[0] || '/placeholder-product.jpg';
 
   const hasDiscount =
     product.originalPrice && product.originalPrice > product.price;
@@ -41,14 +38,19 @@ export default function ProductCard({ product }: ProductCardProps) {
     : 0;
 
   const handleAddToCart = () => {
-    addToCart(product, product.defaultVariant, 1);
+    if (variants.length > 0) {
+      addItemToCart(product, variants[0].id, 1);
+    } else {
+      // Fallback if no variants, though schema requires them
+       addItemToCart(product, 'default', 1);
+    }
   };
 
   const handleToggleWishlist = () => {
     if (isInWishlist) {
-      removeFromWishlist(product.id);
+      removeItemFromWishlist(product.id);
     } else {
-      addToWishlist(product);
+      addItemToWishlist(product);
     }
   };
 
@@ -91,7 +93,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             }`}
           >
             <button
-              onClick={handleToggleWishlist}
+              onClick={(e) => {
+                e.preventDefault();
+                handleToggleWishlist();
+              }}
               className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${
                 isInWishlist
                   ? 'bg-red-500 text-white'
@@ -104,7 +109,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             </button>
 
             <button
-              onClick={() => setIsQuickViewOpen(true)}
+              onClick={(e) => {
+                e.preventDefault();
+                setIsQuickViewOpen(true);
+              }}
               className="w-10 h-10 rounded-full bg-white/90 text-gray-600 hover:bg-gold hover:text-white flex items-center justify-center backdrop-blur-sm transition-all"
             >
               <Eye className="w-4 h-4" />
@@ -154,9 +162,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          {product.variants.length > 1 && (
+          {variants.length > 1 && (
             <div className="flex items-center gap-2 pt-2">
-              {product.variants.slice(0, 4).map((variant, index) => (
+              {variants.slice(0, 4).map((variant, index) => (
                 <button
                   key={variant.id}
                   onClick={() => setCurrentImageIndex(index)}
@@ -167,23 +175,23 @@ export default function ProductCard({ product }: ProductCardProps) {
                   }`}
                   style={{
                     backgroundColor:
-                      variant.color === 'altin'
+                      variant.color === 'altin' || variant.color === 'gold'
                         ? '#C9A86A'
-                        : variant.color === 'gumus'
+                        : variant.color === 'gumus' || variant.color === 'silver'
                         ? '#C0C0C0'
                         : variant.color === 'rose-gold'
                         ? '#B76E79'
-                        : variant.color === 'siyah'
+                        : variant.color === 'siyah' || variant.color === 'black'
                         ? '#2D2D2D'
-                        : variant.color === 'beyaz'
+                        : variant.color === 'beyaz' || variant.color === 'white'
                         ? '#F8F6F3'
                         : '#C9A86A',
                   }}
                 />
               ))}
-              {product.variants.length > 4 && (
+              {variants.length > 4 && (
                 <span className="text-xs text-gray-400">
-                  +{product.variants.length - 4}
+                  +{variants.length - 4}
                 </span>
               )}
             </div>

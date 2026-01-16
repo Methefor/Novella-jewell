@@ -9,13 +9,13 @@ import {
     productsByCategoryQuery,
     searchProductsQuery,
 } from './sanity.queries';
-import { Product, SanityCategory, SanityProduct } from './sanity.types';
+import { NovellaProduct, SanityCategory, SanityProduct } from './sanity.types';
 import { transformSanityProduct } from './sanity.utils';
 
 /**
  * Get all products
  */
-export async function getAllProducts(): Promise<Product[]> {
+export async function getAllProducts(): Promise<NovellaProduct[]> {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   if (!projectId) return [];
 
@@ -34,7 +34,7 @@ export async function getAllProducts(): Promise<Product[]> {
 /**
  * Get product by slug
  */
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+export async function getProductBySlug(slug: string): Promise<NovellaProduct | null> {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   if (!projectId) return null;
 
@@ -54,7 +54,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 /**
  * Get featured products
  */
-export async function getFeaturedProducts(): Promise<Product[]> {
+export async function getFeaturedProducts(): Promise<NovellaProduct[]> {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   if (!projectId) return [];
 
@@ -74,7 +74,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
  */
 export async function getProductsByCategory(
   categorySlug: string
-): Promise<Product[]> {
+): Promise<NovellaProduct[]> {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   if (!projectId) return [];
 
@@ -95,7 +95,7 @@ export async function getProductsByCategory(
  */
 export async function searchProducts(
   searchTerm: string
-): Promise<Product[]> {
+): Promise<NovellaProduct[]> {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
   if (!projectId) return [];
 

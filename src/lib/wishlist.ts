@@ -1,13 +1,13 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { Product } from './sanity.types';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { NovellaProduct } from './sanity.types';
 
 interface WishlistStore {
-  items: Product[];
-  addItem: (product: Product) => void;
+  items: NovellaProduct[];
+  addItem: (product: NovellaProduct) => void;
   removeItem: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
-  toggleItem: (product: Product) => void;
+  toggleItem: (product: NovellaProduct) => void;
   clearWishlist: () => void;
 }
 
@@ -32,8 +32,8 @@ export const useWishlist = create<WishlistStore>()(
       },
 
       toggleItem: (product) => {
-        const isInWishlist = get().isInWishlist(product.id);
-        if (isInWishlist) {
+        const isInWishlistResult = get().isInWishlist(product.id);
+        if (isInWishlistResult) {
           get().removeItem(product.id);
         } else {
           get().addItem(product);
@@ -45,9 +45,8 @@ export const useWishlist = create<WishlistStore>()(
       },
     }),
     {
-      name: 'novella-wishlist',
+      name: 'novella-wishlist-v2',
       storage: createJSONStorage(() => localStorage),
     }
   )
 );
-

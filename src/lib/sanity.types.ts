@@ -8,7 +8,9 @@ export interface SanityProduct {
     current: string;
   };
   description?: string;
+  detailedDescription?: any; // Portable Text
   price: number;
+  originalPrice?: number;
   category: {
     _id: string;
     name: string;
@@ -22,13 +24,26 @@ export interface SanityProduct {
       _ref: string;
       _type: 'reference';
     };
+    alt?: string;
   }>;
-  stock?: number;
+  material?: string;
+  variants?: Array<{
+    id: string;
+    color?: string;
+    size?: string;
+    stock: number;
+    sku?: string;
+  }>;
+  totalStock?: number;
   featured?: boolean;
-  bestseller?: boolean;
-  new?: boolean;
-  seoTitle?: string;
-  seoDescription?: string;
+  isNew?: boolean;
+  isBestSeller?: boolean;
+  isCustomizable?: boolean;
+  rating?: number;
+  reviewCount?: number;
+  features?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
   _createdAt: string;
   _updatedAt: string;
 }
@@ -43,18 +58,36 @@ export interface SanityCategory {
   description?: string;
 }
 
-// Frontend Product Interface (simplified)
-export interface Product {
+// Frontend Product Interface (unified)
+export interface NovellaProduct {
   id: string;
   name: string;
   slug: string;
   description?: string;
+  detailedDescription?: any;
   price: number;
+  originalPrice?: number;
   category: string;
+  categorySlug?: string;
   images?: string[];
+  material?: string;
+  variants?: Array<{
+    id: string;
+    color?: string;
+    size?: string;
+    stock: number;
+    sku?: string;
+  }>;
   stock?: number;
   featured?: boolean;
-  bestseller?: boolean;
-  new?: boolean;
+  isNew?: boolean;
+  isBestSeller?: boolean;
+  isCustomizable?: boolean;
+  rating?: number;
+  reviewCount?: number;
+  features?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
-

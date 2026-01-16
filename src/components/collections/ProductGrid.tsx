@@ -5,13 +5,13 @@
 
 'use client';
 
-import { useMemo } from 'react';
-import { useFilterStore } from '@/store/filterStore';
-import type { Product } from '@/types/product';
 import ProductCard from '@/components/product/ProductCard';
+import { NovellaProduct } from '@/lib/sanity.types';
+import { useFilterStore } from '@/store/filterStore';
+import { useMemo } from 'react';
 
 interface ProductGridProps {
-  products: Product[];
+  products: NovellaProduct[];
   isLoading?: boolean;
 }
 
@@ -39,15 +39,15 @@ export default function ProductGrid({ products, isLoading = false }: ProductGrid
     // 3. Malzeme filtresi
     if (filterStore.materials.length > 0) {
       filtered = filtered.filter((product) =>
-        filterStore.materials.includes(product.material)
+        product.material && filterStore.materials.includes(product.material)
       );
     }
 
     // 4. Renk filtresi
     if (filterStore.colors.length > 0) {
       filtered = filtered.filter((product) =>
-        product.variants.some((variant) =>
-          filterStore.colors.includes(variant.color)
+        product.variants?.some((variant) =>
+          variant.color && filterStore.colors.includes(variant.color)
         )
       );
     }
@@ -59,12 +59,9 @@ export default function ProductGrid({ products, isLoading = false }: ProductGrid
     if (filterStore.isBestSeller) {
       filtered = filtered.filter((product) => product.isBestSeller);
     }
-    if (filterStore.isCustomizable) {
-      filtered = filtered.filter((product) => product.isCustomizable);
-    }
     if (filterStore.inStock) {
       filtered = filtered.filter((product) =>
-        product.variants.some((variant) => variant.stock > 0)
+        product.variants?.some((variant) => variant.stock > 0)
       );
     }
 
@@ -74,14 +71,18 @@ export default function ProductGrid({ products, isLoading = false }: ProductGrid
       filtered = filtered.filter(
         (product) =>
           product.name.toLowerCase().includes(query) ||
-          product.description.toLowerCase().includes(query)
+          (product.description && product.description.toLowerCase().includes(query))
       );
     }
 
     // 7. Sıralama
     switch (filterStore.sortBy) {
       case 'newest':
-        filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        filtered.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
         break;
       case 'popular':
         filtered.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0));

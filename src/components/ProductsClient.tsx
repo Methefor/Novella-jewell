@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Product } from '@/lib/sanity.types';
-import ProductGrid from './ProductGrid';
+import { NovellaProduct } from '@/lib/sanity.types';
+import { useMemo, useState } from 'react';
 import ProductFilters, { FilterOptions } from './ProductFilters';
+import ProductGrid from './ProductGrid';
 
 interface ProductsClientProps {
-  initialProducts: Product[];
+  initialProducts: NovellaProduct[];
   categories: string[];
 }
 
@@ -36,11 +36,11 @@ export default function ProductsClient({
     if (filters.featured) {
       filtered = filtered.filter((p) => p.featured);
     }
-    if (filters.bestseller) {
-      filtered = filtered.filter((p) => p.bestseller);
+    if (filters.isBestSeller) {
+      filtered = filtered.filter((p) => p.isBestSeller);
     }
-    if (filters.new) {
-      filtered = filtered.filter((p) => p.new);
+    if (filters.isNew) {
+      filtered = filtered.filter((p) => p.isNew);
     }
 
     // Sort
