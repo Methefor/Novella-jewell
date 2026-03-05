@@ -35,9 +35,10 @@ export default function HomePage() {
   const bestSellers = products.filter((p) => p.isBestSeller).slice(0, 8);
 
   return (
-    <main className="min-h-screen">
-      {/* HERO — Velzck dark parallax style */}
+    <main className="min-h-screen bg-[#0D0D0D]">
+      {/* HERO */}
       <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-[#0D0D0D]">
+        {/* Atmospheric gold radial glows */}
         <div
           className="absolute inset-0"
           style={{
@@ -46,6 +47,17 @@ export default function HomePage() {
               'radial-gradient(ellipse at 20% 80%, rgba(201,168,106,0.05) 0%, transparent 50%)',
           }}
         />
+        {/* Subtle noise texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '128px',
+          }}
+        />
+
         <div className="container-custom relative z-10 py-24 grid lg:grid-cols-2 gap-16 items-center">
           {/* Left */}
           <motion.div
@@ -68,7 +80,6 @@ export default function HomePage() {
               <h2 className="text-gray-400 text-xl mb-3 font-light">
                 Takıyla hisset
               </h2>
-              {/* Velzck scrolling text */}
               <div className="overflow-hidden h-16 md:h-20">
                 <motion.div
                   animate={{ y: ['0%', '-400%'] }}
@@ -133,7 +144,7 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
 
-          {/* Right — Velzck brand decoration */}
+          {/* Right — Brand decoration */}
           <motion.div
             className="hidden lg:flex items-center justify-center relative h-[500px]"
             initial={{ opacity: 0, x: 40 }}
@@ -171,16 +182,19 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        {/* Fade to cream */}
-        <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#F8F6F3] to-transparent" />
+        {/* Subtle fade to products section (dark) */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
       </section>
 
-      {/* PRODUCTS — Velzck product grid */}
-      <section id="products" className="py-20 bg-[#F8F6F3]">
+      {/* PRODUCTS — Dark background like Velzck */}
+      <section id="products" className="py-20 bg-[#0D0D0D]">
+        {/* Gold separator line */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#C9A86A]/30 to-transparent mb-20" />
+
         <div className="container-custom">
           {/* New Arrivals */}
           {newProducts.length > 0 && (
-            <div className="mb-20">
+            <div className="mb-24">
               <motion.div
                 className="mb-10"
                 initial={{ opacity: 0, y: 20 }}
@@ -191,7 +205,7 @@ export default function HomePage() {
                 <p className="text-xs uppercase tracking-widest text-[#C9A86A] font-medium mb-2">
                   Yeni Gelenler
                 </p>
-                <h2 className="font-serif text-4xl text-[#1A1A1A]">
+                <h2 className="font-serif text-4xl text-white">
                   En Yeni Koleksiyon
                 </h2>
               </motion.div>
@@ -213,13 +227,16 @@ export default function HomePage() {
               <div className="text-center mt-10">
                 <Link
                   href="/collections/yeni-gelenler"
-                  className="inline-flex items-center gap-2 px-6 py-3 border border-[#C9A86A] text-[#C9A86A] rounded-lg text-sm font-medium hover:bg-[#C9A86A] hover:text-white transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-[#C9A86A] text-[#C9A86A] rounded-lg text-sm font-medium hover:bg-[#C9A86A] hover:text-[#111] transition-all"
                 >
                   Tümünü Gör <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
           )}
+
+          {/* Gold divider */}
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#C9A86A]/20 to-transparent mb-24" />
 
           {/* Best Sellers */}
           {bestSellers.length > 0 && (
@@ -234,7 +251,7 @@ export default function HomePage() {
                 <p className="text-xs uppercase tracking-widest text-[#C9A86A] font-medium mb-2">
                   Çok Satanlar
                 </p>
-                <h2 className="font-serif text-4xl text-[#1A1A1A]">
+                <h2 className="font-serif text-4xl text-white">
                   En Beğenilenler
                 </h2>
               </motion.div>
@@ -267,7 +284,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ABOUT US — Velzck aboutUs section */}
+      {/* ABOUT US */}
       <AboutUs />
     </main>
   );

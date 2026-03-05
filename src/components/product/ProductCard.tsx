@@ -196,13 +196,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Name & price below card */}
       <div className="mt-3 px-1">
-        <h3 className="font-medium text-[#1A1A1A] text-sm leading-tight group-hover:text-[#C9A86A] transition-colors duration-200">
+        <h3 className="font-medium text-gray-300 text-sm leading-tight group-hover:text-[#C9A86A] transition-colors duration-200">
           {product.name}
         </h3>
         <div className="flex items-center gap-2 mt-1">
           <span className="text-sm font-semibold text-[#C9A86A]">{product.price} ₺</span>
           {hasDiscount && (
-            <span className="text-xs text-[#9B9B9B] line-through">{product.originalPrice} ₺</span>
+            <span className="text-xs text-gray-600 line-through">{product.originalPrice} ₺</span>
           )}
         </div>
       </div>
