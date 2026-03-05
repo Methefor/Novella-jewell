@@ -14,8 +14,8 @@ export const PRODUCTS: Product[] = [
     description:
       'Zarif ve modern tasarimli altin kaplama kolye. Paris sokaklarinin isiltisini yansitan minimal tasarim.',
     category: 'kolye',
-    price: 349,
-    originalPrice: 449,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -43,8 +43,8 @@ export const PRODUCTS: Product[] = [
     description:
       'Minimal Japon esteteginden ilham alan ince zincir kolye. Her tarz ile uyumlu.',
     category: 'kolye',
-    price: 299,
-    originalPrice: 399,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -76,8 +76,8 @@ export const PRODUCTS: Product[] = [
     description:
       'Italyan modasinin zarafetini yansitan rose gold katmanli kolye.',
     category: 'kolye',
-    price: 399,
-    originalPrice: 499,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -104,8 +104,8 @@ export const PRODUCTS: Product[] = [
     slug: 'london-fog-pendant-kolye',
     description: 'Ingiliz klasiginin modern yorumu. Zarif pendant tasarim.',
     category: 'kolye',
-    price: 329,
-    originalPrice: 429,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -135,8 +135,8 @@ export const PRODUCTS: Product[] = [
     description:
       'Akdeniz gunesinin sicakligini yansitan 3lu halka bileklik seti.',
     category: 'bilezik',
-    price: 379,
-    originalPrice: 479,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -166,8 +166,8 @@ export const PRODUCTS: Product[] = [
     slug: 'new-york-edge-zincir-bileklik',
     description: 'Manhattanin modern ruhunu yansitan bold zincir bileklik.',
     category: 'bilezik',
-    price: 299,
-    originalPrice: 399,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -197,8 +197,8 @@ export const PRODUCTS: Product[] = [
     slug: 'seoul-minimalist-ince-bileklik',
     description: 'Kore minimalizminin zarif ornegi. Ince ve sik tasarim.',
     category: 'bilezik',
-    price: 249,
-    originalPrice: 329,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -230,8 +230,8 @@ export const PRODUCTS: Product[] = [
     slug: 'vienna-classic-halka-kupe',
     description: 'Avusturya klasiginden ilham alan zarif halka kupe.',
     category: 'kupe',
-    price: 279,
-    originalPrice: 359,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -258,8 +258,8 @@ export const PRODUCTS: Product[] = [
     slug: 'dubai-luxury-tasli-kupe',
     description: 'Dubainin luks ruhunu yansitan tasli drop kupe.',
     category: 'kupe',
-    price: 399,
-    originalPrice: 499,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -287,8 +287,8 @@ export const PRODUCTS: Product[] = [
     description:
       'Avustralya sahillerinin ferahligini yansitan minimal stud kupe.',
     category: 'kupe',
-    price: 229,
-    originalPrice: 299,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -317,8 +317,8 @@ export const PRODUCTS: Product[] = [
     slug: 'rome-elegance-tasli-yuzuk',
     description: 'Roma imparatorlugunun zarafetinden ilham alan tasli yuzuk.',
     category: 'yuzuk',
-    price: 319,
-    originalPrice: 419,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -345,8 +345,8 @@ export const PRODUCTS: Product[] = [
     slug: 'stockholm-minimalist-ince-yuzuk',
     description: 'Iskandinav minimalizmi ile zarif ince yuzuk.',
     category: 'yuzuk',
-    price: 249,
-    originalPrice: 329,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',
@@ -373,8 +373,8 @@ export const PRODUCTS: Product[] = [
     slug: 'santorini-sunset-rose-gold-yuzuk',
     description: 'Yunan adalarinin gun batiminden ilham alan rose gold yuzuk.',
     category: 'yuzuk',
-    price: 279,
-    originalPrice: 359,
+    price: 499,
+    originalPrice: 600,
     variants: [
       {
         id: 'v1',

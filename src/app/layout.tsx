@@ -1,6 +1,7 @@
 import ToastContainer from '@/components/common/Toast';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
+import PageTransition from '@/components/layout/PageTransition';
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
@@ -103,7 +104,9 @@ export default function RootLayout({
     <html lang="tr" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="font-body antialiased">
         <Header />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <Footer />
         <ToastContainer />
       </body>

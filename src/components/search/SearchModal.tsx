@@ -285,7 +285,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         </div>
                         <p className="text-white/60 mb-2">Sonuç bulunamadı</p>
                         <p className="text-sm text-white/40">
-                          "{query}" için sonuç bulunamadı
+                          &quot;{query}&quot; için sonuç bulunamadı
                         </p>
                       </div>
                     )}

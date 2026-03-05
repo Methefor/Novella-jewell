@@ -16,7 +16,6 @@ interface AddToCartButtonProps {
 }
 
 export default function AddToCartButton({
-  productName,
   variantId,
   isInStock,
   onAddToCart,

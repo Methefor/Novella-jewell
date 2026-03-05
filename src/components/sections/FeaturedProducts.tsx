@@ -9,14 +9,14 @@ export default function FeaturedProducts() {
   const products = getBestSellers();
 
   return (
-    <section className="py-20 bg-gray-900">
+    <section className="py-20 bg-[#F5F2ED]">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h2 className="font-serif text-3xl lg:text-4xl text-white mb-2">
+            <h2 className="font-serif text-3xl lg:text-4xl text-[#1A1A1A] mb-2">
               Çok Satanlar
             </h2>
-            <p className="text-white/60">En çok tercih edilen takılarımız</p>
+            <p className="text-[#6B6B6B]">En çok tercih edilen takılarımız</p>
           </div>
 
           <Link

@@ -37,7 +37,6 @@ export default function CheckoutClient() {
   const router = useRouter();
   const hasItems = useCartStore(selectHasItems);
   const items = useCartStore((state) => state.items);
-  const subtotal = useCartStore((state) => state.subtotal);
   const shippingCost = useCartStore((state) => state.shippingCost);
   const discount = useCartStore((state) => state.discount);
   const total = useCartStore((state) => state.total);
@@ -244,7 +243,7 @@ export default function CheckoutClient() {
                       value="credit-card"
                       checked={formData.paymentMethod === 'credit-card'}
                       onChange={(e) =>
-                        updateField('paymentMethod', e.target.value as any)
+                        updateField('paymentMethod', e.target.value as CheckoutForm['paymentMethod'])
                       }
                       className="w-4 h-4 text-gold focus:ring-gold"
                     />
@@ -259,7 +258,7 @@ export default function CheckoutClient() {
                       value="bank-transfer"
                       checked={formData.paymentMethod === 'bank-transfer'}
                       onChange={(e) =>
-                        updateField('paymentMethod', e.target.value as any)
+                        updateField('paymentMethod', e.target.value as CheckoutForm['paymentMethod'])
                       }
                       className="w-4 h-4 text-gold focus:ring-gold"
                     />

@@ -19,7 +19,7 @@ interface ReviewFormProps {
   }) => void;
 }
 
-export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
+export default function ReviewForm({ onSubmit }: ReviewFormProps) {
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
@@ -82,7 +82,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
 
       {/* Rating */}
       <div>
-        <label className="block text-sm font-medium text-white mb-2">
+        <label className="block text-sm font-medium text-[#1A1A1A] mb-2">
           Puanınız <span className="text-red-500">*</span>
         </label>
         <RatingStars
@@ -97,7 +97,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
       <div>
         <label
           htmlFor="review-title"
-          className="block text-sm font-medium text-white mb-2"
+          className="block text-sm font-medium text-[#1A1A1A] mb-2"
         >
           Başlık
         </label>
@@ -107,7 +107,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Kısa bir başlık yazın"
-          className="w-full px-4 py-3 bg-gray-700 border border-white/10 rounded-lg text-white placeholder-white/40 focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all"
+          className="w-full px-4 py-3 bg-white border border-[#E8E5E0] rounded-lg text-[#1A1A1A] placeholder-[#C4C4C4] focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all"
         />
       </div>
 
@@ -115,7 +115,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
       <div>
         <label
           htmlFor="review-comment"
-          className="block text-sm font-medium text-white mb-2"
+          className="block text-sm font-medium text-[#1A1A1A] mb-2"
         >
           Yorumunuz <span className="text-red-500">*</span>
         </label>
@@ -126,7 +126,8 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
           placeholder="Ürün hakkındaki düşüncelerinizi paylaşın..."
           rows={4}
           required
-          className="w-full px-4 py-3 bg-gray-700 border border-white/10 rounded-lg text-white placeholder-white/40 focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all resize-none"
+          className="w-full px-4 py-3 bg-white border border-[#E8E5E0] rounded-lg text-[#1A1A1A] placeholder-[#C4C4C4] focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all resize-none"
+
         />
       </div>
 
@@ -134,7 +135,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
       <div>
         <label
           htmlFor="review-name"
-          className="block text-sm font-medium text-white mb-2"
+          className="block text-sm font-medium text-[#1A1A1A] mb-2"
         >
           Adınız <span className="text-red-500">*</span>
         </label>
@@ -145,7 +146,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Adınız Soyadınız"
           required
-          className="w-full px-4 py-3 bg-gray-700 border border-white/10 rounded-lg text-white placeholder-white/40 focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all"
+          className="w-full px-4 py-3 bg-white border border-[#E8E5E0] rounded-lg text-[#1A1A1A] placeholder-[#C4C4C4] focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all"
         />
       </div>
 
@@ -153,7 +154,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
       <div>
         <label
           htmlFor="review-email"
-          className="block text-sm font-medium text-white mb-2"
+          className="block text-sm font-medium text-[#1A1A1A] mb-2"
         >
           E-posta <span className="text-red-500">*</span>
         </label>
@@ -164,7 +165,7 @@ export default function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="ornek@email.com"
           required
-          className="w-full px-4 py-3 bg-gray-700 border border-white/10 rounded-lg text-white placeholder-white/40 focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all"
+          className="w-full px-4 py-3 bg-white border border-[#E8E5E0] rounded-lg text-[#1A1A1A] placeholder-[#C4C4C4] focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none transition-all"
         />
       </div>
 

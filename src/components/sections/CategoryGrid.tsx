@@ -1,6 +1,6 @@
 /**
  * NOVELLA - Category Grid Section
- * Ana kategorileri gösteren grid
+ * Ana kategorileri gösteren grid - coordinated stagger animations
  */
 
 'use client';
@@ -36,40 +36,69 @@ const categories = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 32, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+  },
+};
+
 export default function CategoryGrid() {
   return (
     <section className="py-20 bg-gray-900">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
           <h2 className="font-serif text-3xl lg:text-4xl text-white mb-4">
             Koleksiyonlarımızı Keşfedin
           </h2>
           <p className="text-lg text-white/70 max-w-2xl mx-auto">
             Her kategoride özenle seçilmiş, kaliteli ve şık tasarımlar
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((category, index) => (
-            <motion.div
-              key={category.slug}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+        >
+          {categories.map((category) => (
+            <motion.div key={category.slug} variants={cardVariants}>
               <Link
                 href={`/collections/${category.slug}`}
                 className="group block relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-800"
               >
-                {/* Image */}
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
+                {/* Image with hover zoom */}
+                <motion.div
+                  className="absolute inset-0"
+                  whileHover={{ scale: 1.08 }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </motion.div>
 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
@@ -79,9 +108,7 @@ export default function CategoryGrid() {
                   <h3 className="font-serif text-2xl text-white mb-2 group-hover:text-gold transition-colors">
                     {category.name}
                   </h3>
-                  <p className="text-sm text-white/80">
-                    {category.description}
-                  </p>
+                  <p className="text-sm text-white/80">{category.description}</p>
                 </div>
 
                 {/* Hover Border */}
@@ -89,7 +116,7 @@ export default function CategoryGrid() {
               </Link>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -17,6 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const addToCart = useCartStore((state) => state.addItem);
   const addToWishlist = useWishlistStore((state) => state.addItem);
@@ -44,7 +45,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     addToCart(product, product.defaultVariant, 1);
   };
 
-  const handleToggleWishlist = () => {
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (isInWishlist) {
       removeFromWishlist(product.id);
     } else {
@@ -53,23 +55,40 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div
+    <motion.div
       className="group relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ y: -6 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-2">
+      <motion.div
+        animate={{
+          boxShadow: isHovered
+            ? '0 20px 40px rgba(201,168,106,0.15)'
+            : '0 2px 8px rgba(0,0,0,0.04)',
+        }}
+        transition={{ duration: 0.3 }}
+        className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+      >
         <Link
           href={`/products/${product.slug}`}
           className="relative block aspect-square overflow-hidden bg-cream"
         >
-          <Image
-            src={currentImage}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          <motion.div
+            animate={{ opacity: imageLoaded ? 1 : 0 }}
+            transition={{ duration: 0.4 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={currentImage}
+              alt={product.name}
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              onLoad={() => setImageLoaded(true)}
+            />
+          </motion.div>
 
           <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
             {hasDiscount ? (
@@ -83,33 +102,40 @@ export default function ProductCard({ product }: ProductCardProps) {
             ) : null}
           </div>
 
-          <div
-            className={`absolute top-3 right-3 flex flex-col gap-2 transition-all duration-300 ${
-              isHovered
-                ? 'opacity-100 translate-x-0'
-                : 'opacity-0 translate-x-4'
-            }`}
-          >
-            <button
-              onClick={handleToggleWishlist}
-              className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${
-                isInWishlist
-                  ? 'bg-red-500 text-white'
-                  : 'bg-white/90 text-gray-600 hover:bg-gold hover:text-white'
-              }`}
-            >
-              <Heart
-                className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`}
-              />
-            </button>
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 12 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-3 right-3 flex flex-col gap-2 z-10"
+              >
+                <button
+                  onClick={handleToggleWishlist}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${
+                    isInWishlist
+                      ? 'bg-red-500 text-white'
+                      : 'bg-white/90 text-gray-600 hover:bg-gold hover:text-white'
+                  }`}
+                >
+                  <Heart
+                    className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`}
+                  />
+                </button>
 
-            <button
-              onClick={() => setIsQuickViewOpen(true)}
-              className="w-10 h-10 rounded-full bg-white/90 text-gray-600 hover:bg-gold hover:text-white flex items-center justify-center backdrop-blur-sm transition-all"
-            >
-              <Eye className="w-4 h-4" />
-            </button>
-          </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsQuickViewOpen(true);
+                  }}
+                  className="w-10 h-10 rounded-full bg-white/90 text-gray-600 hover:bg-gold hover:text-white flex items-center justify-center backdrop-blur-sm transition-all"
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Link>
 
         <div className="p-4 space-y-3">
@@ -197,7 +223,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <span>Sepete Ekle</span>
           </button>
         </div>
-      </div>
+      </motion.div>
 
       <AnimatePresence>
         {isQuickViewOpen && (
@@ -209,9 +235,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             onClick={() => setIsQuickViewOpen(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
               className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -313,6 +340,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

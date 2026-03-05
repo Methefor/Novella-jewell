@@ -1,20 +1,63 @@
 /**
  * NOVELLA - Hero Section
- * Ana sayfa hero bölümü
+ * Ana sayfa hero bölümü - Parallax + Animated counters
  */
 
 'use client';
 
-import { motion } from 'framer-motion';
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useRef } from 'react';
+
+function AnimatedCounter({
+  target,
+  suffix = '',
+  prefix = '',
+}: {
+  target: number;
+  suffix?: string;
+  prefix?: string;
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const count = useMotionValue(0);
+  const spring = useSpring(count, { stiffness: 50, damping: 15 });
+  const display = useTransform(spring, (v) => `${prefix}${Math.round(v)}${suffix}`);
+
+  useEffect(() => {
+    if (isInView) count.set(target);
+  }, [isInView, count, target]);
+
+  return <motion.span ref={ref}>{display}</motion.span>;
+}
 
 export default function HeroSection() {
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
+
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0">
+    <section
+      ref={sectionRef}
+      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
+    >
+      {/* Background Image with Parallax */}
+      <motion.div
+        style={{ y: backgroundY }}
+        className="absolute inset-0 scale-110"
+      >
         <Image
           src="/products/herobackground.png"
           alt="NOVELLA Background"
@@ -25,9 +68,9 @@ export default function HeroSection() {
         />
         {/* Dark Overlay for Text Readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
-      </div>
+      </motion.div>
 
-      {/* Background Pattern (Optional) */}
+      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(212,175,55,0.15),transparent_50%)]" />
       </div>
@@ -82,16 +125,7 @@ export default function HeroSection() {
           >
             <Link
               href="/collections"
-              className="
-                group
-                px-8 py-4 
-                bg-gold text-black 
-                rounded-lg font-medium text-lg
-                hover:bg-gold-light hover:shadow-gold-lg
-                transition-all duration-300
-                flex items-center gap-2
-                min-w-[200px] justify-center
-              "
+              className="group px-8 py-4 bg-gold text-black rounded-lg font-medium text-lg hover:bg-gold-light hover:shadow-gold-lg transition-all duration-300 flex items-center gap-2 min-w-[200px] justify-center"
             >
               Koleksiyonu Keşfet
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -99,21 +133,13 @@ export default function HeroSection() {
 
             <Link
               href="/collections/yeni"
-              className="
-                px-8 py-4 
-                border-2 border-gold text-gold
-                rounded-lg font-medium text-lg
-                hover:bg-gold hover:text-black
-                backdrop-blur-sm bg-black/20
-                transition-all duration-300
-                min-w-[200px] text-center
-              "
+              className="px-8 py-4 border-2 border-gold text-gold rounded-lg font-medium text-lg hover:bg-gold hover:text-black backdrop-blur-sm bg-black/20 transition-all duration-300 min-w-[200px] text-center"
             >
               Yeni Gelenler
             </Link>
           </motion.div>
 
-          {/* Stats */}
+          {/* Stats with animated counters */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -122,13 +148,13 @@ export default function HeroSection() {
           >
             <div className="text-center backdrop-blur-sm bg-black/20 p-4 rounded-lg">
               <div className="text-3xl md:text-4xl font-bold text-gold mb-2 drop-shadow-lg">
-                200+
+                <AnimatedCounter target={200} suffix="+" />
               </div>
               <div className="text-sm text-white/80">Ürün Çeşidi</div>
             </div>
             <div className="text-center backdrop-blur-sm bg-black/20 p-4 rounded-lg border-x border-white/10">
               <div className="text-3xl md:text-4xl font-bold text-gold mb-2 drop-shadow-lg">
-                %100
+                %<AnimatedCounter target={100} />
               </div>
               <div className="text-sm text-white/80">Müşteri Memnuniyeti</div>
             </div>

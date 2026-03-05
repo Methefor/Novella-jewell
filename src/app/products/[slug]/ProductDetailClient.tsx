@@ -1,6 +1,6 @@
 /**
  * NOVELLA - Product Detail Client Component
- * Luxury Cream Theme + Review System
+ * Luxury Cream Theme + Review System + Animations
  */
 
 'use client';
@@ -12,6 +12,7 @@ import { calculateReviewStats, getReviewsByProductId } from '@/data/reviews';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import type { Product } from '@/types/product';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Heart, Minus, Plus, Share2, ShoppingBag, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -74,19 +75,35 @@ export default function ProductDetailClient({
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
-          <div className="space-y-4">
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            className="space-y-4"
+          >
             {/* Main Image */}
-            <div className="relative aspect-square bg-gray-800 rounded-2xl overflow-hidden border border-white/10">
-              <Image
-                src={selectedVariant.images[selectedImageIndex]}
-                alt={product.name}
-                fill
-                className="object-cover"
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+            <div className="relative aspect-square bg-[#F5F2ED] rounded-2xl overflow-hidden border border-[#E8E5E0]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedImageIndex}
+                  initial={{ opacity: 0, scale: 1.03 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={selectedVariant.images[selectedImageIndex]}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
-              {/* Badges - Icon + Küçük */}
+              {/* Badges */}
               <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                 {hasDiscount ? (
                   <span className="badge badge-sale">
@@ -145,7 +162,7 @@ export default function ProductDetailClient({
                     ${
                       selectedImageIndex === index
                         ? 'border-gold shadow-lg shadow-gold/30'
-                        : 'border-white/10 hover:border-gold/50'
+                        : 'border-[#E8E5E0] hover:border-gold'
                     }
                   `}
                 >
@@ -159,17 +176,22 @@ export default function ProductDetailClient({
                 </button>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Product Info */}
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+            className="space-y-6"
+          >
             {/* Category */}
             <p className="text-sm uppercase tracking-wider text-gold font-semibold">
               {product.category}
             </p>
 
             {/* Title */}
-            <h1 className="font-serif text-4xl md:text-5xl text-white leading-tight">
+            <h1 className="font-serif text-4xl md:text-5xl text-[#1A1A1A] leading-tight">
               {product.name}
             </h1>
 
@@ -183,12 +205,12 @@ export default function ProductDetailClient({
                       className={`w-5 h-5 ${
                         i < Math.floor(reviewStats.averageRating)
                           ? 'text-gold fill-gold'
-                          : 'text-white/20'
+                          : 'text-[#E8E5E0]'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-white/70">
+                <span className="text-[#6B6B6B]">
                   {reviewStats.averageRating.toFixed(1)} (
                   {reviewStats.totalReviews} değerlendirme)
                 </span>
@@ -201,7 +223,7 @@ export default function ProductDetailClient({
                 {product.price.toLocaleString('tr-TR')}₺
               </span>
               {hasDiscount && (
-                <span className="text-2xl text-white/30 line-through">
+                <span className="text-2xl text-[#C4C4C4] line-through">
                   {product.originalPrice!.toLocaleString('tr-TR')}₺
                 </span>
               )}
@@ -209,7 +231,7 @@ export default function ProductDetailClient({
 
             {/* Savings */}
             {hasDiscount && (
-              <p className="text-emerald-400 font-medium">
+              <p className="text-[#6b8e7f] font-medium">
                 {(product.originalPrice! - product.price).toLocaleString(
                   'tr-TR'
                 )}
@@ -218,14 +240,14 @@ export default function ProductDetailClient({
             )}
 
             {/* Description */}
-            <p className="text-white/70 text-lg leading-relaxed">
+            <p className="text-[#6B6B6B] text-lg leading-relaxed">
               {product.description}
             </p>
 
             {/* Color Selection */}
             {product.variants.length > 1 && (
               <div>
-                <h3 className="text-sm font-semibold text-white mb-3">
+                <h3 className="text-sm font-semibold text-[#1A1A1A] mb-3">
                   Renk: {selectedVariant.color}
                 </h3>
                 <div className="flex items-center gap-3">
@@ -238,7 +260,7 @@ export default function ProductDetailClient({
                         ${
                           selectedVariantId === variant.id
                             ? 'border-gold ring-4 ring-gold/30 scale-110'
-                            : 'border-white/20 hover:border-gold/50'
+                            : 'border-[#E8E5E0] hover:border-gold'
                         }
                       `}
                       style={{
@@ -264,16 +286,16 @@ export default function ProductDetailClient({
 
             {/* Quantity Selector */}
             <div>
-              <h3 className="text-sm font-semibold text-white mb-3">Adet</h3>
+              <h3 className="text-sm font-semibold text-[#1A1A1A] mb-3">Adet</h3>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={quantity <= 1}
-                  className="p-3 bg-gray-800 border border-white/10 rounded-lg hover:bg-gray-700 hover:border-gold/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-3 bg-white border border-[#E8E5E0] rounded-lg hover:bg-[#F5F2ED] hover:border-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Minus className="w-5 h-5 text-white" />
+                  <Minus className="w-5 h-5 text-[#1A1A1A]" />
                 </button>
-                <span className="text-2xl font-semibold text-white w-12 text-center">
+                <span className="text-2xl font-semibold text-[#1A1A1A] w-12 text-center">
                   {quantity}
                 </span>
                 <button
@@ -281,16 +303,16 @@ export default function ProductDetailClient({
                     setQuantity(Math.min(selectedVariant.stock, quantity + 1))
                   }
                   disabled={quantity >= selectedVariant.stock}
-                  className="p-3 bg-gray-800 border border-white/10 rounded-lg hover:bg-gray-700 hover:border-gold/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-3 bg-white border border-[#E8E5E0] rounded-lg hover:bg-[#F5F2ED] hover:border-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Plus className="w-5 h-5 text-white" />
+                  <Plus className="w-5 h-5 text-[#1A1A1A]" />
                 </button>
               </div>
             </div>
 
             {/* Stock Status */}
             {isInStock && selectedVariant.stock <= 10 && (
-              <p className="text-orange-400 text-sm font-medium">
+              <p className="text-amber-600 text-sm font-medium">
                 ⚠️ Son {selectedVariant.stock} ürün!
               </p>
             )}
@@ -313,7 +335,7 @@ export default function ProductDetailClient({
                   ${
                     isInWishlist
                       ? 'bg-red-500 border-red-500 text-white'
-                      : 'bg-gray-800 border-white/20 text-white hover:border-gold hover:bg-gray-700'
+                      : 'bg-white border-[#E8E5E0] text-[#1A1A1A] hover:border-gold hover:bg-[#F5F2ED]'
                   }
                 `}
               >
@@ -322,22 +344,22 @@ export default function ProductDetailClient({
                 />
               </button>
 
-              <button className="p-4 bg-gray-800 border-2 border-white/20 rounded-xl hover:border-gold hover:bg-gray-700 transition-all">
-                <Share2 className="w-6 h-6 text-white" />
+              <button className="p-4 bg-white border-2 border-[#E8E5E0] rounded-xl hover:border-gold hover:bg-[#F5F2ED] transition-all">
+                <Share2 className="w-6 h-6 text-[#1A1A1A]" />
               </button>
             </div>
 
             {/* Features */}
             {product.features && product.features.length > 0 && (
-              <div className="bg-gray-800 border border-white/10 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">
+              <div className="bg-white border border-[#E8E5E0] rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-[#1A1A1A] mb-4">
                   Ürün Özellikleri
                 </h3>
                 <ul className="space-y-3">
                   {product.features.map((feature, index) => (
                     <li
                       key={index}
-                      className="text-white/70 flex items-start gap-3"
+                      className="text-[#6B6B6B] flex items-start gap-3"
                     >
                       <svg
                         className="w-5 h-5 text-gold flex-shrink-0 mt-0.5"
@@ -372,7 +394,7 @@ export default function ProductDetailClient({
                     <h3 className="text-lg font-semibold text-gold mb-2">
                       Kişiselleştirme
                     </h3>
-                    <p className="text-white/70">
+                    <p className="text-[#6B6B6B]">
                       Bu ürüne özel isim veya mesaj yazdırabilirsiniz.
                     </p>
                   </div>
@@ -398,7 +420,7 @@ export default function ProductDetailClient({
                     />
                   </svg>
                 </div>
-                <p className="text-xs text-white/70">Ücretsiz Kargo</p>
+                <p className="text-xs text-[#6B6B6B]">Ücretsiz Kargo</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-2 bg-gold/10 rounded-full flex items-center justify-center">
@@ -416,7 +438,7 @@ export default function ProductDetailClient({
                     />
                   </svg>
                 </div>
-                <p className="text-xs text-white/70">Güvenli Ödeme</p>
+                <p className="text-xs text-[#6B6B6B]">Güvenli Ödeme</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-2 bg-gold/10 rounded-full flex items-center justify-center">
@@ -434,22 +456,22 @@ export default function ProductDetailClient({
                     />
                   </svg>
                 </div>
-                <p className="text-xs text-white/70">Kolay İade</p>
+                <p className="text-xs text-[#6B6B6B]">Kolay İade</p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Reviews Section */}
         <div className="mt-16">
-          <div className="border-t border-white/10 pt-12">
+          <div className="border-t border-[#E8E5E0] pt-12">
             <div className="space-y-8">
               {/* Review Stats */}
               <ReviewStats stats={reviewStats} />
 
               {/* Write Review */}
-              <div className="bg-gray-800 border border-white/10 rounded-xl p-6">
-                <h3 className="text-xl font-semibold text-white mb-4">
+              <div className="bg-white border border-[#E8E5E0] rounded-xl p-6">
+                <h3 className="text-xl font-semibold text-[#1A1A1A] mb-4">
                   Değerlendirme Yap
                 </h3>
                 <ReviewForm productId={product.id} />

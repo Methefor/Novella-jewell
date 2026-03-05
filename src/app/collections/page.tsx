@@ -9,8 +9,19 @@ import AdvancedFilterSidebar from '@/components/filters/AdvancedFilterSidebar';
 import ProductCard from '@/components/product/ProductCard';
 import { getAllProducts } from '@/data/products';
 import { useProductFilters } from '@/hooks/useProductFilters';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Grid3x3, LayoutGrid, SlidersHorizontal, X } from 'lucide-react';
 import { useState } from 'react';
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } },
+};
 
 export default function CollectionsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -187,7 +198,11 @@ export default function CollectionsPage() {
 
             {/* Product Grid */}
             {filteredProducts.length > 0 ? (
-              <div
+              <motion.div
+                key={JSON.stringify(filters)}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
                 className={`grid gap-6 ${
                   viewMode === 'grid-3'
                     ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
@@ -195,9 +210,11 @@ export default function CollectionsPage() {
                 }`}
               >
                 {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <motion.div key={product.id} variants={itemVariants}>
+                    <ProductCard product={product} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             ) : (
               <div className="text-center py-20">
                 <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -220,37 +237,52 @@ export default function CollectionsPage() {
       </div>
 
       {/* Mobile Sidebar */}
-      {isSidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm">
-          <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
-              <h2 className="font-serif text-2xl text-gray-900">Filtreler</h2>
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <AdvancedFilterSidebar
-                filters={filters}
-                onFilterChange={updateFilters}
-                onReset={resetFilters}
-                productCount={filteredProducts.length}
-              />
-            </div>
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                className="btn btn-primary w-full"
-              >
-                Ürünleri Göster ({filteredProducts.length})
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            key="sidebar-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="lg:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="absolute right-0 top-0 h-full w-full max-w-md bg-white overflow-y-auto"
+            >
+              <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+                <h2 className="font-serif text-2xl text-gray-900">Filtreler</h2>
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="p-6">
+                <AdvancedFilterSidebar
+                  filters={filters}
+                  onFilterChange={updateFilters}
+                  onReset={resetFilters}
+                  productCount={filteredProducts.length}
+                />
+              </div>
+              <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="btn btn-primary w-full"
+                >
+                  Ürünleri Göster ({filteredProducts.length})
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

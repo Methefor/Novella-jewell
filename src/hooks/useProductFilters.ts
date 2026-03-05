@@ -82,7 +82,11 @@ export function useProductFilters(products: Product[]) {
           result.sort((a, b) => a.name.localeCompare(b.name));
           break;
         case 'newest':
-          result = result.filter((p) => p.isNew);
+          result.sort((a, b) => {
+            if (a.isNew && !b.isNew) return -1;
+            if (!a.isNew && b.isNew) return 1;
+            return b.id.localeCompare(a.id);
+          });
           break;
       }
     }
