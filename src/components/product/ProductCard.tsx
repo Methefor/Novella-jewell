@@ -45,6 +45,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const accent = accentColors[product.category] || '#C9A86A';
 
+  const categoryLabel =
+    product.category === 'kolye' ? 'Kolye' :
+    product.category === 'kupe' ? 'Küpe' :
+    product.category === 'bilezik' ? 'Bileklik' : 'Yüzük';
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addToCart(product, product.defaultVariant, 1);
@@ -59,52 +64,53 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
 
-  const categoryLabel =
-    product.category === 'kolye' ? 'Kolye' :
-    product.category === 'kupe' ? 'Kupe' :
-    product.category === 'bilezik' ? 'Bileklik' : 'Yuzuk';
-
   return (
     <Link href={`/products/${product.slug}`} className="block group">
       <motion.div
-        className="relative overflow-hidden rounded-2xl bg-[#111111] cursor-pointer"
-        style={{ height: '340px' }}
+        className="relative overflow-hidden rounded-2xl cursor-pointer"
+        style={{ height: '340px', backgroundColor: 'rgba(15,15,15,0.9)' }}
         whileHover="hovered"
         initial="initial"
       >
-        {/* Gold circle spotlight top-right */}
+        {/* Velzck-style spotlight: clip-path circle expands on hover */}
         <motion.div
-          className="absolute -top-6 -right-6 w-36 h-36 rounded-full pointer-events-none"
-          style={{ background: accent, clipPath: 'circle(50%)' }}
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{ background: accent }}
           variants={{
-            initial: { opacity: 0.15, scale: 1 },
-            hovered: { opacity: 0.28, scale: 1.2 },
+            initial: { clipPath: 'circle(35% at 80% 5%)' },
+            hovered: { clipPath: 'circle(70% at 80% -25%)' },
           }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
         />
 
-        {/* NOVELLA watermark */}
-        <div
+        {/* NOVELLA watermark — scales on hover like Velzck */}
+        <motion.div
           aria-hidden
-          className="absolute top-1/2 -left-2 -translate-y-1/2 select-none pointer-events-none leading-none"
+          className="absolute select-none pointer-events-none leading-none z-[1]"
           style={{
-            color: '#1C1C1C',
-            fontSize: '5.5rem',
-            fontWeight: 900,
+            top: '45%',
+            left: '-15%',
+            fontSize: '11rem',
+            fontWeight: 800,
             fontStyle: 'italic',
             whiteSpace: 'nowrap',
-            zIndex: 1,
+            color: '#242424',
           }}
+          variants={{
+            initial: { scale: 1, color: '#242424' },
+            hovered: { scale: 2, y: 24, color: '#505050' },
+          }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
           NOVELLA
-        </div>
+        </motion.div>
 
-        {/* Product image */}
+        {/* Product image — rotates and lifts on hover */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center z-10"
           variants={{
             initial: { scale: 1, rotate: -5, y: 0 },
-            hovered: { scale: 1.1, rotate: -10, y: -14 },
+            hovered: { scale: 1.1, rotate: -12, y: -18 },
           }}
           transition={{ type: 'spring', stiffness: 300, damping: 22 }}
         >
@@ -124,7 +130,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </motion.div>
         </motion.div>
 
-        {/* Hover overlay slides up from bottom */}
+        {/* Description panel slides up from bottom on hover */}
         <motion.div
           className="absolute inset-x-0 bottom-0 z-20 px-5 py-4"
           style={{
@@ -145,11 +151,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base font-bold" style={{ color: accent }}>
-              {product.price}
+              {product.price} ₺
             </span>
             {hasDiscount && (
               <span className="text-sm text-gray-500 line-through">
-                {product.originalPrice}
+                {product.originalPrice} ₺
               </span>
             )}
           </div>
@@ -159,7 +165,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             style={{ background: accent, color: '#111' }}
           >
             <ShoppingBag className="w-4 h-4" />
-            Sepete Ekle
+            Satın Al
           </button>
         </motion.div>
 
@@ -194,9 +200,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.name}
         </h3>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm font-semibold text-[#C9A86A]">{product.price}</span>
+          <span className="text-sm font-semibold text-[#C9A86A]">{product.price} ₺</span>
           {hasDiscount && (
-            <span className="text-xs text-[#9B9B9B] line-through">{product.originalPrice}</span>
+            <span className="text-xs text-[#9B9B9B] line-through">{product.originalPrice} ₺</span>
           )}
         </div>
       </div>

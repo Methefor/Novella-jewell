@@ -48,8 +48,7 @@ export default function Footer() {
             <p className="font-semibold text-[#C9A86A] uppercase tracking-wider text-xs">
               İletişim
             </p>
-            <p>E-posta: info@novella.com.tr</p>
-            <p>WhatsApp: +90 555 000 0000</p>
+            <p>WhatsApp: +90 545 112 50 59</p>
             <p>Instagram: @jewelry.novella</p>
           </div>
         </div>
@@ -74,7 +73,7 @@ export default function Footer() {
           <h2 className="font-serif text-xl text-white">Bizi Takip Edin</h2>
           <div className="flex gap-3">
             <a
-              href="https://api.whatsapp.com/send?phone=905550000000"
+              href="https://api.whatsapp.com/send?phone=905451125059"
               target="_blank"
               rel="noopener noreferrer"
               className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#C9A86A] hover:text-[#C9A86A] transition-all"
@@ -83,7 +82,7 @@ export default function Footer() {
               <MessageCircle className="w-5 h-5" />
             </a>
             <a
-              href="https://instagram.com/jewelry.novella"
+              href="https://www.instagram.com/jewelry.novella/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#C9A86A] hover:text-[#C9A86A] transition-all"

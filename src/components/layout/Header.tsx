@@ -34,8 +34,8 @@ export default function Header() {
     { name: 'Ana Sayfa', href: '/' },
     { name: 'Koleksiyonlar', href: '/collections' },
     { name: 'Yeni Gelenler', href: '/collections/yeni-gelenler' },
-    { name: 'Hakkımızda', href: '/about' },
-    { name: 'İletişim', href: '/contact' },
+    { name: 'Hakkımızda', href: '/#about' },
+    { name: 'İletişim', href: '/#contact' },
   ];
 
   return (
