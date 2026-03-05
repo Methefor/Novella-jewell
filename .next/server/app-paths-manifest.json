@@ -1,11 +1,11 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/robots.txt/route": "app/robots.txt/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/collections/[category]/page": "app/collections/[category]/page.js",
   "/collections/page": "app/collections/page.js",
-  "/page": "app/page.js",
   "/favoriler/page": "app/favoriler/page.js",
+  "/page": "app/page.js",
   "/checkout/page": "app/checkout/page.js",
   "/order-success/page": "app/order-success/page.js",
   "/products/[slug]/page": "app/products/[slug]/page.js"
