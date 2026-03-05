@@ -1,97 +1,141 @@
-import { Facebook, Instagram } from 'lucide-react';
+'use client';
+
+import { Instagram, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
+
+const faqs = [
+  'Kargo ne kadar sürer?',
+  'Siparişimi nasıl takip ederim?',
+  'Ürün iade koşulları nelerdir?',
+  'Hangi ödeme yöntemlerini kullanabilirim?',
+  'Sipariş iptal edebilir miyim?',
+];
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <div className="bg-white border-t border-gray-200">
-      <div className="container-custom py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4">
-            <Link href="/" className="inline-block">
-              <span className="font-serif text-2xl font-bold text-gray-900">
-                NOVELLA
-              </span>
-            </Link>
-            <p className="text-sm text-gray-600">Her parça bir hikaye</p>
+    <footer id="contact" className="bg-[#111111] text-white">
+      {/* Top gold bar */}
+      <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#C9A86A] to-transparent" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#C9A86A]/30 to-transparent mt-0.5" />
+
+      <div className="container-custom py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
+        {/* Brand + Address */}
+        <div className="space-y-6">
+          <Link href="/" className="inline-block">
+            <span
+              className="font-serif text-3xl font-bold"
+              style={{
+                background: 'linear-gradient(-75deg, #111 0%, #111 5%, rgba(255,255,255,0.5) 5%, rgba(255,255,255,0.5) 10%, #111 10%, #111 100%)',
+                backgroundSize: '200% 100%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                animation: 'reflection 8s ease-in-out infinite',
+                color: '#C9A86A',
+              }}
+            >
+              NOVELLA
+            </span>
+          </Link>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            Her parça bir hikaye.
+            <br />
+            Zarafet ve kalitede sınır tanımayan butik takı koleksiyonu.
+          </p>
+          <div className="space-y-2 text-sm text-gray-400">
+            <p className="font-semibold text-[#C9A86A] uppercase tracking-wider text-xs">
+              İletişim
+            </p>
+            <p>E-posta: info@novella.com.tr</p>
+            <p>WhatsApp: +90 555 000 0000</p>
+            <p>Instagram: @jewelry.novella</p>
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div id="faq" className="space-y-4">
+          <h2 className="font-serif text-xl text-white mb-6">
+            Sık Sorulan Sorular
+          </h2>
+          <ul className="space-y-3">
+            {faqs.map((q) => (
+              <li key={q} className="flex items-start gap-2 text-sm text-gray-400 hover:text-[#C9A86A] transition-colors cursor-default">
+                <span className="text-[#C9A86A] mt-0.5 flex-shrink-0">›</span>
+                {q}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Social + Nav */}
+        <div className="space-y-6">
+          <h2 className="font-serif text-xl text-white">Bizi Takip Edin</h2>
+          <div className="flex gap-3">
+            <a
+              href="https://api.whatsapp.com/send?phone=905550000000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#C9A86A] hover:text-[#C9A86A] transition-all"
+              title="WhatsApp"
+            >
+              <MessageCircle className="w-5 h-5" />
+            </a>
+            <a
+              href="https://instagram.com/jewelry.novella"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#C9A86A] hover:text-[#C9A86A] transition-all"
+              title="Instagram"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
           </div>
 
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Alışveriş</h3>
-            <ul className="space-y-2">
+          <div className="space-y-2">
+            <p className="font-semibold text-[#C9A86A] uppercase tracking-wider text-xs">
+              Sayfalar
+            </p>
+            <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link
-                  href="/collections"
-                  className="text-sm text-gray-600 hover:text-gold"
-                >
-                  Tüm Ürünler
+                <Link href="/collections" className="hover:text-[#C9A86A] transition-colors">
+                  Koleksiyonlar
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/collections/yeni-gelenler"
-                  className="text-sm text-gray-600 hover:text-gold"
-                >
-                  Yeni Gelenler
+                <Link href="/favoriler" className="hover:text-[#C9A86A] transition-colors">
+                  Favorilerim
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Kurumsal</h3>
-            <ul className="space-y-2">
               <li>
-                <Link
-                  href="/about"
-                  className="text-sm text-gray-600 hover:text-gold"
-                >
+                <Link href="/#about" className="hover:text-[#C9A86A] transition-colors">
                   Hakkımızda
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/contact"
-                  className="text-sm text-gray-600 hover:text-gold"
-                >
-                  İletişim
+                <Link href="/#faq" className="hover:text-[#C9A86A] transition-colors">
+                  SSS
                 </Link>
               </li>
             </ul>
           </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Takip Edin</h3>
-            <div className="flex gap-3">
-              <a
-                href="https://instagram.com/jewelry.novella"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gold hover:text-white transition-all"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gold hover:text-white transition-all"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="border-t border-gray-200">
-        <div className="container-custom py-6">
-          <p className="text-center text-sm text-gray-500">
-            © {year} NOVELLA. Tüm hakları saklıdır.
-          </p>
+      {/* Bottom bar */}
+      <div className="border-t border-white/10">
+        <div className="container-custom py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-600">
+          <span>© {year} NOVELLA. Tüm hakları saklıdır.</span>
+          <span>Türkiye</span>
         </div>
       </div>
-    </div>
+
+      <style jsx>{`
+        @keyframes reflection {
+          20%, 100% { background-position: -120% 0; }
+        }
+      `}</style>
+    </footer>
   );
 }

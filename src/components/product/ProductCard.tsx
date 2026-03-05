@@ -3,8 +3,8 @@
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import type { Product } from '@/types/product';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Eye, Heart, ShoppingBag, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Heart, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -13,10 +13,14 @@ interface ProductCardProps {
   product: Product;
 }
 
+const accentColors: Record<string, string> = {
+  kolye: '#C9A86A',
+  kupe: '#D4B77F',
+  bilezik: '#B8975A',
+  yuzuk: '#E0C882',
+};
+
 export default function ProductCard({ product }: ProductCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const addToCart = useCartStore((state) => state.addItem);
@@ -29,19 +33,20 @@ export default function ProductCard({ product }: ProductCardProps) {
   const defaultVariant =
     product.variants.find((v) => v.id === product.defaultVariant) ||
     product.variants[0];
-  const currentImage =
-    defaultVariant.images[currentImageIndex] || defaultVariant.images[0];
+  const currentImage = defaultVariant.images[0];
 
   const hasDiscount =
     product.originalPrice && product.originalPrice > product.price;
   const discountPercentage = hasDiscount
     ? Math.round(
-        ((product.originalPrice! - product.price) / product.originalPrice!) *
-          100
+        ((product.originalPrice! - product.price) / product.originalPrice!) * 100
       )
     : 0;
 
-  const handleAddToCart = () => {
+  const accent = accentColors[product.category] || '#C9A86A';
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
     addToCart(product, product.defaultVariant, 1);
   };
 
@@ -54,292 +59,147 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const categoryLabel =
+    product.category === 'kolye' ? 'Kolye' :
+    product.category === 'kupe' ? 'Kupe' :
+    product.category === 'bilezik' ? 'Bileklik' : 'Yuzuk';
+
   return (
-    <motion.div
-      className="group relative"
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ y: -6 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-    >
+    <Link href={`/products/${product.slug}`} className="block group">
       <motion.div
-        animate={{
-          boxShadow: isHovered
-            ? '0 20px 40px rgba(201,168,106,0.15)'
-            : '0 2px 8px rgba(0,0,0,0.04)',
-        }}
-        transition={{ duration: 0.3 }}
-        className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+        className="relative overflow-hidden rounded-2xl bg-[#111111] cursor-pointer"
+        style={{ height: '340px' }}
+        whileHover="hovered"
+        initial="initial"
       >
-        <Link
-          href={`/products/${product.slug}`}
-          className="relative block aspect-square overflow-hidden bg-cream"
+        {/* Gold circle spotlight top-right */}
+        <motion.div
+          className="absolute -top-6 -right-6 w-36 h-36 rounded-full pointer-events-none"
+          style={{ background: accent, clipPath: 'circle(50%)' }}
+          variants={{
+            initial: { opacity: 0.15, scale: 1 },
+            hovered: { opacity: 0.28, scale: 1.2 },
+          }}
+          transition={{ duration: 0.4 }}
+        />
+
+        {/* NOVELLA watermark */}
+        <div
+          aria-hidden
+          className="absolute top-1/2 -left-2 -translate-y-1/2 select-none pointer-events-none leading-none"
+          style={{
+            color: '#1C1C1C',
+            fontSize: '5.5rem',
+            fontWeight: 900,
+            fontStyle: 'italic',
+            whiteSpace: 'nowrap',
+            zIndex: 1,
+          }}
+        >
+          NOVELLA
+        </div>
+
+        {/* Product image */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center z-10"
+          variants={{
+            initial: { scale: 1, rotate: -5, y: 0 },
+            hovered: { scale: 1.1, rotate: -10, y: -14 },
+          }}
+          transition={{ type: 'spring', stiffness: 300, damping: 22 }}
         >
           <motion.div
+            className="relative w-44 h-44"
             animate={{ opacity: imageLoaded ? 1 : 0 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0"
           >
             <Image
               src={currentImage}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-contain drop-shadow-2xl"
+              sizes="176px"
               onLoad={() => setImageLoaded(true)}
             />
           </motion.div>
+        </motion.div>
 
-          <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-            {hasDiscount ? (
-              <span className="badge badge-sale text-xs">
-                %{discountPercentage} İNDİRİM
-              </span>
-            ) : product.isNew ? (
-              <span className="badge badge-new text-xs">YENİ</span>
-            ) : product.isBestSeller ? (
-              <span className="badge badge-bestseller text-xs">ÇOK SATAN</span>
-            ) : null}
-          </div>
-
-          <AnimatePresence>
-            {isHovered && (
-              <motion.div
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 12 }}
-                transition={{ duration: 0.2 }}
-                className="absolute top-3 right-3 flex flex-col gap-2 z-10"
-              >
-                <button
-                  onClick={handleToggleWishlist}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${
-                    isInWishlist
-                      ? 'bg-red-500 text-white'
-                      : 'bg-white/90 text-gray-600 hover:bg-gold hover:text-white'
-                  }`}
-                >
-                  <Heart
-                    className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`}
-                  />
-                </button>
-
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsQuickViewOpen(true);
-                  }}
-                  className="w-10 h-10 rounded-full bg-white/90 text-gray-600 hover:bg-gold hover:text-white flex items-center justify-center backdrop-blur-sm transition-all"
-                >
-                  <Eye className="w-4 h-4" />
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Link>
-
-        <div className="p-4 space-y-3">
-          <p className="text-xs uppercase tracking-widest text-gray-400 font-medium">
-            {product.category}
+        {/* Hover overlay slides up from bottom */}
+        <motion.div
+          className="absolute inset-x-0 bottom-0 z-20 px-5 py-4"
+          style={{
+            background: 'rgba(0,0,0,0.92)',
+            borderTop: `2px solid ${accent}`,
+          }}
+          variants={{
+            initial: { y: '100%' },
+            hovered: { y: 0 },
+          }}
+          transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+        >
+          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: accent }}>
+            {categoryLabel}
           </p>
-
-          <Link href={`/products/${product.slug}`}>
-            <h3 className="font-serif text-lg leading-snug text-gray-900 hover:text-gold transition-colors line-clamp-2">
-              {product.name}
-            </h3>
-          </Link>
-
-          {product.rating && product.reviewCount && (
-            <div className="flex items-center gap-2">
-              <div className="flex items-center">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-3.5 h-3.5 ${
-                      i < Math.floor(product.rating!)
-                        ? 'text-gold fill-gold'
-                        : 'text-gray-200'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-xs text-gray-400">
-                ({product.reviewCount})
-              </span>
-            </div>
-          )}
-
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-gray-900">
-              {product.price.toLocaleString('tr-TR')}₺
+          <h3 className="font-serif text-white text-sm font-semibold mb-3 leading-tight">
+            {product.name}
+          </h3>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-base font-bold" style={{ color: accent }}>
+              {product.price}
             </span>
             {hasDiscount && (
-              <span className="text-sm text-gray-400 line-through">
-                {product.originalPrice!.toLocaleString('tr-TR')}₺
+              <span className="text-sm text-gray-500 line-through">
+                {product.originalPrice}
               </span>
             )}
           </div>
-
-          {product.variants.length > 1 && (
-            <div className="flex items-center gap-2 pt-2">
-              {product.variants.slice(0, 4).map((variant, index) => (
-                <button
-                  key={variant.id}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`w-6 h-6 rounded-full border-2 transition-all ${
-                    currentImageIndex === index
-                      ? 'border-gold scale-110'
-                      : 'border-gray-200 hover:border-gold'
-                  }`}
-                  style={{
-                    backgroundColor:
-                      variant.color === 'altin'
-                        ? '#C9A86A'
-                        : variant.color === 'gumus'
-                        ? '#C0C0C0'
-                        : variant.color === 'rose-gold'
-                        ? '#B76E79'
-                        : variant.color === 'siyah'
-                        ? '#2D2D2D'
-                        : variant.color === 'beyaz'
-                        ? '#F8F6F3'
-                        : '#C9A86A',
-                  }}
-                />
-              ))}
-              {product.variants.length > 4 && (
-                <span className="text-xs text-gray-400">
-                  +{product.variants.length - 4}
-                </span>
-              )}
-            </div>
-          )}
-
           <button
             onClick={handleAddToCart}
-            className="w-full py-3 bg-transparent border-2 border-gray-200 text-gray-900 font-medium rounded-lg hover:border-gold hover:bg-gold hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-full py-2.5 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+            style={{ background: accent, color: '#111' }}
           >
             <ShoppingBag className="w-4 h-4" />
-            <span>Sepete Ekle</span>
+            Sepete Ekle
           </button>
-        </div>
+        </motion.div>
+
+        {/* Wishlist button */}
+        <motion.button
+          onClick={handleToggleWishlist}
+          className="absolute top-3 left-3 z-30 w-9 h-9 rounded-full flex items-center justify-center bg-black/60 backdrop-blur-sm border border-white/10"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <Heart
+            className="w-4 h-4"
+            fill={isInWishlist ? accent : 'none'}
+            style={{ color: isInWishlist ? accent : '#fff' }}
+          />
+        </motion.button>
+
+        {/* Discount badge */}
+        {hasDiscount && (
+          <div
+            className="absolute top-3 right-3 z-30 px-2 py-1 rounded-md text-xs font-bold"
+            style={{ background: accent, color: '#111' }}
+          >
+            %{discountPercentage}
+          </div>
+        )}
       </motion.div>
 
-      <AnimatePresence>
-        {isQuickViewOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setIsQuickViewOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-              className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="grid md:grid-cols-2 gap-8 p-8">
-                <div className="relative aspect-square bg-cream rounded-xl overflow-hidden">
-                  <Image
-                    src={currentImage}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    sizes="50vw"
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-widest text-gray-400">
-                    {product.category}
-                  </p>
-                  <h2 className="font-serif text-3xl text-gray-900">
-                    {product.name}
-                  </h2>
-                  <p className="text-gray-600 leading-relaxed">
-                    {product.description}
-                  </p>
-
-                  {product.rating && product.reviewCount && (
-                    <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.floor(product.rating!)
-                                ? 'text-gold fill-gold'
-                                : 'text-gray-200'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm text-gray-400">
-                        {product.rating.toFixed(1)} ({product.reviewCount}{' '}
-                        değerlendirme)
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-3xl font-bold text-gray-900">
-                      {product.price.toLocaleString('tr-TR')}₺
-                    </span>
-                    {hasDiscount && (
-                      <span className="text-lg text-gray-400 line-through">
-                        {product.originalPrice!.toLocaleString('tr-TR')}₺
-                      </span>
-                    )}
-                  </div>
-
-                  {product.features && product.features.length > 0 && (
-                    <ul className="space-y-2 pt-4">
-                      {product.features.slice(0, 3).map((feature, index) => (
-                        <li
-                          key={index}
-                          className="flex items-start gap-2 text-sm text-gray-600"
-                        >
-                          <svg
-                            className="w-5 h-5 text-gold flex-shrink-0 mt-0.5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  <div className="flex gap-3 pt-4">
-                    <button
-                      onClick={handleAddToCart}
-                      className="flex-1 py-3 bg-gold text-white font-medium rounded-lg hover:bg-gold-dark transition-all"
-                    >
-                      Sepete Ekle
-                    </button>
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="flex-1 py-3 border-2 border-gray-200 text-gray-900 font-medium rounded-lg hover:border-gold hover:text-gold transition-all text-center"
-                    >
-                      Detayları Gör
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      {/* Name & price below card */}
+      <div className="mt-3 px-1">
+        <h3 className="font-medium text-[#1A1A1A] text-sm leading-tight group-hover:text-[#C9A86A] transition-colors duration-200">
+          {product.name}
+        </h3>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-sm font-semibold text-[#C9A86A]">{product.price}</span>
+          {hasDiscount && (
+            <span className="text-xs text-[#9B9B9B] line-through">{product.originalPrice}</span>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }

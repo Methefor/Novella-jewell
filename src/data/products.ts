@@ -15,7 +15,7 @@ export const PRODUCTS: Product[] = [
       'Zarif ve modern tasarimli altin kaplama kolye. Paris sokaklarinin isiltisini yansitan minimal tasarim.',
     category: 'kolye',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -44,7 +44,7 @@ export const PRODUCTS: Product[] = [
       'Minimal Japon esteteginden ilham alan ince zincir kolye. Her tarz ile uyumlu.',
     category: 'kolye',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -77,7 +77,7 @@ export const PRODUCTS: Product[] = [
       'Italyan modasinin zarafetini yansitan rose gold katmanli kolye.',
     category: 'kolye',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -105,7 +105,7 @@ export const PRODUCTS: Product[] = [
     description: 'Ingiliz klasiginin modern yorumu. Zarif pendant tasarim.',
     category: 'kolye',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -136,7 +136,7 @@ export const PRODUCTS: Product[] = [
       'Akdeniz gunesinin sicakligini yansitan 3lu halka bileklik seti.',
     category: 'bilezik',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -167,7 +167,7 @@ export const PRODUCTS: Product[] = [
     description: 'Manhattanin modern ruhunu yansitan bold zincir bileklik.',
     category: 'bilezik',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -198,7 +198,7 @@ export const PRODUCTS: Product[] = [
     description: 'Kore minimalizminin zarif ornegi. Ince ve sik tasarim.',
     category: 'bilezik',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -231,7 +231,7 @@ export const PRODUCTS: Product[] = [
     description: 'Avusturya klasiginden ilham alan zarif halka kupe.',
     category: 'kupe',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -259,7 +259,7 @@ export const PRODUCTS: Product[] = [
     description: 'Dubainin luks ruhunu yansitan tasli drop kupe.',
     category: 'kupe',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -288,7 +288,7 @@ export const PRODUCTS: Product[] = [
       'Avustralya sahillerinin ferahligini yansitan minimal stud kupe.',
     category: 'kupe',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -318,7 +318,7 @@ export const PRODUCTS: Product[] = [
     description: 'Roma imparatorlugunun zarafetinden ilham alan tasli yuzuk.',
     category: 'yuzuk',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -346,7 +346,7 @@ export const PRODUCTS: Product[] = [
     description: 'Iskandinav minimalizmi ile zarif ince yuzuk.',
     category: 'yuzuk',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
@@ -374,7 +374,7 @@ export const PRODUCTS: Product[] = [
     description: 'Yunan adalarinin gun batiminden ilham alan rose gold yuzuk.',
     category: 'yuzuk',
     price: 499,
-    originalPrice: 600,
+    originalPrice: 599,
     variants: [
       {
         id: 'v1',
