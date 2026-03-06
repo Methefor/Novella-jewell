@@ -51,9 +51,18 @@ const itemVariants = {
 
 export default function AboutUs() {
   return (
-    <section id="about" className="bg-[#F8F6F3]">
+    <section
+      id="about"
+      className="relative"
+      style={{
+        backgroundImage: "url('/products/Pattern.png')",
+        backgroundSize: 'auto',
+        backgroundRepeat: 'repeat',
+        backgroundColor: '#F8F6F3',
+      }}
+    >
       {/* Top features bar */}
-      <div className="border-y border-[#E8E5E0] bg-white">
+      <div className="border-y border-[#E8E5E0] bg-white/80 backdrop-blur-sm">
         <motion.div
           className="container-custom py-12 grid md:grid-cols-3 gap-8"
           variants={containerVariants}
@@ -81,7 +90,7 @@ export default function AboutUs() {
 
       {/* Text blocks */}
       <motion.div
-        className="container-custom py-20 grid md:grid-cols-3 gap-10"
+        className="container-custom py-20 grid md:grid-cols-3 gap-10 relative z-10"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
