@@ -101,10 +101,11 @@ export default function GsapCarousel() {
         gsap.to([img1, img2], { top: '50%', duration: 1.5, ease: 'power4.inOut' });
       },
       onComplete: () => {
-        // Remove old slides
-        const all = container.querySelectorAll('.nc-slide');
-        while (all.length > 3) {
-          container.removeChild(container.firstChild as Node);
+        // Remove old slides (re-query each time — querySelectorAll is static)
+        let remaining = container.querySelectorAll('.nc-slide');
+        while (remaining.length > 2) {
+          container.removeChild(remaining[0]);
+          remaining = container.querySelectorAll('.nc-slide');
         }
         isAnimatingRef.current = false;
       },

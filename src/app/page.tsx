@@ -161,7 +161,17 @@ export default function HomePage() {
         <div className="container-custom">
           {/* New Arrivals */}
           {newProducts.length > 0 && (
-            <div className="mb-24">
+            <div
+              className="mb-24 relative rounded-2xl overflow-hidden"
+              style={{
+                backgroundImage: "url('/products/banner.png')",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
+            >
+              <div className="absolute inset-0 bg-[#0D0D0D]/70" />
+              <div className="relative z-10 px-8 pt-12 pb-10">
               <motion.div
                 className="mb-10"
                 initial={{ opacity: 0, y: 20 }}
@@ -198,6 +208,7 @@ export default function HomePage() {
                 >
                   Tümünü Gör <ArrowRight className="w-4 h-4" />
                 </Link>
+              </div>
               </div>
             </div>
           )}
