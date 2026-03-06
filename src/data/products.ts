@@ -1175,6 +1175,22 @@ export const PRODUCTS: Product[] = [
     rating: 4.9, reviewCount: 57,
     createdAt: new Date('2025-01-28'), updatedAt: new Date('2025-01-28'),
   },
+  {
+    id: 'kupe-11',
+    name: 'Paris Lüks İnci Küpe',
+    slug: 'paris-luks-inci-kupe',
+    description: 'Paris modasından ilham alan zarif inci detaylı küpe.',
+    category: 'kupe',
+    price: 549,
+    originalPrice: 649,
+    variants: [{ id: 'v1', color: 'beyaz', material: 'gumus-kaplama', stock: 20, images: ['/products/kupe/kupe-11.jpg', '/products/kupe/kupe-11.jpg'] }],
+    defaultVariant: 'v1',
+    features: ['İnci detay', 'Paris tasarım', 'Hediye kutusu'],
+    material: 'gumus-kaplama',
+    isNew: true, isBestSeller: true, isCustomizable: false,
+    rating: 4.9, reviewCount: 42,
+    createdAt: new Date('2025-02-10'), updatedAt: new Date('2025-02-10'),
+  },
 
   // YUZUKLER
   {

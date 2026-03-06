@@ -37,7 +37,17 @@ export default function HomePage() {
     ...products.filter((p) => p.category === 'kupe').slice(0, 2),
     ...products.filter((p) => p.category === 'yuzuk').slice(0, 1),
   ];
-  const bestSellers = products.filter((p) => p.isBestSeller).slice(0, 8);
+  const allBilezik = products.filter((p) => p.category === 'bilezik');
+  const allYuzuk = products.filter((p) => p.category === 'yuzuk');
+  const allKupe = products.filter((p) => p.category === 'kupe');
+  const bestSellers = [
+    allKupe.find((p) => p.id === 'kupe-11'),   // 1. kupe-11
+    allYuzuk[0],                                 // 2. yüzük
+    allBilezik[3],                               // 3. bilezik
+    allBilezik[4],                               // 4. bilezik
+    allYuzuk[1],                                 // 5. yüzük
+    allKupe.find((p) => p.id === 'kupe-2'),     // 6. küpe
+  ].filter(Boolean) as typeof products;
 
   return (
     <main className="min-h-screen bg-[#0D0D0D]">

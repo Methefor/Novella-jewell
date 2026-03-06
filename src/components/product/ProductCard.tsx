@@ -68,7 +68,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <Link href={`/products/${product.slug}`} className="block group">
       <motion.div
         className="relative overflow-hidden rounded-2xl cursor-pointer"
-        style={{ height: '420px', backgroundColor: 'rgba(15,15,15,0.9)' }}
+        style={{ height: '420px' }}
         whileHover="hovered"
         initial="initial"
       >
@@ -81,8 +81,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             aria-hidden
             className="object-cover scale-110"
             sizes="420px"
-            style={{ filter: 'blur(18px)', opacity: 0.18 }}
+            style={{ filter: 'blur(22px)' }}
           />
+          {/* Dark overlay so content stays readable */}
+          <div className="absolute inset-0 bg-black/65" />
         </div>
 
         {/* Velzck-style spotlight: clip-path circle expands on hover */}
