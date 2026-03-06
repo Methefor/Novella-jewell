@@ -72,6 +72,19 @@ export default function ProductCard({ product }: ProductCardProps) {
         whileHover="hovered"
         initial="initial"
       >
+        {/* Blurred product image background */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Image
+            src={currentImage}
+            alt=""
+            fill
+            aria-hidden
+            className="object-cover scale-110"
+            sizes="420px"
+            style={{ filter: 'blur(18px)', opacity: 0.18 }}
+          />
+        </div>
+
         {/* Velzck-style spotlight: clip-path circle expands on hover */}
         <motion.div
           className="absolute inset-0 pointer-events-none z-0"

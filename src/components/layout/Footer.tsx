@@ -50,6 +50,17 @@ export default function Footer() {
             </p>
             <p>WhatsApp: +90 545 112 50 59</p>
             <p>Instagram: @jewelry.novella</p>
+            <a
+              href="https://www.shopier.com/novellatr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-[#C9A86A] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.17 5H21l-1.68 8.39c-.16.8-.9 1.39-1.72 1.39H8.1c-.82 0-1.56-.59-1.73-1.39L4.25 3H2V1H5l.17 4z"/>
+              </svg>
+              Shopier: novellatr
+            </a>
           </div>
         </div>
 
@@ -89,6 +100,17 @@ export default function Footer() {
               title="Instagram"
             >
               <Instagram className="w-5 h-5" />
+            </a>
+            <a
+              href="https://www.shopier.com/novellatr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#C9A86A] hover:text-[#C9A86A] transition-all"
+              title="Shopier"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.17 5H21l-1.68 8.39c-.16.8-.9 1.39-1.72 1.39H8.1c-.82 0-1.56-.59-1.73-1.39L4.25 3H2V1H5l.17 4z"/>
+              </svg>
             </a>
           </div>
 

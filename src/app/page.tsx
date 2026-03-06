@@ -32,7 +32,11 @@ const itemVariants = {
 
 export default function HomePage() {
   const products = getAllProducts();
-  const newProducts = products.filter((p) => p.isNew).slice(0, 8);
+  const newProducts = [
+    ...products.filter((p) => p.category === 'bilezik').slice(0, 3),
+    ...products.filter((p) => p.category === 'kupe').slice(0, 2),
+    ...products.filter((p) => p.category === 'yuzuk').slice(0, 1),
+  ];
   const bestSellers = products.filter((p) => p.isBestSeller).slice(0, 8);
 
   return (
@@ -153,25 +157,26 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
       </section>
 
-      {/* PRODUCTS — Dark background like Velzck */}
-      <section id="products" className="py-20 bg-[#0D0D0D]">
+      {/* PRODUCTS */}
+      <section
+        id="products"
+        className="relative py-20"
+        style={{
+          backgroundImage: "url('/products/banner.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+        }}
+      >
+        <div className="absolute inset-0 bg-[#0D0D0D]/80" />
         {/* Gold separator line */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#C9A86A]/30 to-transparent mb-20" />
+        <div className="relative z-10 h-px w-full bg-gradient-to-r from-transparent via-[#C9A86A]/30 to-transparent mb-20" />
 
-        <div className="container-custom">
+        <div className="container-custom relative z-10">
           {/* New Arrivals */}
           {newProducts.length > 0 && (
-            <div
-              className="mb-24 relative rounded-2xl overflow-hidden"
-              style={{
-                backgroundImage: "url('/products/banner.png')",
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
-              <div className="absolute inset-0 bg-[#0D0D0D]/70" />
-              <div className="relative z-10 px-8 pt-12 pb-10">
+            <div className="mb-24">
               <motion.div
                 className="mb-10"
                 initial={{ opacity: 0, y: 20 }}
@@ -208,7 +213,6 @@ export default function HomePage() {
                 >
                   Tümünü Gör <ArrowRight className="w-4 h-4" />
                 </Link>
-              </div>
               </div>
             </div>
           )}
