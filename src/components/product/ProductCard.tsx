@@ -68,7 +68,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <Link href={`/products/${product.slug}`} className="block group">
       <motion.div
         className="relative overflow-hidden rounded-2xl cursor-pointer"
-        style={{ height: '340px', backgroundColor: 'rgba(15,15,15,0.9)' }}
+        style={{ height: '420px', backgroundColor: 'rgba(15,15,15,0.9)' }}
         whileHover="hovered"
         initial="initial"
       >
@@ -115,7 +115,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           transition={{ type: 'spring', stiffness: 300, damping: 22 }}
         >
           <motion.div
-            className="relative w-44 h-44"
+            className="relative w-56 h-56"
             animate={{ opacity: imageLoaded ? 1 : 0 }}
             transition={{ duration: 0.4 }}
           >
@@ -124,7 +124,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               alt={product.name}
               fill
               className="object-contain drop-shadow-2xl"
-              sizes="176px"
+              sizes="224px"
               onLoad={() => setImageLoaded(true)}
             />
           </motion.div>

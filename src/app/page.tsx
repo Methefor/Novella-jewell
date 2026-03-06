@@ -2,6 +2,7 @@
 
 import ProductCard from '@/components/product/ProductCard';
 import AboutUs from '@/components/sections/AboutUs';
+import GsapCarousel from '@/components/sections/GsapCarousel';
 import { getAllProducts } from '@/data/products';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
@@ -144,41 +145,14 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
 
-          {/* Right — Brand decoration */}
+          {/* Right — GSAP Carousel */}
           <motion.div
-            className="hidden lg:flex items-center justify-center relative h-[500px]"
+            className="hidden lg:block relative h-[500px]"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <div
-              className="absolute select-none pointer-events-none font-black italic leading-none"
-              style={{
-                fontSize: '9rem',
-                color: 'rgba(201,168,106,0.06)',
-                transform: 'rotate(-15deg)',
-              }}
-            >
-              NOVELLA
-            </div>
-            <div
-              className="absolute select-none pointer-events-none font-black italic leading-none"
-              style={{
-                fontSize: '5rem',
-                color: 'rgba(201,168,106,0.04)',
-                transform: 'rotate(10deg) translateY(80px)',
-              }}
-            >
-              NOVELLA
-            </div>
-            <div className="relative text-center z-10">
-              <p className="font-serif text-[#C9A86A] text-3xl mb-2 tracking-widest">
-                NOVELLA
-              </p>
-              <p className="text-gray-600 text-xs tracking-[0.3em] uppercase">
-                Butik Takı
-              </p>
-            </div>
+            <GsapCarousel />
           </motion.div>
         </div>
 
@@ -211,7 +185,7 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -257,7 +231,7 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
