@@ -81,12 +81,6 @@ export default function GsapCarousel() {
     imgWrap1.appendChild(img1);
     newSlide.appendChild(imgWrap1);
 
-    // Title
-    const content = document.createElement('div');
-    content.className = 'nc-slide-content';
-    content.innerHTML = `<h2 style="transform:scale(1.5)">${slideData.title}</h2>`;
-    newSlide.appendChild(content);
-
     // Img 2 (right diagonal)
     const imgWrap2 = document.createElement('div');
     imgWrap2.className = 'nc-slide-img nc-slide-img-2';
@@ -116,7 +110,6 @@ export default function GsapCarousel() {
       },
     });
 
-    gsap.to('.nc-slide-content h2', { scale: 1, duration: 1.5, ease: 'power4.inOut' });
   }, []);
 
   useEffect(() => {
@@ -130,30 +123,21 @@ export default function GsapCarousel() {
         <div class="nc-slide-img nc-slide-img-1">
           <img src="${initial.img1}" alt="${initial.title}" style="top:50%" />
         </div>
-        <div class="nc-slide-content">
-          <h2>${initial.title}</h2>
-        </div>
         <div class="nc-slide-img nc-slide-img-2">
           <img src="${initial.img2}" alt="${initial.title}" style="top:50%" />
         </div>
       </div>
     `;
 
-    // Auto-advance every 4 seconds
+    // Auto-advance every 2 seconds
     timerRef.current = setInterval(() => {
       advanceSlide();
-    }, 4000);
+    }, 2000);
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [advanceSlide]);
-
-  const handleClick = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    advanceSlide();
-    timerRef.current = setInterval(() => advanceSlide(), 4000);
-  };
 
   return (
     <>
@@ -163,8 +147,7 @@ export default function GsapCarousel() {
           width: 100%;
           height: 100%;
           overflow: hidden;
-          cursor: pointer;
-          background: #000;
+          background: transparent;
           border-radius: 1rem;
         }
         .nc-slide {
@@ -172,40 +155,16 @@ export default function GsapCarousel() {
           inset: 0;
           z-index: 2;
           overflow: hidden;
-          background: #1a1a1a;
+          background: transparent;
         }
-        .nc-slide--dark {
-          background: #000;
-        }
+        .nc-slide--dark,
         .nc-slide--light {
-          background: #1a1a1a;
-        }
-        .nc-slide-content {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          text-align: center;
-          z-index: 10;
-          pointer-events: none;
-        }
-        .nc-slide-content h2 {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(3rem, 8vw, 6rem);
-          text-transform: uppercase;
-          font-weight: 300;
-          letter-spacing: 0.15em;
-          color: rgba(201, 168, 106, 0.85);
-          white-space: nowrap;
-        }
-        .nc-slide--light .nc-slide-content h2 {
-          color: rgba(201, 168, 106, 0.9);
+          background: transparent;
         }
         .nc-slide-img {
           position: absolute;
           width: 38%;
           height: 160%;
-          filter: saturate(0.3) brightness(0.75);
           overflow: hidden;
         }
         .nc-slide-img img {
@@ -215,6 +174,7 @@ export default function GsapCarousel() {
           height: 65%;
           object-fit: cover;
           transform: translateY(-50%);
+          border-radius: 0.5rem;
         }
         .nc-slide-img-1 {
           top: 50%;
@@ -226,27 +186,8 @@ export default function GsapCarousel() {
           left: 50%;
           transform: translate(-30%, -50%) rotate(20deg);
         }
-        .nc-hint {
-          position: absolute;
-          bottom: 1rem;
-          right: 1rem;
-          z-index: 20;
-          font-size: 0.65rem;
-          letter-spacing: 0.15em;
-          color: rgba(201,168,106,0.4);
-          text-transform: uppercase;
-          pointer-events: none;
-        }
       `}</style>
-      <div
-        className="nc-slider"
-        ref={containerRef}
-        onClick={handleClick}
-        title="Koleksiyonlar arasında geçiş yapmak için tıklayın"
-      />
-      <p className="nc-hint" style={{ position: 'absolute', bottom: '1rem', right: '1rem', zIndex: 20, fontSize: '0.65rem', letterSpacing: '0.15em', color: 'rgba(201,168,106,0.4)', textTransform: 'uppercase', pointerEvents: 'none' }}>
-        tıkla / geçiş yap
-      </p>
+      <div className="nc-slider" ref={containerRef} />
     </>
   );
 }
