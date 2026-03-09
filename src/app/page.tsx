@@ -66,10 +66,10 @@ export default function HomePage() {
         {/* Dark overlay for readability */}
         <div className="absolute inset-0 bg-[#0D0D0D]/60" />
 
-        <div className="container-custom relative z-10 py-24 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="container-custom relative z-10 py-14 md:py-20 lg:py-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left */}
           <motion.div
-            className="space-y-8"
+            className="space-y-6 lg:space-y-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -85,10 +85,10 @@ export default function HomePage() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <h2 className="text-gray-400 text-xl mb-3 font-light">
+              <h2 className="text-gray-400 text-base md:text-xl mb-2 md:mb-3 font-light">
                 Takıyla hisset
               </h2>
-              <div className="overflow-hidden h-16 md:h-20">
+              <div className="overflow-hidden h-14 sm:h-16 md:h-20">
                 <motion.div
                   animate={{ y: ['0%', '-400%'] }}
                   transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
@@ -97,7 +97,7 @@ export default function HomePage() {
                   {scrollingWords.map((word, i) => (
                     <h1
                       key={i}
-                      className="font-serif text-5xl md:text-6xl h-16 md:h-20 flex items-center"
+                      className="font-serif text-4xl sm:text-5xl md:text-6xl h-14 sm:h-16 md:h-20 flex items-center"
                       style={{ color: i % 2 === 0 ? '#C9A86A' : '#D4B77F' }}
                     >
                       {word}
@@ -109,7 +109,7 @@ export default function HomePage() {
 
             <motion.p
               variants={itemVariants}
-              className="text-gray-400 text-lg leading-relaxed max-w-xl"
+              className="text-gray-400 text-sm md:text-base lg:text-lg leading-relaxed max-w-xl"
             >
               Zarafet ve kalitede sınır tanımayan butik takı koleksiyonumuzu
               keşfedin. Her tasarım, kendine özgü hikayesiyle sizinle buluşuyor.
@@ -117,11 +117,11 @@ export default function HomePage() {
 
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4"
             >
               <Link
                 href="/collections"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-sm group"
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-sm group"
                 style={{ background: '#C9A86A', color: '#111' }}
               >
                 Koleksiyonu Keşfet
@@ -129,7 +129,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="#products"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-sm border border-white/20 text-white hover:border-[#C9A86A] hover:text-[#C9A86A] transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-sm border border-white/20 text-white hover:border-[#C9A86A] hover:text-[#C9A86A] transition-all"
               >
                 Ürünleri Gör
               </Link>
@@ -137,7 +137,7 @@ export default function HomePage() {
 
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-3 gap-6 pt-6 border-t border-white/10"
+              className="grid grid-cols-3 gap-3 sm:gap-6 pt-4 sm:pt-6 border-t border-white/10"
             >
               {[
                 { value: '200+', label: 'Ürün Çeşidi' },
@@ -145,8 +145,8 @@ export default function HomePage() {
                 { value: '4.8', label: 'Ort. Puan' },
               ].map(({ value, label }) => (
                 <div key={label}>
-                  <p className="text-2xl font-bold text-[#C9A86A]">{value}</p>
-                  <p className="text-xs text-gray-500 mt-1">{label}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-[#C9A86A]">{value}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 mt-1">{label}</p>
                 </div>
               ))}
             </motion.div>
@@ -170,13 +170,12 @@ export default function HomePage() {
       {/* PRODUCTS */}
       <section
         id="products"
-        className="relative py-20"
+        className="relative py-12 md:py-20"
         style={{
           backgroundImage: "url('/products/banner.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
         }}
       >
         <div className="absolute inset-0 bg-[#0D0D0D]/80" />
@@ -197,7 +196,7 @@ export default function HomePage() {
                 <p className="text-xs uppercase tracking-widest text-[#C9A86A] font-medium mb-2">
                   Yeni Gelenler
                 </p>
-                <h2 className="font-serif text-4xl text-white">
+                <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-white">
                   En Yeni Koleksiyon
                 </h2>
               </motion.div>
@@ -243,7 +242,7 @@ export default function HomePage() {
                 <p className="text-xs uppercase tracking-widest text-[#C9A86A] font-medium mb-2">
                   Çok Satanlar
                 </p>
-                <h2 className="font-serif text-4xl text-white">
+                <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-white">
                   En Beğenilenler
                 </h2>
               </motion.div>

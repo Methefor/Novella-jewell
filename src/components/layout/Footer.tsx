@@ -20,7 +20,7 @@ export default function Footer() {
       <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#C9A86A] to-transparent" />
       <div className="h-px w-full bg-gradient-to-r from-transparent via-[#C9A86A]/30 to-transparent mt-0.5" />
 
-      <div className="container-custom py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="container-custom py-10 md:py-16 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
         {/* Brand + Address */}
         <div className="space-y-6">
           <Link href="/" className="inline-block">

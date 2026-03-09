@@ -64,7 +64,7 @@ export default function AboutUs() {
       {/* Top features bar */}
       <div className="border-y border-[#E8E5E0] bg-white/80 backdrop-blur-sm">
         <motion.div
-          className="container-custom py-12 grid md:grid-cols-3 gap-8"
+          className="container-custom py-8 md:py-12 grid md:grid-cols-3 gap-6 md:gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -90,7 +90,7 @@ export default function AboutUs() {
 
       {/* Text blocks */}
       <motion.div
-        className="container-custom py-20 grid md:grid-cols-3 gap-10 relative z-10"
+        className="container-custom py-12 md:py-20 grid md:grid-cols-3 gap-8 md:gap-10 relative z-10"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"

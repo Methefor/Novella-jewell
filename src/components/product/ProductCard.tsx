@@ -67,8 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/products/${product.slug}`} className="block group">
       <motion.div
-        className="relative overflow-hidden rounded-2xl cursor-pointer"
-        style={{ height: '420px' }}
+        className="relative overflow-hidden rounded-2xl cursor-pointer h-[360px] sm:h-[420px]"
         whileHover="hovered"
         initial="initial"
       >
@@ -130,7 +129,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           transition={{ type: 'spring', stiffness: 300, damping: 22 }}
         >
           <motion.div
-            className="relative w-56 h-56"
+            className="relative w-44 h-44 sm:w-56 sm:h-56"
             animate={{ opacity: imageLoaded ? 1 : 0 }}
             transition={{ duration: 0.4 }}
           >
