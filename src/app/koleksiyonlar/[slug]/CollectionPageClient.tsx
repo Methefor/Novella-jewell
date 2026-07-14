@@ -26,11 +26,9 @@ const PRICE_RANGES = [
 interface Props {
   collection: Collection;
   products: Product[];
-  initialTur?: string;
-  initialFiyat?: string;
 }
 
-function parsePriceParam(fiyat?: string) {
+function parsePriceParam(fiyat: string | null) {
   if (!fiyat) return { min: 0, max: Infinity };
   const parts = fiyat.split('-');
   return {
@@ -39,19 +37,17 @@ function parsePriceParam(fiyat?: string) {
   };
 }
 
-export default function CollectionPageClient({
-  collection,
-  products,
-  initialTur,
-  initialFiyat,
-}: Props) {
+export default function CollectionPageClient({ collection, products }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>(
-    () => (initialTur ? (initialTur.split(',') as ProductCategory[]) : [])
+    () => {
+      const tur = searchParams.get('tur');
+      return tur ? (tur.split(',') as ProductCategory[]) : [];
+    }
   );
-  const [priceRange, setPriceRange] = useState(() => parsePriceParam(initialFiyat));
+  const [priceRange, setPriceRange] = useState(() => parsePriceParam(searchParams.get('fiyat')));
 
   const updateURL = useCallback(
     (cats: ProductCategory[], price: { min: number; max: number }) => {

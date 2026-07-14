@@ -1,21 +1,15 @@
-/**
- * NOVELLA - Robots.txt
- * SEO robots configuration
- */
-
+import { SITE } from '@/lib/config';
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/checkout', '/order-success', '/hesap', '/api'],
+        disallow: ['/api/', '/sepet', '/odeme'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE.url}/sitemap.xml`,
   };
 }

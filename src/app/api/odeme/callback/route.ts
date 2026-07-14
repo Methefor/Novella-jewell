@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function handleCallback(req: NextRequest) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const siteUrl = (await import('@/lib/config')).SITE.url;
 
   // Parametre toplama (query string + form body)
   const url = new URL(req.url);

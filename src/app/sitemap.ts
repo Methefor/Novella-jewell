@@ -1,60 +1,32 @@
-/**
- * NOVELLA - Sitemap
- * SEO sitemap generator
- */
-
+import { getAllCollections } from '@/data/collections';
+import { SITE } from '@/lib/config';
+import { getAllProducts } from '@/lib/products';
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const base = SITE.url;
+  const now = new Date();
 
-  const staticPages = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily' as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/collections`,
-      lastModified: new Date(),
-      changeFrequency: 'daily' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/hakkimizda`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/iletisim`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: base, lastModified: now, changeFrequency: 'daily', priority: 1 },
+    { url: `${base}/koleksiyonlar`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${base}/hakkimizda`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${base}/iletisim`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
   ];
 
-  const categories = ['kolye', 'bilezik', 'kupe', 'yuzuk'];
-  const categoryPages = categories.map((category) => ({
-    url: `${baseUrl}/collections/${category}`,
-    lastModified: new Date(),
+  const collectionPages: MetadataRoute.Sitemap = getAllCollections().map((col) => ({
+    url: `${base}/koleksiyonlar/${col.slug}`,
+    lastModified: now,
     changeFrequency: 'daily' as const,
     priority: 0.8,
   }));
 
-  const products = [
-    'zarif-altin-kolye',
-    'rose-gold-bilezik-set',
-    'minimal-celik-kupe',
-    'tasli-yuzuk',
-  ];
-  const productPages = products.map((slug) => ({
-    url: `${baseUrl}/products/${slug}`,
-    lastModified: new Date(),
+  const productPages: MetadataRoute.Sitemap = getAllProducts().map((product) => ({
+    url: `${base}/urun/${product.slug}`,
+    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
 
-  return [...staticPages, ...categoryPages, ...productPages];
+  return [...staticPages, ...collectionPages, ...productPages];
 }

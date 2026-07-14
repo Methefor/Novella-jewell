@@ -3,6 +3,7 @@ import ToastContainer from '@/components/common/Toast';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import PageTransition from '@/components/layout/PageTransition';
+import { SITE } from '@/lib/config';
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
@@ -47,19 +48,17 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-  ),
+  metadataBase: new URL(SITE.url),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'tr_TR',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    title: 'NOVELLA - Her Parça Bir Hikaye',
+    url: SITE.url,
+    title: 'NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet',
     description:
-      'Butik takı koleksiyonları ile her parça bir hikaye. Kaliteli çelik takılar, uygun fiyatlar.',
+      '316L paslanmaz çelik takılar. El seçimi bilezik, küpe, yüzük ve kolye koleksiyonları. Suya dayanıklı, alerji yapmaz.',
     siteName: 'NOVELLA',
     images: [
       {
@@ -96,6 +95,20 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.name,
+  url: SITE.url,
+  sameAs: [SITE.instagram],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: `+${SITE.whatsapp}`,
+    contactType: 'customer service',
+    availableLanguage: 'Turkish',
+  },
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -104,6 +117,10 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="font-body antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
         <StoreHydration />
         <Header />
         <main className="min-h-screen">

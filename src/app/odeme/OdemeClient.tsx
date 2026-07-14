@@ -7,7 +7,7 @@ import { useCartStore } from '@/store/cartStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -44,10 +44,11 @@ export default function OdemeClient() {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  if (items.length === 0) {
-    router.replace('/sepet');
-    return null;
-  }
+  useEffect(() => {
+    if (items.length === 0) router.replace('/sepet');
+  }, [items.length, router]);
+
+  if (items.length === 0) return null;
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);

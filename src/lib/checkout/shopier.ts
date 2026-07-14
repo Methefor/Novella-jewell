@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { SITE } from '@/lib/config';
 import type { CheckoutProvider, Order, PaymentResult } from './types';
 
 const API_ENDPOINT = 'https://www.shopier.com/ShowProduct/api_pay4.php';
@@ -40,8 +41,7 @@ export class ShopierProvider implements CheckoutProvider {
 
     const signature = sign(sigData, this.apiSecret);
 
-    const callbackBase =
-      process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+    const callbackBase = SITE.url;
 
     // Shopier POST form parametreleri
     const params: Record<string, string> = {
