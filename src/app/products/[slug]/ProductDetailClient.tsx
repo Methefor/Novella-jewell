@@ -42,10 +42,10 @@ export default function ProductDetailClient({
     product.variants[0];
 
   const hasDiscount =
-    product.originalPrice && product.originalPrice > product.price;
+    product.compareAtPrice && product.compareAtPrice > product.price;
   const discountPercentage = hasDiscount
     ? Math.round(
-        ((product.originalPrice! - product.price) / product.originalPrice!) *
+        ((product.compareAtPrice! - product.price) / product.compareAtPrice!) *
           100
       )
     : 0;
@@ -224,7 +224,7 @@ export default function ProductDetailClient({
               </span>
               {hasDiscount && (
                 <span className="text-2xl text-[#C4C4C4] line-through">
-                  {product.originalPrice!.toLocaleString('tr-TR')}₺
+                  {product.compareAtPrice!.toLocaleString('tr-TR')}₺
                 </span>
               )}
             </div>
@@ -232,7 +232,7 @@ export default function ProductDetailClient({
             {/* Savings */}
             {hasDiscount && (
               <p className="text-[#6b8e7f] font-medium">
-                {(product.originalPrice! - product.price).toLocaleString(
+                {(product.compareAtPrice! - product.price).toLocaleString(
                   'tr-TR'
                 )}
                 ₺ tasarruf ediyorsunuz!

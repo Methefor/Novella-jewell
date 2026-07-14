@@ -40,7 +40,7 @@ export default function CategoryClient({ category }: CategoryClientProps) {
     categoryProducts = allProducts.filter((p) => p.isBestSeller);
   } else if (category === 'indirimler') {
     categoryProducts = allProducts.filter(
-      (p) => p.originalPrice && p.originalPrice > p.price
+      (p) => p.compareAtPrice && p.compareAtPrice > p.price
     );
   } else {
     const categoryMap: Record<string, string> = {

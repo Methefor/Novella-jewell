@@ -1,15 +1,10 @@
-/**
- * NOVELLA - Product Type Definitions
- * Ürün ve filtreleme için type tanımlamaları
- */
-
 export type ProductCategory = 'kolye' | 'bilezik' | 'kupe' | 'yuzuk';
 
 export type ProductMaterial =
   | 'celik'
-  | 'gumus-kaplama' // ← Eklendi
+  | 'gumus-kaplama'
   | 'altin-kaplama'
-  | 'rose-gold-kaplama'; // ← Düzeltildi
+  | 'rose-gold-kaplama';
 
 export type ProductColor =
   | 'altin'
@@ -18,6 +13,12 @@ export type ProductColor =
   | 'siyah'
   | 'beyaz'
   | 'cok-renkli';
+
+export type CollectionSlug =
+  | 'barcelona'
+  | 'stockholm'
+  | 'paris'
+  | 'klasikler';
 
 export interface ProductVariant {
   id: string;
@@ -34,71 +35,57 @@ export interface Product {
   description: string;
   category: ProductCategory;
 
-  // Fiyat bilgileri
+  // Koleksiyon + mikro hikaye
+  collection: CollectionSlug;
+  story: string;
+
+  // Fiyat — compareAtPrice SADECE gerçek kampanyada dolar
   price: number;
-  originalPrice?: number; // İndirim varsa
-  discountPercentage?: number;
+  compareAtPrice?: number;
 
   // Varyasyonlar
   variants: ProductVariant[];
-  defaultVariant: string; // variant id
+  defaultVariant: string;
 
   // Özellikler
   features: string[];
   material: ProductMaterial;
   isNew?: boolean;
   isBestSeller?: boolean;
-  isCustomizable?: boolean; // İsim baskısı
+  isCustomizable?: boolean;
 
-  // Rating & Reviews
+  // Rating (ileride gerçek yorumlardan hesaplanacak)
   rating?: number;
   reviewCount?: number;
 
   // Meta
   createdAt: Date;
   updatedAt: Date;
-
-  // SEO
   metaTitle?: string;
   metaDescription?: string;
 }
 
 export interface FilterState {
-  // Kategori filtresi
   categories: ProductCategory[];
-
-  // Fiyat aralığı
-  priceRange: {
-    min: number;
-    max: number;
-  };
-
-  // Malzeme filtresi
+  collections: CollectionSlug[];
+  priceRange: { min: number; max: number };
   materials: ProductMaterial[];
-
-  // Renk filtresi
   colors: ProductColor[];
-
-  // Özel özellikler
   isNew: boolean;
   isBestSeller: boolean;
   isCustomizable: boolean;
   inStock: boolean;
-
-  // Sıralama
   sortBy: SortOption;
-
-  // Arama
   searchQuery: string;
 }
 
 export type SortOption =
-  | 'newest' // En yeni
-  | 'popular' // En popüler
-  | 'price-asc' // Fiyat: Düşükten yükseğe
-  | 'price-desc' // Fiyat: Yüksekten düşüğe
-  | 'name-asc' // İsim: A-Z
-  | 'name-desc'; // İsim: Z-A
+  | 'newest'
+  | 'popular'
+  | 'price-asc'
+  | 'price-desc'
+  | 'name-asc'
+  | 'name-desc';
 
 export interface CollectionMeta {
   title: string;

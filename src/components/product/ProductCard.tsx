@@ -36,10 +36,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   const currentImage = defaultVariant.images[0];
 
   const hasDiscount =
-    product.originalPrice && product.originalPrice > product.price;
+    product.compareAtPrice && product.compareAtPrice > product.price;
   const discountPercentage = hasDiscount
     ? Math.round(
-        ((product.originalPrice! - product.price) / product.originalPrice!) * 100
+        ((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100
       )
     : 0;
 
@@ -169,7 +169,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
             {hasDiscount && (
               <span className="text-sm text-gray-500 line-through">
-                {product.originalPrice} ₺
+                {product.compareAtPrice} ₺
               </span>
             )}
           </div>
@@ -216,7 +216,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-2 mt-1">
           <span className="text-sm font-semibold text-[#C9A86A]">{product.price} ₺</span>
           {hasDiscount && (
-            <span className="text-xs text-gray-600 line-through">{product.originalPrice} ₺</span>
+            <span className="text-xs text-gray-600 line-through">{product.compareAtPrice} ₺</span>
           )}
         </div>
       </div>

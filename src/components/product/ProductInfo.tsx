@@ -22,9 +22,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
   // İndirim hesaplama
   const hasDiscount =
-    product.originalPrice && product.originalPrice > product.price;
+    product.compareAtPrice && product.compareAtPrice > product.price;
   const discountAmount = hasDiscount
-    ? product.originalPrice! - product.price
+    ? product.compareAtPrice! - product.price
+    : 0;
+  const discountPercentage = hasDiscount
+    ? Math.round(((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100)
     : 0;
 
   return (
@@ -68,10 +71,10 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         {hasDiscount && (
           <>
             <span className="text-xl text-black/40 line-through">
-              {product.originalPrice!.toLocaleString('tr-TR')}₺
+              {product.compareAtPrice!.toLocaleString('tr-TR')}₺
             </span>
             <span className="px-2 py-1 bg-red-600 text-white text-sm font-medium rounded">
-              %{product.discountPercentage} İNDİRİM
+              %{discountPercentage} İNDİRİM
             </span>
           </>
         )}

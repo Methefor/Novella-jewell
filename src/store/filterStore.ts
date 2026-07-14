@@ -5,18 +5,22 @@
 
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import type { 
-  FilterState, 
-  ProductCategory, 
-  ProductMaterial, 
+import type {
+  FilterState,
+  ProductCategory,
+  ProductMaterial,
   ProductColor,
-  SortOption 
+  CollectionSlug,
+  SortOption
 } from '@/types/product';
 
 interface FilterStore extends FilterState {
   // Actions
   setCategories: (categories: ProductCategory[]) => void;
   toggleCategory: (category: ProductCategory) => void;
+
+  setCollections: (collections: CollectionSlug[]) => void;
+  toggleCollection: (collection: CollectionSlug) => void;
   
   setPriceRange: (min: number, max: number) => void;
   
@@ -41,6 +45,7 @@ interface FilterStore extends FilterState {
 
 const initialState: FilterState = {
   categories: [],
+  collections: [],
   priceRange: {
     min: 0,
     max: 1000,
@@ -74,6 +79,20 @@ export const useFilterStore = create<FilterStore>()(
                 : [...state.categories, category],
             };
           }, false, 'toggleCategory'),
+
+        // Koleksiyon actions
+        setCollections: (collections) =>
+          set({ collections }, false, 'setCollections'),
+
+        toggleCollection: (collection) =>
+          set((state) => {
+            const exists = state.collections.includes(collection);
+            return {
+              collections: exists
+                ? state.collections.filter((c) => c !== collection)
+                : [...state.collections, collection],
+            };
+          }, false, 'toggleCollection'),
 
         // Fiyat actions
         setPriceRange: (min, max) =>

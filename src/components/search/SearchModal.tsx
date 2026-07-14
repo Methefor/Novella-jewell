@@ -253,9 +253,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 <p className="text-sm font-semibold text-gold">
                                   {product.price}₺
                                 </p>
-                                {product.originalPrice && (
+                                {product.compareAtPrice && (
                                   <p className="text-xs text-white/40 line-through">
-                                    {product.originalPrice}₺
+                                    {product.compareAtPrice}₺
                                   </p>
                                 )}
                               </div>
