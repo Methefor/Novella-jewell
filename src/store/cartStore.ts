@@ -3,6 +3,7 @@
  * Sepet state management
  */
 
+import { SHIPPING } from '@/lib/config';
 import type { Product, ProductVariant } from '@/types/product';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
@@ -48,11 +49,8 @@ interface CartStore {
   removeCoupon: () => void;
 }
 
-// Kargo ücreti hesaplama
-const calculateShipping = (subtotal: number): number => {
-  if (subtotal >= 400) return 0; // 400₺ üzeri ücretsiz (eski: 300)
-  return 29.9;
-};
+const calculateShipping = (subtotal: number): number =>
+  subtotal >= SHIPPING.freeThreshold ? 0 : SHIPPING.fee;
 
 export const useCartStore = create<CartStore>()(
   devtools(
@@ -252,6 +250,7 @@ export const useCartStore = create<CartStore>()(
       }),
       {
         name: 'novella-cart',
+        skipHydration: true, // SSR hydration uyumsuzluğunu önler — StoreHydration ile client'ta tetiklenir
         partialize: (state) => ({
           items: state.items,
           discount: state.discount,

@@ -1,46 +1,25 @@
-/**
- * NOVELLA - Cart Drawer Component
- * Sağdan açılan sepet drawer'ı - Framer Motion spring animations
- */
-
 'use client';
 
-import { useCartStore, selectHasItems } from '@/store/cartStore';
+import { SHIPPING } from '@/lib/config';
+import { useCartStore } from '@/store/cartStore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ShoppingBag, X } from 'lucide-react';
+import { Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect } from 'react';
-import CartItem from './CartItem';
-import CartSummary from './CartSummary';
 
-export default function CartDrawer() {
-  const isOpen = useCartStore((state) => state.isDrawerOpen);
-  const items = useCartStore((state) => state.items);
-  const hasItems = useCartStore(selectHasItems);
-  const closeDrawer = useCartStore((state) => state.closeDrawer);
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-  // Prevent body scroll when drawer is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+const ease = [0.16, 1, 0.3, 1] as const;
 
-  // Close on escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        closeDrawer();
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, closeDrawer]);
+export default function CartDrawer({ isOpen, onClose }: Props) {
+  const { items, subtotal, shippingCost, total, removeItem, updateQuantity } =
+    useCartStore();
+
+  const freeShippingLeft = Math.max(0, SHIPPING.freeThreshold - subtotal);
+  const freeShippingPct = Math.min(100, (subtotal / SHIPPING.freeThreshold) * 100);
 
   return (
     <AnimatePresence>
@@ -48,108 +27,194 @@ export default function CartDrawer() {
         <>
           {/* Backdrop */}
           <motion.div
-            key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-            onClick={closeDrawer}
+            transition={{ duration: 0.25 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
           />
 
           {/* Drawer */}
           <motion.div
-            key="drawer"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed top-0 right-0 bottom-0 w-full sm:w-[450px] max-w-full bg-white z-50 flex flex-col"
+            transition={{ duration: 0.4, ease }}
+            className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-50 flex flex-col shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-cream-200">
-              <h2 className="font-serif text-2xl text-black flex items-center gap-2">
-                <ShoppingBag className="w-6 h-6 text-gold" />
-                Sepetim
-              </h2>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-black/8">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-black/60" />
+                <span className="text-sm font-medium text-black">
+                  Sepetim
+                  {items.length > 0 && (
+                    <span className="ml-1.5 text-xs text-black/40">
+                      ({items.length})
+                    </span>
+                  )}
+                </span>
+              </div>
               <button
-                onClick={closeDrawer}
-                className="p-2 hover:bg-cream-100 rounded-lg transition-colors"
-                aria-label="Kapat"
+                onClick={onClose}
+                className="p-1.5 text-black/40 hover:text-black transition-colors"
+                aria-label="Sepeti kapat"
               >
-                <X className="w-6 h-6" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Content */}
-            {hasItems ? (
+            {items.length === 0 ? (
+              /* Empty state */
+              <div className="flex-1 flex flex-col items-center justify-center gap-5 px-6 text-center">
+                <ShoppingBag className="w-10 h-10 text-black/15" strokeWidth={1} />
+                <div>
+                  <p className="font-serif text-xl text-black/40">Sepetiniz boş</p>
+                  <p className="text-sm text-black/30 mt-1">
+                    Koleksiyonumuzu keşfedin
+                  </p>
+                </div>
+                <Link
+                  href="/koleksiyonlar"
+                  onClick={onClose}
+                  className="btn-primary text-sm px-6 py-2.5"
+                >
+                  Koleksiyona Bak
+                </Link>
+              </div>
+            ) : (
               <>
-                {/* Items List */}
-                <div className="flex-1 overflow-y-auto px-6">
-                  {items.map((item, i) => (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.06, duration: 0.3 }}
-                    >
-                      <CartItem item={item} />
-                    </motion.div>
-                  ))}
+                {/* Free shipping progress */}
+                {freeShippingLeft > 0 && (
+                  <div className="px-5 py-3 bg-[#F9F9F7] border-b border-black/5">
+                    <div className="flex justify-between text-xs text-black/50 mb-1.5">
+                      <span>Bedava kargo için</span>
+                      <span className="font-medium text-black/70">
+                        {freeShippingLeft.toLocaleString('tr-TR')} ₺ kaldı
+                      </span>
+                    </div>
+                    <div className="h-0.5 bg-black/8 rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full bg-[#B8A574] rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${freeShippingPct}%` }}
+                        transition={{ duration: 0.5, ease }}
+                      />
+                    </div>
+                  </div>
+                )}
+                {freeShippingLeft === 0 && (
+                  <div className="px-5 py-2.5 bg-[#F9F9F7] border-b border-black/5 text-xs text-[#B8A574] font-medium">
+                    Kargo bedava!
+                  </div>
+                )}
+
+                {/* Items */}
+                <div className="flex-1 overflow-y-auto divide-y divide-black/5">
+                  {items.map((item) => {
+                    const img = item.variant.images[0];
+                    return (
+                      <div key={item.id} className="flex gap-3 p-4">
+                        {/* Image */}
+                        <Link
+                          href={`/urun/${item.product.slug}`}
+                          onClick={onClose}
+                          className="relative flex-shrink-0 w-16 overflow-hidden bg-[#F6F6F4]"
+                          style={{ aspectRatio: '4/5' }}
+                        >
+                          {img && (
+                            <Image
+                              src={img}
+                              alt={item.product.name}
+                              fill
+                              className="object-cover"
+                              sizes="64px"
+                            />
+                          )}
+                        </Link>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <Link
+                            href={`/urun/${item.product.slug}`}
+                            onClick={onClose}
+                            className="text-sm font-medium text-black leading-snug hover:text-[#B8A574] transition-colors line-clamp-2"
+                          >
+                            {item.product.name}
+                          </Link>
+                          <p className="text-xs text-black/40 mt-0.5">
+                            {item.product.price.toLocaleString('tr-TR')} ₺
+                          </p>
+
+                          {/* Quantity + delete */}
+                          <div className="flex items-center gap-3 mt-2">
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                className="w-6 h-6 flex items-center justify-center border border-black/15 rounded hover:border-black/40 transition-colors"
+                                aria-label="Azalt"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="w-7 text-center text-sm font-medium">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="w-6 h-6 flex items-center justify-center border border-black/15 rounded hover:border-black/40 transition-colors"
+                                aria-label="Artır"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <button
+                              onClick={() => removeItem(item.id)}
+                              className="text-black/25 hover:text-black/60 transition-colors ml-auto"
+                              aria-label="Sil"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Row total */}
+                        <div className="text-sm font-medium text-black flex-shrink-0 pt-0.5">
+                          {(item.product.price * item.quantity).toLocaleString('tr-TR')} ₺
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Footer */}
-                <div className="border-t border-cream-200 px-6 py-4 space-y-4">
-                  {/* Summary */}
-                  <CartSummary showCoupon={false} />
-
-                  {/* Buttons */}
-                  <div className="space-y-3">
-                    <Link
-                      href="/checkout"
-                      onClick={closeDrawer}
-                      className="block w-full py-3 px-4 bg-gold text-white text-center font-medium rounded-lg hover:bg-gold/90 transition-colors"
-                    >
-                      Alışverişi Tamamla
-                    </Link>
-
-                    <button
-                      onClick={closeDrawer}
-                      className="w-full py-3 px-4 border-2 border-cream-300 text-black text-center font-medium rounded-lg hover:bg-cream-50 transition-colors"
-                    >
-                      Alışverişe Devam Et
-                    </button>
+                <div className="border-t border-black/8 p-5 space-y-3">
+                  <div className="flex justify-between text-sm text-black/50">
+                    <span>Ara toplam</span>
+                    <span>{subtotal.toLocaleString('tr-TR')} ₺</span>
                   </div>
+                  <div className="flex justify-between text-sm text-black/50">
+                    <span>Kargo</span>
+                    <span>
+                      {shippingCost === 0
+                        ? 'Bedava'
+                        : `${shippingCost.toLocaleString('tr-TR')} ₺`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-base font-semibold text-black pt-1 border-t border-black/8">
+                    <span>Toplam</span>
+                    <span>{total.toLocaleString('tr-TR')} ₺</span>
+                  </div>
+
+                  <Link
+                    href="/sepet"
+                    onClick={onClose}
+                    className="btn-primary w-full flex items-center justify-center gap-2 mt-2"
+                  >
+                    Sepete Git
+                  </Link>
                 </div>
               </>
-            ) : (
-              /* Empty State */
-              <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-                  className="w-24 h-24 rounded-full bg-cream-100 flex items-center justify-center mb-6"
-                >
-                  <ShoppingBag className="w-12 h-12 text-gold/40" />
-                </motion.div>
-
-                <h3 className="font-serif text-2xl text-black mb-2">
-                  Sepetiniz Boş
-                </h3>
-
-                <p className="text-black/60 mb-6">
-                  Henüz sepetinize ürün eklemediniz.
-                </p>
-
-                <Link
-                  href="/collections"
-                  onClick={closeDrawer}
-                  className="px-6 py-3 bg-gold text-white rounded-lg hover:bg-gold/90 transition-colors font-medium"
-                >
-                  Ürünleri Keşfet
-                </Link>
-              </div>
             )}
           </motion.div>
         </>

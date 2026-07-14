@@ -1,0 +1,180 @@
+'use client';
+
+import { SHIPPING } from '@/lib/config';
+import { useCartStore } from '@/store/cartStore';
+import { motion } from 'framer-motion';
+import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+export default function CartPageClient() {
+  const { items, subtotal, shippingCost, total, removeItem, updateQuantity } =
+    useCartStore();
+
+  const freeShippingLeft = Math.max(0, SHIPPING.freeThreshold - subtotal);
+
+  if (items.length === 0) {
+    return (
+      <main className="min-h-[70vh] flex flex-col items-center justify-center gap-6 px-6 text-center">
+        <ShoppingBag className="w-12 h-12 text-black/15" strokeWidth={1} />
+        <div>
+          <h1 className="font-serif text-2xl text-black/40">Sepetiniz boş</h1>
+          <p className="text-sm text-black/30 mt-2">
+            Koleksiyonumuzu keşfederek başlayın.
+          </p>
+        </div>
+        <Link href="/koleksiyonlar" className="btn-primary">
+          Koleksiyonu Keşfet
+        </Link>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 pt-24 pb-20">
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease }}
+          className="font-serif font-light text-3xl md:text-4xl text-black mb-10"
+          style={{ letterSpacing: '-0.02em' }}
+        >
+          Sepetim
+        </motion.h1>
+
+        <div className="grid lg:grid-cols-[1fr_340px] gap-10">
+          {/* Items */}
+          <div className="space-y-0 divide-y divide-black/8">
+            {items.map((item) => {
+              const img = item.variant.images[0];
+              return (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex gap-5 py-6"
+                >
+                  {/* Image */}
+                  <Link
+                    href={`/urun/${item.product.slug}`}
+                    className="relative flex-shrink-0 w-24 md:w-28 overflow-hidden bg-[#F6F6F4]"
+                    style={{ aspectRatio: '4/5' }}
+                  >
+                    {img && (
+                      <Image
+                        src={img}
+                        alt={item.product.name}
+                        fill
+                        className="object-cover"
+                        sizes="120px"
+                      />
+                    )}
+                  </Link>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <Link
+                      href={`/urun/${item.product.slug}`}
+                      className="text-base font-medium text-black hover:text-[#B8A574] transition-colors leading-snug"
+                    >
+                      {item.product.name}
+                    </Link>
+                    <p className="text-sm text-black/40 mt-0.5">
+                      Birim fiyat: {item.product.price.toLocaleString('tr-TR')} ₺
+                    </p>
+
+                    {/* Quantity stepper */}
+                    <div className="flex items-center gap-3 mt-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="w-7 h-7 flex items-center justify-center border border-black/20 rounded hover:border-black/50 transition-colors"
+                          aria-label="Azalt"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="w-8 text-center text-sm font-medium">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="w-7 h-7 flex items-center justify-center border border-black/20 rounded hover:border-black/50 transition-colors"
+                          aria-label="Artır"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="flex items-center gap-1 text-xs text-black/30 hover:text-black/60 transition-colors ml-auto"
+                        aria-label="Sil"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Kaldır
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Row total */}
+                  <div className="text-base font-semibold text-black flex-shrink-0 pt-0.5">
+                    {(item.product.price * item.quantity).toLocaleString('tr-TR')} ₺
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Summary */}
+          <div>
+            <div className="sticky top-24 bg-[#F9F9F7] p-6 border border-black/6">
+              <h2 className="font-serif text-lg text-black mb-5">Sipariş Özeti</h2>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between text-black/60">
+                  <span>Ara toplam</span>
+                  <span>{subtotal.toLocaleString('tr-TR')} ₺</span>
+                </div>
+                <div className="flex justify-between text-black/60">
+                  <span>Kargo</span>
+                  <span>
+                    {shippingCost === 0
+                      ? 'Bedava'
+                      : `${shippingCost.toLocaleString('tr-TR')} ₺`}
+                  </span>
+                </div>
+
+                {freeShippingLeft > 0 && (
+                  <p className="text-xs text-[#B8A574]">
+                    {freeShippingLeft.toLocaleString('tr-TR')} ₺ daha ekleyin, kargo bedava
+                  </p>
+                )}
+
+                <div className="border-t border-black/8 pt-3 flex justify-between font-semibold text-black text-base">
+                  <span>Toplam</span>
+                  <span>{total.toLocaleString('tr-TR')} ₺</span>
+                </div>
+              </div>
+
+              <Link
+                href="/odeme"
+                className="btn-primary w-full flex items-center justify-center gap-2 mt-6"
+              >
+                Ödemeye Geç
+              </Link>
+
+              <p className="text-xs text-black/30 text-center mt-4">
+                Güvenli ödeme · Shopier altyapısı
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}

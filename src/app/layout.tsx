@@ -1,3 +1,4 @@
+import StoreHydration from '@/components/common/StoreHydration';
 import ToastContainer from '@/components/common/Toast';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
@@ -103,6 +104,7 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="font-body antialiased">
+        <StoreHydration />
         <Header />
         <main className="min-h-screen">
           <PageTransition>{children}</PageTransition>

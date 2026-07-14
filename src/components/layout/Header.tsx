@@ -1,5 +1,6 @@
 'use client';
 
+import CartDrawer from '@/components/cart/CartDrawer';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import {
@@ -23,6 +24,7 @@ const navLinks = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const cartCount = useCartStore((s) => s.items.length);
   const wishlistCount = useWishlistStore((s) => s.items.length);
@@ -116,18 +118,18 @@ export default function Header() {
             </Link>
 
             {/* Cart */}
-            <Link
-              href="/cart"
+            <button
+              onClick={() => setCartOpen(true)}
               className="relative p-2 text-black/40 hover:text-black transition-colors"
               aria-label="Sepet"
             >
               <ShoppingBag className="w-[18px] h-[18px]" />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-black text-white text-[8px] font-medium rounded-full flex items-center justify-center">
+                <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-[#B8A574] text-white text-[8px] font-medium rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
       </motion.header>
@@ -209,6 +211,9 @@ export default function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Cart drawer */}
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 }
