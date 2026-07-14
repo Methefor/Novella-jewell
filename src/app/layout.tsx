@@ -22,21 +22,21 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'NOVELLA - Her Parça Bir Hikaye',
+    default: 'NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet',
     template: '%s | NOVELLA',
   },
   description:
-    'Butik takı koleksiyonları ile her parça bir hikaye. Kaliteli çelik takılar, uygun fiyatlar.  Sizin için özenle seçilmiş kolye, bilezik, küpe ve yüzük modelleri.',
+    '316L paslanmaz çelik takılar. El seçimi bilezik, küpe, yüzük ve kolye koleksiyonları. Suya dayanıklı, alerji yapmaz, hediye kutusunda.',
   keywords: [
-    'takı',
-    'kolye',
+    'paslanmaz çelik takı',
+    '316L çelik takı',
     'bilezik',
     'küpe',
     'yüzük',
-    'çelik takı',
-    'butik takı',
-    'NOVELLA',
-    '',
+    'kolye',
+    'suya dayanıklı takı',
+    'alerji yapmaz takı',
+    'novella takı',
   ],
   authors: [{ name: 'NOVELLA' }],
   creator: 'NOVELLA',

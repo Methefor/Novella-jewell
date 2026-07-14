@@ -1,83 +1,51 @@
-/**
- * NOVELLA - Luxury Cream Theme
- * Inspired by high-end perfume e-commerce
- */
-
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* ========================================
-       COLORS - Luxury Cream Palette
-       ======================================== */
+    /* Layout */
+    --navbar-h: 64px;
 
-    /* Backgrounds */
-    --bg-primary: #f8f6f3;
-    --bg-secondary: #ffffff;
-    --bg-accent: #f5f2ed;
-    --bg-hover: #fdfcfa;
+    /* Palette */
+    --color-bg: #ffffff;
+    --color-surface: #f4f4f6;
+    --color-border: #e5e5e5;
+    --color-text: #0a0a0a;
+    --color-text-55: rgba(10, 10, 10, 0.55);
+    --color-text-35: rgba(10, 10, 10, 0.35);
+    --color-accent: #b8a574;
 
-    /* Text Colors */
-    --text-primary: #1a1a1a;
-    --text-secondary: #6b6b6b;
-    --text-muted: #9b9b9b;
-    --text-light: #c4c4c4;
+    /* Easing */
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Gold Accent - Muted */
-    --gold: #c9a86a;
-    --gold-light: #d4b77f;
-    --gold-dark: #b39558;
-    --gold-muted: #e5d5b7;
-
-    /* Supporting Colors */
-    --brown-warm: #8b7355;
-    --black-premium: #2d2d2d;
-    --cream-dark: #e8e5e0;
-
-    /* Functional Colors */
-    --success: #6b8e7f;
-    --error: #c85c5c;
-    --warning: #d4a574;
-    --info: #7b9cb8;
-
-    /* Shadows - Minimal */
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
-    --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.1);
-
-    /* Border Radius */
-    --radius-sm: 8px;
+    /* Radius */
+    --radius-pill: 9999px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --radius-xl: 24px;
-
-    /* Transitions */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  * {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
-  body {
-    @apply bg-[#F8F6F3] text-[#1A1A1A] antialiased;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-      sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
+  html {
+    scroll-behavior: smooth;
   }
 
-  /* ========================================
-     TYPOGRAPHY
-     ======================================== */
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body), Inter, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
   h1,
   h2,
@@ -85,263 +53,142 @@
   h4,
   h5,
   h6 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-    color: var(--text-primary);
+    font-family: var(--font-heading), 'Cormorant Garamond', serif;
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
   }
 
-  h1 {
-    @apply text-5xl md:text-6xl lg:text-7xl;
-  }
-
-  h2 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
-  }
-
-  h3 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
-  }
-
-  h4 {
-    @apply text-2xl md:text-3xl;
-  }
-
-  h5 {
-    @apply text-xl md:text-2xl;
-  }
-
-  h6 {
-    @apply text-lg md:text-xl;
-  }
-
-  p {
-    font-family: 'Inter', sans-serif;
-    line-height: 1.7;
-    color: var(--text-secondary);
-  }
-
-  /* Links */
   a {
-    @apply transition-colors duration-300;
+    color: inherit;
+    text-decoration: none;
   }
 
-  a:hover {
-    color: var(--gold);
+  ::selection {
+    background-color: var(--color-accent);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-surface);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d0d0d0;
+    border-radius: var(--radius-pill);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
   }
 }
 
 @layer components {
-  /* ========================================
-     CONTAINER
-     ======================================== */
-
+  /* Container */
   .container-custom {
-    @apply w-full mx-auto px-6 md:px-8 lg:px-12;
+    width: 100%;
     max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
   }
 
-  /* ========================================
-     BUTTONS
-     ======================================== */
-
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300;
-    font-family: 'Inter', sans-serif;
-    letter-spacing: 0.02em;
+  @media (min-width: 768px) {
+    .container-custom {
+      padding-inline: 2.5rem;
+    }
   }
 
+  @media (min-width: 1280px) {
+    .container-custom {
+      padding-inline: 4rem;
+    }
+  }
+
+  /* Pill base */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body), Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .pill-dark {
+    background-color: #0a0a0a;
+    color: #ffffff;
+  }
+
+  .pill-light {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  /* Buttons */
   .btn-primary {
-    @apply bg-[#C9A86A] text-white hover:bg-[#B39558] shadow-sm hover:shadow-md;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #0a0a0a;
+    color: #ffffff;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body), Inter, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    transition: background-color 300ms var(--ease-smooth);
+    cursor: pointer;
   }
 
-  .btn-secondary {
-    @apply bg-white text-[#1A1A1A] border border-[#E8E5E0] hover:border-[#C9A86A] hover:text-[#C9A86A];
+  .btn-primary:hover {
+    background-color: var(--color-accent);
   }
 
-  .btn-outline {
-    @apply bg-transparent text-[#C9A86A] border-2 border-[#C9A86A] hover:bg-[#C9A86A] hover:text-white;
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    color: #0a0a0a;
+    border: 1px solid rgba(10, 10, 10, 0.18);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body), Inter, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: border-color 300ms var(--ease-smooth);
+    cursor: pointer;
   }
 
-  .btn-lg {
-    @apply px-8 py-4 text-lg;
+  .btn-ghost:hover {
+    border-color: rgba(10, 10, 10, 0.55);
   }
 
-  .btn-sm {
-    @apply px-4 py-2 text-sm;
-  }
-
-  /* ========================================
-     CARDS
-     ======================================== */
-
-  .card {
-    @apply bg-white rounded-xl border border-[#F5F2ED] transition-all duration-300;
-  }
-
-  .card-hover {
-    @apply hover:shadow-md hover:-translate-y-1;
-  }
-
-  .card-bordered {
-    @apply border-[#E8E5E0];
-  }
-
-  /* ========================================
-     BADGES - Muted Gold
-     ======================================== */
-
-  .badge {
-    @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg shadow-sm;
-    letter-spacing: 0.05em;
+  /* Section label */
+  .section-label {
+    font-family: var(--font-body), Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    color: var(--color-text-55);
   }
 
-  .badge-new {
-    @apply bg-[#C9A86A] text-white;
-    box-shadow: 0 2px 8px rgba(201, 168, 106, 0.25);
-  }
-
-  .badge-sale {
-    @apply bg-[#C85C5C] text-white;
-    box-shadow: 0 2px 8px rgba(200, 92, 92, 0.25);
-  }
-
-  .badge-bestseller {
-    @apply bg-[#6B8E7F] text-white;
-    box-shadow: 0 2px 8px rgba(107, 142, 127, 0.25);
-  }
-
-  .badge-out-of-stock {
-    @apply bg-[#9B9B9B] text-white;
-  }
-
-  /* ========================================
-     INPUTS & FORMS
-     ======================================== */
-
-  .input {
-    @apply w-full px-4 py-3 bg-white border border-[#E8E5E0] rounded-lg text-[#1A1A1A] placeholder-[#9B9B9B] transition-all duration-300;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .input:focus {
-    @apply outline-none border-[#C9A86A] ring-2 ring-[#C9A86A]/20;
-  }
-
-  .input:disabled {
-    @apply bg-[#F5F2ED] cursor-not-allowed opacity-60;
-  }
-
-  .textarea {
-    @apply input resize-none;
-  }
-
-  .select {
-    @apply input appearance-none bg-white cursor-pointer;
-  }
-
-  .checkbox {
-    @apply w-5 h-5 rounded border-2 border-[#E8E5E0] text-[#C9A86A] focus:ring-2 focus:ring-[#C9A86A]/20 cursor-pointer transition-all;
-  }
-
-  .checkbox:checked {
-    @apply bg-[#C9A86A] border-[#C9A86A];
-  }
-
-  /* ========================================
-     DIVIDERS
-     ======================================== */
-
+  /* Divider */
   .divider {
-    @apply border-t border-[#E8E5E0];
-  }
-
-  .divider-thick {
-    @apply border-t-2 border-[#E8E5E0];
-  }
-
-  /* ========================================
-     ANIMATIONS
-     ======================================== */
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slideIn {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-
-  .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .animate-slideIn {
-    animation: slideIn 0.3s ease-out;
-  }
-
-  /* ========================================
-     UTILITY CLASSES
-     ======================================== */
-
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .text-gradient {
-    @apply bg-gradient-to-r from-[#C9A86A] to-[#D4B77F] bg-clip-text text-transparent;
-  }
-
-  .bg-grain {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-  }
-
-  /* ========================================
-     SCROLLBAR
-     ======================================== */
-
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-[#F5F2ED];
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-[#C9A86A] rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-[#B39558];
+    border: none;
+    border-top: 1px solid var(--color-border);
   }
 }
 
 @layer utilities {
-  /* Custom utilities if needed */
+  .text-balance {
+    text-wrap: balance;
+  }
 }

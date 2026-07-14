@@ -1,80 +1,64 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/sections/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        // Backgrounds
-        cream: {
-          DEFAULT: '#F8F6F3',
-          light: '#FDFCFA',
-          dark: '#F5F2ED',
+        accent: {
+          DEFAULT: '#B8A574',
+          light: '#C9BC96',
+          dark: '#9E8E63',
         },
-
-        // Gold - Muted
-        gold: {
-          DEFAULT: '#C9A86A',
-          light: '#D4B77F',
-          dark: '#B39558',
-          muted: '#E5D5B7',
+        pill: {
+          DEFAULT: '#F4F4F6',
+          hover: '#EBEBED',
         },
-
-        // Neutrals
-        brown: {
-          warm: '#8B7355',
-        },
-        black: {
-          premium: '#2D2D2D',
-        },
-
-        // Text
-        text: {
-          primary: '#1A1A1A',
-          secondary: '#6B6B6B',
-          muted: '#9B9B9B',
-          light: '#C4C4C4',
+        border: {
+          DEFAULT: '#E5E5E5',
+          dark: '#D0D0D0',
         },
       },
-
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        serif: ['Cormorant Garamond', 'serif'],
+        sans: ['var(--font-body)', 'Inter', 'sans-serif'],
+        serif: ['var(--font-heading)', 'Cormorant Garamond', 'serif'],
       },
-
       fontSize: {
-        'display-lg': ['72px', { lineHeight: '1.1', letterSpacing: '0.02em' }],
-        display: ['64px', { lineHeight: '1.1', letterSpacing: '0.02em' }],
-        'display-sm': ['56px', { lineHeight: '1.2', letterSpacing: '0.02em' }],
+        'display-lg': [
+          'clamp(3rem, 6vw, 5rem)',
+          { lineHeight: '1.05', letterSpacing: '-0.03em' },
+        ],
+        display: [
+          'clamp(2.5rem, 5.5vw, 4.5rem)',
+          { lineHeight: '1.1', letterSpacing: '-0.03em' },
+        ],
+        'display-sm': [
+          'clamp(2rem, 4vw, 3.5rem)',
+          { lineHeight: '1.15', letterSpacing: '-0.025em' },
+        ],
+        eyebrow: ['13px', { lineHeight: '1', letterSpacing: '0' }],
       },
-
       boxShadow: {
-        xs: '0 1px 2px rgba(0, 0, 0, 0.02)',
-        sm: '0 2px 8px rgba(0, 0, 0, 0.04)',
-        md: '0 4px 16px rgba(0, 0, 0, 0.06)',
-        lg: '0 8px 24px rgba(0, 0, 0, 0.08)',
-        xl: '0 12px 32px rgba(0, 0, 0, 0.1)',
-        gold: '0 4px 16px rgba(201, 168, 106, 0.2)',
+        xs: '0 1px 2px rgba(0,0,0,0.03)',
+        sm: '0 2px 8px rgba(0,0,0,0.05)',
+        md: '0 4px 16px rgba(0,0,0,0.07)',
+        lg: '0 8px 24px rgba(0,0,0,0.09)',
+        xl: '0 12px 32px rgba(0,0,0,0.11)',
       },
-
       borderRadius: {
         sm: '8px',
         md: '12px',
         lg: '16px',
         xl: '24px',
       },
-
       transitionTimingFunction: {
+        spring: 'cubic-bezier(0.16, 1, 0.3, 1)',
         smooth: 'cubic-bezier(0.4, 0, 0.2, 1)',
-      },
-
-      backgroundImage: {
-        'gradient-gold': 'linear-gradient(135deg, #C9A86A 0%, #D4B77F 100%)',
       },
     },
   },
