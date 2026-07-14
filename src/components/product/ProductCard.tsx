@@ -1,222 +1,117 @@
 'use client';
 
 import { useCartStore } from '@/store/cartStore';
-import { useWishlistStore } from '@/store/wishlistStore';
 import type { Product } from '@/types/product';
 import { motion } from 'framer-motion';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
 interface ProductCardProps {
   product: Product;
 }
 
-const accentColors: Record<string, string> = {
-  kolye: '#C9A86A',
-  kupe: '#D4B77F',
-  bilezik: '#B8975A',
-  yuzuk: '#E0C882',
+const categoryLabel: Record<string, string> = {
+  kolye: 'Kolye',
+  kupe: 'Küpe',
+  bilezik: 'Bileklik',
+  yuzuk: 'Yüzük',
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   const addToCart = useCartStore((state) => state.addItem);
-  const addToWishlist = useWishlistStore((state) => state.addItem);
-  const removeFromWishlist = useWishlistStore((state) => state.removeItem);
-  const isInWishlist = useWishlistStore((state) =>
-    state.isInWishlist(product.id)
-  );
 
   const defaultVariant =
-    product.variants.find((v) => v.id === product.defaultVariant) ||
+    product.variants.find((v) => v.id === product.defaultVariant) ??
     product.variants[0];
-  const currentImage = defaultVariant.images[0];
+
+  const gallery = product.images ?? defaultVariant.images;
+  const img1 = gallery[0];
+  const img2 = gallery[1] ?? null;
 
   const hasDiscount =
     product.compareAtPrice && product.compareAtPrice > product.price;
-  const discountPercentage = hasDiscount
+
+  const discountPct = hasDiscount
     ? Math.round(
         ((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100
       )
     : 0;
-
-  const accent = accentColors[product.category] || '#C9A86A';
-
-  const categoryLabel =
-    product.category === 'kolye' ? 'Kolye' :
-    product.category === 'kupe' ? 'Küpe' :
-    product.category === 'bilezik' ? 'Bileklik' : 'Yüzük';
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addToCart(product, product.defaultVariant, 1);
   };
 
-  const handleToggleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isInWishlist) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
-    }
-  };
-
   return (
-    <Link href={`/products/${product.slug}`} className="block group">
-      <motion.div
-        className="relative overflow-hidden rounded-2xl cursor-pointer h-[360px] sm:h-[420px]"
-        whileHover="hovered"
-        initial="initial"
-      >
-        {/* Blurred product image background */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <Image
-            src={currentImage}
-            alt=""
-            fill
-            aria-hidden
-            className="object-cover scale-110"
-            sizes="420px"
-            style={{ filter: 'blur(22px)' }}
-          />
-          {/* Dark overlay so content stays readable */}
-          <div className="absolute inset-0 bg-black/65" />
-        </div>
-
-        {/* Velzck-style spotlight: clip-path circle expands on hover */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none z-0"
-          style={{ background: accent }}
-          variants={{
-            initial: { clipPath: 'circle(35% at 80% 5%)' },
-            hovered: { clipPath: 'circle(70% at 80% -25%)' },
-          }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
+    <Link href={`/urun/${product.slug}`} className="group block">
+      {/* Image container — 4:5 */}
+      <div className="relative w-full overflow-hidden bg-[#F6F6F4]" style={{ aspectRatio: '4/5' }}>
+        {/* Primary image */}
+        <Image
+          src={img1}
+          alt={product.name}
+          fill
+          className={`object-cover transition-opacity duration-500 ${img2 ? 'group-hover:opacity-0' : ''}`}
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
 
-        {/* NOVELLA watermark — scales on hover like Velzck */}
-        <motion.div
-          aria-hidden
-          className="absolute select-none pointer-events-none leading-none z-[1]"
-          style={{
-            top: '45%',
-            left: '-15%',
-            fontSize: '11rem',
-            fontWeight: 800,
-            fontStyle: 'italic',
-            whiteSpace: 'nowrap',
-            color: '#242424',
-          }}
-          variants={{
-            initial: { scale: 1, color: '#242424' },
-            hovered: { scale: 2, y: 24, color: '#505050' },
-          }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
-        >
-          NOVELLA
-        </motion.div>
+        {/* Secondary image (hover swap) */}
+        {img2 && (
+          <Image
+            src={img2}
+            alt={product.name}
+            fill
+            className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
+        )}
 
-        {/* Product image — rotates and lifts on hover */}
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center z-10"
-          variants={{
-            initial: { scale: 1, rotate: -5, y: 0 },
-            hovered: { scale: 1.1, rotate: -12, y: -18 },
-          }}
-          transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-        >
-          <motion.div
-            className="relative w-44 h-44 sm:w-56 sm:h-56"
-            animate={{ opacity: imageLoaded ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <Image
-              src={currentImage}
-              alt={product.name}
-              fill
-              className="object-contain drop-shadow-2xl"
-              sizes="224px"
-              onLoad={() => setImageLoaded(true)}
-            />
-          </motion.div>
-        </motion.div>
-
-        {/* Description panel slides up from bottom on hover */}
-        <motion.div
-          className="absolute inset-x-0 bottom-0 z-20 px-5 py-4"
-          style={{
-            background: 'rgba(0,0,0,0.92)',
-            borderTop: `2px solid ${accent}`,
-          }}
-          variants={{
-            initial: { y: '100%' },
-            hovered: { y: 0 },
-          }}
-          transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        >
-          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: accent }}>
-            {categoryLabel}
-          </p>
-          <h3 className="font-serif text-white text-sm font-semibold mb-3 leading-tight">
-            {product.name}
-          </h3>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-base font-bold" style={{ color: accent }}>
-              {product.price} ₺
+        {/* Badges */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+          {product.isNew && (
+            <span className="bg-black text-white text-[10px] font-medium tracking-widest uppercase px-2 py-0.5">
+              Yeni
             </span>
-            {hasDiscount && (
-              <span className="text-sm text-gray-500 line-through">
-                {product.compareAtPrice} ₺
-              </span>
-            )}
-          </div>
+          )}
+          {hasDiscount && (
+            <span className="bg-[#B8A574] text-white text-[10px] font-medium px-2 py-0.5">
+              %{discountPct}
+            </span>
+          )}
+        </div>
+
+        {/* Sepete Ekle bar — slides up on hover (desktop) / always visible (mobile) */}
+        <motion.div
+          className="absolute inset-x-0 bottom-0 z-10 bg-black/90 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"
+          style={{ transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)' }}
+        >
           <button
             onClick={handleAddToCart}
-            className="w-full py-2.5 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-            style={{ background: accent, color: '#111' }}
+            className="w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-medium tracking-wide hover:bg-[#B8A574] transition-colors duration-200"
           >
             <ShoppingBag className="w-4 h-4" />
-            Satın Al
+            Sepete Ekle
           </button>
         </motion.div>
+      </div>
 
-        {/* Wishlist button */}
-        <motion.button
-          onClick={handleToggleWishlist}
-          className="absolute top-3 left-3 z-30 w-9 h-9 rounded-full flex items-center justify-center bg-black/60 backdrop-blur-sm border border-white/10"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <Heart
-            className="w-4 h-4"
-            fill={isInWishlist ? accent : 'none'}
-            style={{ color: isInWishlist ? accent : '#fff' }}
-          />
-        </motion.button>
-
-        {/* Discount badge */}
-        {hasDiscount && (
-          <div
-            className="absolute top-3 right-3 z-30 px-2 py-1 rounded-md text-xs font-bold"
-            style={{ background: accent, color: '#111' }}
-          >
-            %{discountPercentage}
-          </div>
-        )}
-      </motion.div>
-
-      {/* Name & price below card */}
-      <div className="mt-3 px-1">
-        <h3 className="font-medium text-gray-300 text-sm leading-tight group-hover:text-[#C9A86A] transition-colors duration-200">
+      {/* Info below card */}
+      <div className="mt-3">
+        <p className="text-[11px] uppercase tracking-widest text-black/40 mb-0.5">
+          {categoryLabel[product.category] ?? product.category}
+        </p>
+        <h3 className="text-sm font-medium text-black leading-snug group-hover:text-[#B8A574] transition-colors duration-200">
           {product.name}
         </h3>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm font-semibold text-[#C9A86A]">{product.price} ₺</span>
+        <div className="flex items-baseline gap-2 mt-1">
+          <span className="text-sm font-semibold text-black">
+            {product.price.toLocaleString('tr-TR')} ₺
+          </span>
           {hasDiscount && (
-            <span className="text-xs text-gray-600 line-through">{product.compareAtPrice} ₺</span>
+            <span className="text-xs text-black/35 line-through">
+              {product.compareAtPrice!.toLocaleString('tr-TR')} ₺
+            </span>
           )}
         </div>
       </div>

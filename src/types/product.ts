@@ -47,12 +47,18 @@ export interface Product {
   variants: ProductVariant[];
   defaultVariant: string;
 
+  // Görsel galerisi (product-level; yoksa defaultVariant.images kullanılır)
+  images?: string[];
+
   // Özellikler
   features: string[];
   material: ProductMaterial;
   isNew?: boolean;
   isBestSeller?: boolean;
   isCustomizable?: boolean;
+
+  // Set ürünler için parça sayısı — set çekimleri gelince fiyat formülü: toplamın %85-90
+  setParcaSayisi?: number;
 
   // Rating (ileride gerçek yorumlardan hesaplanacak)
   rating?: number;
