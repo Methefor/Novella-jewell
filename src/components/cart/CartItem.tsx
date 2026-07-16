@@ -35,7 +35,7 @@ export default function CartItem({ item }: CartItemProps) {
   return (
     <div className="flex gap-4 py-4 border-b border-cream-200">
       {/* Image */}
-      <Link href={`/products/${item.product.slug}`} className="flex-shrink-0">
+      <Link href={`/urun/${item.product.slug}`} className="flex-shrink-0">
         <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-cream-50">
           <Image
             src={item.variant.images[0]}
@@ -49,7 +49,7 @@ export default function CartItem({ item }: CartItemProps) {
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <Link href={`/products/${item.product.slug}`}>
+        <Link href={`/urun/${item.product.slug}`}>
           <h3 className="font-medium text-black hover:text-gold transition-colors line-clamp-1">
             {item.product.name}
           </h3>

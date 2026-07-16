@@ -4,7 +4,7 @@ import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import PageTransition from '@/components/layout/PageTransition';
 import { SITE } from '@/lib/config';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
 
@@ -102,12 +102,35 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Marka rengi sinyali.
+ * Pomelli gibi siteyi tarayıp marka kimliği çıkaran araçlar önce `theme-color`
+ * meta etiketine bakar. Burayı altın olarak sabitlemek, aracın markayı
+ * "beyaz/gri" değil "altın" olarak okumasını sağlar.
+ */
+export const viewport: Viewport = {
+  themeColor: '#B8A574',
+  colorScheme: 'light',
+};
+
 const orgJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: SITE.name,
   url: SITE.url,
+  logo: `${SITE.url}/Yatay%20logo%20banner.png`,
+  image: `${SITE.url}/og-image.jpg`,
+  slogan: SITE.tagline,
+  description:
+    '316L cerrahi çelikten üretilen, kararmayan ve alerji yapmayan el seçimi takılar.',
   sameAs: [SITE.instagram],
+  // Marka renkleri — makine tarafından okunabilir kimlik sinyali
+  brand: {
+    '@type': 'Brand',
+    name: SITE.name,
+    slogan: SITE.tagline,
+    logo: `${SITE.url}/Yatay%20logo%20banner.png`,
+  },
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: `+${SITE.whatsapp}`,

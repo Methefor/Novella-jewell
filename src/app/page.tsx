@@ -46,7 +46,7 @@ export default function HomePage() {
       <Hero />
 
       {/* New Arrivals */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-cream">
         <div className="container-custom">
           <motion.div
             initial="hidden"
@@ -101,7 +101,7 @@ export default function HomePage() {
       </div>
 
       {/* Best Sellers */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-cream">
         <div className="container-custom">
           <motion.div
             initial="hidden"
@@ -125,7 +125,7 @@ export default function HomePage() {
               </h2>
             </div>
             <Link
-              href="/collections"
+              href="/koleksiyonlar"
               className="inline-flex items-center gap-2 text-sm font-sans font-medium text-black/50 hover:text-black transition-colors duration-200 group flex-shrink-0"
             >
               Tüm Koleksiyon
@@ -150,8 +150,63 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Hikayemiz — marka anlatısı, /hikayemiz sayfasına köprü */}
+      <section className="relative overflow-hidden bg-champagne border-y border-gold/25">
+        <div className="absolute inset-0 texture-gold" aria-hidden="true" />
+        <div className="absolute inset-0 texture-lines" aria-hidden="true" />
+
+        <div className="container-custom relative py-20 md:py-28">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={fadeUp}
+            custom={0}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="h-px w-8 bg-gold/50" aria-hidden="true" />
+              <p className="font-sans text-[11px] tracking-[0.18em] uppercase text-gold-dark">
+                Hikayemiz
+              </p>
+              <span className="h-px w-8 bg-gold/50" aria-hidden="true" />
+            </div>
+
+            <h2
+              className="font-serif font-light text-black text-balance mb-6"
+              style={{
+                fontSize: 'clamp(1.9rem, 3.8vw, 3rem)',
+                lineHeight: 1.1,
+                letterSpacing: '-0.03em',
+              }}
+            >
+              Novella, <span className="italic text-gold-dark">kısa hikaye</span>{' '}
+              demek.
+            </h2>
+
+            <p
+              className="font-sans font-light text-black/60 mb-9 text-balance"
+              style={{ fontSize: '16px', lineHeight: 1.8 }}
+            >
+              Hepimizin çekmecesinde kararmış, yeşil iz bırakmış takılarla dolu
+              bir kutu var. Novella o kutuya bir cevap olarak doğdu: sorun
+              tasarımda değil, malzemedeydi. Bu yüzden işe 316L cerrahi çelikten
+              başladık.
+            </p>
+
+            <Link
+              href="/hikayemiz"
+              className="inline-flex items-center gap-2 px-8 py-3.5 text-black border border-gold/45 rounded-full hover:border-gold hover:bg-white/45 transition-colors duration-300 text-sm font-medium group"
+            >
+              Hikayemizi Okuyun
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Values strip */}
-      <section className="py-10 bg-[#F4F4F6]">
+      <section className="py-10 bg-cream-deep border-y border-border">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[

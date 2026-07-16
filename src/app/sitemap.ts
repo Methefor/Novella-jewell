@@ -7,12 +7,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = SITE.url;
   const now = new Date();
 
+  // NOT: Sitemap'e yalnızca 200 dönen gerçek sayfalar girer.
+  // Yönlendirilen (/hakkimizda) veya var olmayan (/iletisim) adresler
+  // Google Search Console'da hata üretir.
   const staticPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: now, changeFrequency: 'daily', priority: 1 },
     { url: `${base}/koleksiyonlar`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${base}/hakkimizda`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${base}/iletisim`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${base}/hikayemiz`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
   ];
+
+  // Kategori / vitrin sayfaları — /collections/[category]
+  const categoryPages: MetadataRoute.Sitemap = [
+    'yeni-gelenler',
+    'cok-satanlar',
+    'kolye',
+    'bilezik',
+    'kupe',
+    'yuzuk',
+  ].map((cat) => ({
+    url: `${base}/collections/${cat}`,
+    lastModified: now,
+    changeFrequency: 'daily' as const,
+    priority: 0.7,
+  }));
 
   const collectionPages: MetadataRoute.Sitemap = getAllCollections().map((col) => ({
     url: `${base}/koleksiyonlar/${col.slug}`,
@@ -28,5 +45,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...collectionPages, ...productPages];
+  return [...staticPages, ...categoryPages, ...collectionPages, ...productPages];
 }

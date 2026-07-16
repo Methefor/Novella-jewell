@@ -93,7 +93,7 @@ function OrderSuccessContent() {
         {/* Actions */}
         <div className="grid sm:grid-cols-2 gap-4">
           <Link
-            href="/collections"
+            href="/koleksiyonlar"
             className="
               px-6 py-3 rounded-lg font-medium text-center
               border-2 border-gold text-gold

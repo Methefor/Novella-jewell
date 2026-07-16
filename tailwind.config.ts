@@ -20,13 +20,19 @@ const config: Config = {
           light: '#C9BC96',
           dark: '#9E8E63',
         },
+        // Sıcak şampanya zemin — Pomelli'nin okuyacağı marka paleti
+        cream: {
+          DEFAULT: '#FAF8F5',
+          deep: '#F2EDE4',
+          deeper: '#EAE1D1',
+        },
         pill: {
-          DEFAULT: '#F4F4F6',
-          hover: '#EBEBED',
+          DEFAULT: '#F2EDE4',
+          hover: '#EAE1D1',
         },
         border: {
-          DEFAULT: '#E5E5E5',
-          dark: '#D0D0D0',
+          DEFAULT: '#E8E0D2',
+          dark: '#D6C9AF',
         },
       },
       fontFamily: {

@@ -59,7 +59,7 @@ export default function AboutUs() {
       id="about"
       className="relative"
       style={{
-        backgroundImage: "url('/products/Pattern.png')",
+        backgroundImage: "url('/media/Pattern.png')",
         backgroundSize: 'auto',
         backgroundRepeat: 'repeat',
         backgroundColor: '#F8F6F3',

@@ -1,140 +1,259 @@
-# NOVELLA - Butik Taki E-Ticaret Sitesi
+# NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet
 
-**"Her Parca Bir Hikaye"**
+316L cerrahi çelikten üretilen takılar satan Türkçe e-ticaret sitesi.
+Next.js 16 (App Router), TypeScript, Tailwind CSS ve Framer Motion ile geliştirildi.
 
-Modern, animasyonlu ve responsive e-ticaret websitesi.
-Next.js 15, TypeScript, Tailwind CSS ve Framer Motion ile gelistirilmistir.
-
----
-
-## Proje Ozeti
-
-NOVELLA, Turkiye genelinde butik taki satisi yapan bir e-ticaret platformudur.
-Kolye, bilezik, kupe ve yuzuk kategorilerinde kaliteli urunler sunulmaktadir.
-
-Tasarim ilhami: [Velzck Shop](https://github.com/VelzckC0D3/Velzck_Shop)
+- **Canlı site:** https://novella-jewell.vercel.app
+- **Instagram:** [@jewelry.novella](https://www.instagram.com/jewelry.novella/)
 
 ---
 
-## Teknoloji Stack
-
-- **Framework:** Next.js 15 (App Router)
-- **Dil:** TypeScript
-- **Styling:** Tailwind CSS v3
-- **Animasyon:** Framer Motion 11
-- **State Management:** Zustand
-- **Icons:** Lucide React
-- **Fonts:** Cormorant Garamond + Inter
-- **Deploy:** Vercel
-
----
-
-## Ozellikler
-
-- Dark hero section (Velzck-style parallax + scrolling text)
-- Velzck-style urun kartlari (dark card, NOVELLA watermark, hover overlay, altin aksan)
-- Aninda sepete ekle / favorilere ekle
-- Indirim badge'leri (499 / 599)
-- Collections sayfasi (filtreleme + siralama)
-- Urun detay sayfasi (galeri, beden secimi, yorumlar)
-- Sepet drawer (spring animasyon)
-- Checkout (Shopier entegrasyonu)
-- About Us bolumu (Velzck aboutUs yapisi)
-- SSS + Footer (Velzck footer yapisi)
-- Animasyon sistemi: stagger, parallax, spring, page transitions
-- Tam responsive tasarim (mobil, tablet, desktop)
-
----
-
-## Kurulum
+## Hızlı Başlangıç
 
 ```bash
-# Bagimliliklari yukle
 npm install
-
-# Gelistirme sunucusunu baslat
-npm run dev
-
-# Production build
-npm run build
-
-# Lint
-npm run lint
+npm run dev          # http://localhost:3000
+npm run build        # üretim derlemesi
+npm run type-check   # TypeScript kontrolü
 ```
-
-Tarayicida: http://localhost:3000
 
 ---
 
-## Proje Yapisi
+## Teknoloji
+
+| Katman | Seçim |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Dil | TypeScript |
+| Stil | Tailwind CSS v3 |
+| Animasyon | Framer Motion 11 |
+| Durum yönetimi | Zustand (sepet, favoriler) |
+| İkonlar | Lucide React |
+| Yazı tipleri | Cormorant Garamond (başlık) + Inter (metin) |
+| Ödeme | Shopier (Faz 1) |
+| Deploy | Vercel |
+
+---
+
+## ⚠️ Görsel Eklerken Dikkat — En Önemli Kural
+
+**Tüm görseller `public/media/` klasörüne konur. `public/products/` KULLANILMAZ.**
+
+Sebebi: `next.config.ts` içinde eski SEO adreslerini yeni adreslere taşıyan
+bir yönlendirme var:
+
+```ts
+{ source: '/products/:slug', destination: '/urun/:slug', permanent: true }
+```
+
+Next.js'te yönlendirmeler dosya sisteminden **önce** çalışır. Yani
+`public/products/foto.jpg` koyarsan, tarayıcı `/products/foto.jpg` adresini
+istediğinde Next.js onu `/urun/foto.jpg` adresine yönlendirir ve görsel
+**404 olur**. Görsel bozulmaz — hiç yüklenmez.
+
+Bu tuzak daha önce hero görselini ve arka plan desenini sessizce öldürmüştü.
+Bu yüzden görsel klasörü `public/media/` olarak taşındı ve `/products/` artık
+sadece bir yönlendirme adresi — orada dosya tutulmaz.
+
+### Görsel ekleme adımları
+
+```
+public/media/
+├── bileklik/     bileklik-1.jpg, bileklik-2.jpg …
+├── kupe/         kupe-1.jpg …
+├── yuzuk/        yuzuk-1.jpg …
+└── kolye/        kolye-1.jpg …   ← şu an EKSİK, eklenmeli
+```
+
+1. Görseli ilgili klasöre koy (kare veya 4:5 dikey en iyi sonucu verir).
+2. `src/data/products.ts` içinde ürünün `variants[].images` dizisine yolu yaz:
+   ```ts
+   images: ['/media/kolye/kolye-1.jpg', '/media/kolye/kolye-1b.jpg']
+   ```
+   İki görsel verirsen ikincisi kartta **hover'da** gösterilir.
+3. Görsel gelene kadar kart `img-slot` sınıfıyla zarif altın dokulu bir yuva
+   gösterir — boş/bozuk değil, kasıtlı görünür.
+
+### Hero görseli ekleme
+
+`src/sections/Hero.tsx` dosyasının başındaki tek satırı değiştir:
+
+```ts
+const HERO_IMAGE: string | null = null;          // görselsiz (şu anki hali)
+const HERO_IMAGE: string | null = '/media/hero.jpg';  // görselli
+```
+
+`null` bırakılırsa hero tamamen CSS ile çizilir (şampanya gradyanı + altın doku),
+yani görsel olmadan da eksiksiz görünür.
+
+### Bilinen eksik
+
+`kolye` kategorisindeki 4 ürünün görselleri yok (`public/media/kolye/` klasörü
+henüz oluşturulmadı). Bu ürünler şu an altın dokulu yuva gösteriyor.
+
+---
+
+## Marka Kimliği ve Pomelli
+
+Pomelli gibi siteyi tarayıp marka kimliği çıkaran araçlar baskın rengi
+otomatik okur. Site tamamen beyaz olursa marka rengi "beyaz/gri" çıkar ve
+üretilen içerik sönük olur. Bu yüzden palet **sıcak şampanya + altın** olarak
+kuruldu ve renk sinyalleri üç yerde birbiriyle **tutarlı** tutuldu:
+
+| Sinyal | Yer | Değer |
+|---|---|---|
+| `theme-color` meta | `src/app/layout.tsx` (`viewport`) | `#B8A574` |
+| PWA manifest | `public/site.webmanifest` | `#B8A574` |
+| CSS değişkeni | `src/app/globals.css` (`--color-gold`) | `#B8A574` |
+
+> Not: `site.webmanifest` eskiden `#D4AF37` (farklı bir altın) kullanıyordu.
+> Bu tutarsızlık, tarayan aracın marka rengini şaşırmasına yol açıyordu; düzeltildi.
+> **Altın tonunu değiştirirsen üç yeri birden güncelle.**
+
+### Palet
+
+| Token | Hex | Kullanım |
+|---|---|---|
+| `--color-bg` / `bg-cream` | `#FAF8F5` | Sayfa zemini (sıcak krem) |
+| `--color-surface` / `bg-cream-deep` | `#F2EDE4` | Bölüm zemini (şampanya) |
+| `--color-surface-deep` | `#EAE1D1` | Derin şampanya |
+| `--color-border` | `#E8E0D2` | Kenarlıklar |
+| `--color-gold` | `#B8A574` | **Marka aksanı** |
+| `--color-gold-dark` | `#9E8E63` | Altın metin (kontrast için) |
+| `--color-text` | `#0A0A0A` | Metin |
+
+### Hazır sınıflar (`globals.css`)
+
+| Sınıf | İşi |
+|---|---|
+| `.bg-champagne` | Marka gradyanı (krem → altın) |
+| `.texture-gold` | Yumuşak altın ışık dokusu (saf CSS) |
+| `.texture-lines` | İnce altın çizgi dokusu |
+| `.img-slot` | Görsel yuvası — foto yokken zarif durur |
+| `.rule-gold` | Altın alt çizgi |
+
+Bu dokuların hiçbiri görsel dosyasına bağlı değil, saf CSS. Bu yüzden bir asset
+eksik olsa bile tasarım kırılmaz.
+
+---
+
+## URL Mimarisi
+
+Site iki ayrı listeleme mantığı kullanır — karıştırma:
+
+| Adres | Ne yapar | Dosya |
+|---|---|---|
+| `/koleksiyonlar` | Hikaye koleksiyonları dizini | `src/app/koleksiyonlar/page.tsx` |
+| `/koleksiyonlar/[slug]` | Şehir koleksiyonu (barcelona, stockholm, paris, klasikler) | `src/app/koleksiyonlar/[slug]/` |
+| `/collections/[category]` | Kategori/vitrin (yeni-gelenler, cok-satanlar, kolye, bilezik, kupe, yuzuk) | `src/app/collections/[category]/` |
+| `/urun/[slug]` | Ürün detayı | `src/app/urun/[slug]/` |
+| `/hikayemiz` | Marka hikayesi | `src/app/hikayemiz/` |
+| `/sepet`, `/odeme`, `/favoriler` | Sepet, ödeme, favoriler | — |
+
+### Yönlendirmeler (`next.config.ts`)
+
+| Eski | Yeni |
+|---|---|
+| `/hakkimizda` | `/hikayemiz` |
+| `/wishlist` | `/favoriler` |
+| `/collections` | `/koleksiyonlar` |
+| `/collections/(barcelona\|stockholm\|paris\|klasikler)` | `/koleksiyonlar/:slug` |
+| `/products/:slug` | `/urun/:slug` |
+
+> **Önemli:** `/collections/:slug` yönlendirmesi bilerek yalnızca 4 gerçek
+> koleksiyon slug'ıyla eşleşir. Genel `:slug` yapılırsa `/collections/yeni-gelenler`
+> gibi kategori sayfaları `/koleksiyonlar/yeni-gelenler`'e yönlenip **404 olur**.
+> Yeni bir koleksiyon eklersen slug'ı bu listeye de ekle.
+
+---
+
+## Proje Yapısı
 
 ```
 src/
-  app/
-    page.tsx                    # Ana sayfa (Velzck yapi)
-    collections/                # Koleksiyonlar
-    products/[slug]/            # Urun detay
-    checkout/                   # Odeme
-    favoriler/                  # Favoriler
-    order-success/              # Siparis basarili
-  components/
-    product/
-      ProductCard.tsx           # Velzck-style karti
-      ProductDetailClient.tsx   # Urun detay
-      ReviewCard/Form/List.tsx  # Yorumlar
-    layout/
-      Header.tsx                # Scroll-aware header
-      Footer.tsx                # Dark Velzck-style footer
-      AnnouncementBar.tsx       # Framer Motion marquee
-      PageTransition.tsx        # Sayfa gecisi animasyonu
-    sections/
-      AboutUs.tsx               # Velzck aboutUs bolumu
-      HeroSection.tsx           # Parallax hero
-      FeaturedProducts.tsx      # One cikan urunler
-    cart/
-      CartDrawer.tsx            # Spring animasyonlu sepet
-    search/
-      SearchModal.tsx           # Arama modali
-  data/
-    products.ts                 # 15 urun (sabit veri)
-    reviews.ts                  # Yorum verileri
-  store/
-    cartStore.ts                # Sepet state
-    wishlistStore.ts            # Favori state
-    filterStore.ts              # Filtre state
-  hooks/
-    useProductFilters.ts        # Filtreleme logic
-    useProductSearch.ts         # Arama logic
-    useToast.ts                 # Toast bildirimleri
-    useScrollAnimation.ts       # Scroll trigger hook
+├── app/
+│   ├── layout.tsx              Kök layout, SEO metadata, theme-color, JSON-LD
+│   ├── page.tsx                Anasayfa (hero + yeni gelenler + çok satanlar
+│   │                           + hikaye bölümü + değer şeridi)
+│   ├── globals.css             Tasarım token'ları + marka sınıfları
+│   ├── hikayemiz/              Marka hikayesi sayfası
+│   ├── koleksiyonlar/          Koleksiyon dizini + [slug]
+│   ├── collections/[category]/ Kategori/vitrin sayfaları
+│   ├── urun/[slug]/            Ürün detayı (+ dinamik OG görseli)
+│   ├── sepet/ odeme/ favoriler/
+│   ├── api/checkout/           Shopier ödeme başlatma
+│   ├── sitemap.ts robots.ts    SEO
+│   └── error.tsx               Hata sınırı
+├── sections/Hero.tsx           Hero (HERO_IMAGE anahtarı burada)
+├── components/                 layout, product, cart, collections, filters, common
+├── data/
+│   ├── products.ts             80 ürün — tek kaynak
+│   ├── collections.ts          4 koleksiyon + hikayeleri
+│   └── reviews.ts
+├── store/                      Zustand (sepet, favoriler)
+├── lib/config.ts               SITE sabitleri (url, whatsapp, instagram)
+└── types/product.ts            Tip tanımları
 ```
 
 ---
 
-## Tasarim Sistemi
+## Veri Modeli
 
-| Renk        | Deger     | Kullanim                |
-|-------------|-----------|-------------------------|
-| Gold        | #C9A86A   | Ana marka, CTA, accent  |
-| Dark Gold   | #D4B77F   | Hover, ikincil          |
-| Cream       | #F8F6F3   | Sayfa arka plani        |
-| Dark        | #1A1A1A   | Metin, karti arka plani |
-| Hero Dark   | #0D0D0D   | Hero bolumu arkaplan    |
+`src/data/products.ts` tek kaynaktır — 80 ürün, 4 kategori, 4 koleksiyon.
+
+```ts
+{
+  id: 'kolye-1',
+  name: 'Paris Glow Altın Kolye',
+  slug: 'paris-glow-altin-kolye',   // URL: /urun/paris-glow-altin-kolye
+  category: 'kolye',                 // kolye | bilezik | kupe | yuzuk
+  collection: 'paris',               // barcelona | stockholm | paris | klasikler
+  story: 'Fransız zarafeti tek zincirde.',   // mikro hikaye
+  price: 549,
+  variants: [{ id: 'v1', color: 'altin', stock: 15, images: ['/media/…'] }],
+  isNew: true, isBestSeller: true,   // vitrin sayfalarını besler
+}
+```
+
+- `isNew: true` → `/collections/yeni-gelenler` sayfasında çıkar (şu an 43 ürün)
+- `isBestSeller: true` → `/collections/cok-satanlar` sayfasında çıkar (43 ürün)
+- `collection` → ilgili şehir koleksiyonunda çıkar
 
 ---
 
-## Deployment (Vercel)
+## SEO
 
-1. GitHub'a push et
-2. Vercel'de repo'yu baglat
-3. Otomatik deploy aktif
+- Sayfa bazlı `metadata` + canonical adresler (`src/lib/config.ts` → `SITE.url`)
+- JSON-LD: `Organization` + `Brand` (kök), `AboutPage` (hikayemiz), koleksiyon breadcrumb
+- Dinamik OG görselleri: `src/app/opengraph-image.tsx` ve `urun/[slug]/opengraph-image.tsx`
+- `sitemap.ts` yalnızca **200 dönen** sayfaları listeler — yönlendirilen veya
+  var olmayan adresler Search Console'da hata ürettiği için eklenmez.
+
+**Domain alınca:** yalnızca `NEXT_PUBLIC_SITE_URL` ortam değişkenini ayarla.
+Canonical, OG, sitemap ve JSON-LD hepsi `SITE.url` üzerinden okuyor.
+
+---
+
+## Ortam Değişkenleri
 
 ```bash
-vercel --prod
+NEXT_PUBLIC_SITE_URL=https://novella-jewell.vercel.app
+SHOPIER_API_KEY=…
+SHOPIER_API_SECRET=…
 ```
 
 ---
 
-**YAZAR:** Methefor
-**DURUM:** Aktif Gelistirme
-**LISANS:** MIT
+## Kargo Kuralları
+
+`src/lib/config.ts` içinde: 500 ₺ üzeri kargo ücretsiz, altında 49,90 ₺.
+
+---
+
+## Yapılacaklar
+
+- [ ] `public/media/kolye/` görsellerini ekle (4 ürün bekliyor)
+- [ ] Hero görselini ekle (`Hero.tsx` → `HERO_IMAGE`)
+- [ ] `/kargo`, `/iade` sayfaları (footer'da link var, sayfa yok)
+- [ ] `layout.tsx` içindeki Google doğrulama kodunu gerçeğiyle değiştir
+- [ ] Shopier canlı anahtarları

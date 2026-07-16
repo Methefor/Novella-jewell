@@ -29,7 +29,7 @@ export default function FavorilerClient() {
             ekleyerek daha sonra kolayca bulabilirsiniz.
           </p>
           <Link
-            href="/collections"
+            href="/koleksiyonlar"
             className="inline-block px-6 py-3 bg-gold text-white rounded-lg hover:bg-gold/90 transition-colors font-medium"
           >
             Ürünleri Keşfet

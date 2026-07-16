@@ -1,11 +1,11 @@
 {
-  "name": "NOVELLA - Her Parça Bir Hikaye",
+  "name": "NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet",
   "short_name": "NOVELLA",
-  "description": "Butik takı koleksiyonları. Kaliteli çelik takılar, uygun fiyatlar.",
+  "description": "316L cerrahi çelikten üretilen, kararmayan ve alerji yapmayan el seçimi takılar.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FDFBF7",
-  "theme_color": "#D4AF37",
+  "background_color": "#FAF8F5",
+  "theme_color": "#B8A574",
   "icons": [
     {
       "src": "/icon-192x192.png",

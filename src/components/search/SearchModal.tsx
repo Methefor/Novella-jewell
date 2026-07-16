@@ -223,7 +223,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           {results.slice(0, 6).map((product) => (
                             <Link
                               key={product.id}
-                              href={`/products/${product.slug}`}
+                              href={`/urun/${product.slug}`}
                               onClick={handleProductClick}
                               className="flex items-center gap-4 p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group"
                             >
