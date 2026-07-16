@@ -74,17 +74,38 @@ public/media/
 3. Görsel gelene kadar kart `img-slot` sınıfıyla zarif altın dokulu bir yuva
    gösterir — boş/bozuk değil, kasıtlı görünür.
 
-### Hero görseli ekleme
+### Hero görseli — bilek fotoğrafı şartnamesi
 
-`src/sections/Hero.tsx` dosyasının başındaki tek satırı değiştir:
+Hero, görseli aşağıdan yukarı yükselten ve kenarlarını zemine eriten bir
+kompozisyon kullanır. Hedeflenen tasarım: **naif bir kadın bileği, üzerinde
+bizim bilekliğimiz.**
+
+Fotoğraf çekilince `src/sections/Hero.tsx` içindeki **tek satır** değişir:
 
 ```ts
-const HERO_IMAGE: string | null = null;          // görselsiz (şu anki hali)
-const HERO_IMAGE: string | null = '/media/hero.jpg';  // görselli
+const HERO_WRIST: string | null = '/media/hero-wrist.jpg';
 ```
 
-`null` bırakılırsa hero tamamen CSS ile çizilir (şampanya gradyanı + altın doku),
-yani görsel olmadan da eksiksiz görünür.
+Şu an yerine gerçek bir ürün çekimi (`bileklik-5`, ipek üzerinde çapraz)
+kullanılıyor — kenarları eridiği için hero olarak iyi duruyor.
+
+**Fotoğraf şartnamesi** (buna uyarsa tasarım birebir oturur):
+
+| Konu | Gereklilik |
+|---|---|
+| Oran | **Dikey** 3:4 veya 2:3 (örn. 1200×1600). Yatay çekme. |
+| Kompozisyon | Kol aşağıdan yukarı, hafif çapraz. Bilek karenin **üst yarısında**; alt kısım boş kalsın, oraya ışık karışacak. |
+| Arka plan | Sade ve **açık**: krem/bej duvar. Koyu veya kalabalık zemin tasarımı bozar. |
+| Işık | Pencereden yumuşak yan ışık. **Flaş kullanma.** |
+| Odak | Bileklik net, arka plan hafif bulanık. |
+| Kadraj | El bileği + önkolun yarısı. Yüz girmesin. |
+| Renk | Ten tonu doğal kalsın, aşırı filtre uygulama. |
+
+> ⚠️ **Fotoğraftaki bileklik sattığın ürünün ta kendisi olmalı.** Yapay zekâyla
+> üretilmiş veya başka bir bileklik göstermek yanıltıcı ticari uygulamadır —
+> sitedeki diğer vaatleri bu yüzden temizledik, hero'da geri gelmemeli.
+
+Telefon kamerası + pencere ışığı bu iş için yeterlidir; stüdyo gerekmez.
 
 ### Bilinen eksik
 
