@@ -26,8 +26,8 @@ const styles: Record<ToastType, { container: string; icon: string }> = {
     icon: 'text-[#c85c5c]',
   },
   warning: {
-    container: 'bg-[#F8F6F3] border border-[#C9A86A] text-[#1A1A1A]',
-    icon: 'text-[#C9A86A]',
+    container: 'bg-[#F8F6F3] border border-gold text-[#1A1A1A]',
+    icon: 'text-gold',
   },
   info: {
     container: 'bg-[#F8F6F3] border border-[#7b9cb8] text-[#1A1A1A]',
@@ -38,7 +38,7 @@ const styles: Record<ToastType, { container: string; icon: string }> = {
 const progressColors: Record<ToastType, string> = {
   success: 'bg-[#6b8e7f]',
   error: 'bg-[#c85c5c]',
-  warning: 'bg-[#C9A86A]',
+  warning: 'bg-gold',
   info: 'bg-[#7b9cb8]',
 };
 

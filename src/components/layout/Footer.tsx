@@ -106,7 +106,7 @@ export default function Footer() {
             © {year} Novella. Tüm hakları saklıdır.
           </span>
           <span className="flex items-center gap-1.5 font-sans font-light text-[11px] text-white/22">
-            <span className="w-[5px] h-[5px] rounded-full flex-shrink-0 bg-[#b8a574]" />
+            <span className="w-[5px] h-[5px] rounded-full flex-shrink-0 bg-gold" />
             316L Paslanmaz Çelik
           </span>
         </div>

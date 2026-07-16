@@ -15,6 +15,11 @@ const config: Config = {
           light: '#C9BC96',
           dark: '#9E8E63',
         },
+        gold: {
+          DEFAULT: '#B8A574',
+          light: '#C9BC96',
+          dark: '#9E8E63',
+        },
         pill: {
           DEFAULT: '#F4F4F6',
           hover: '#EBEBED',

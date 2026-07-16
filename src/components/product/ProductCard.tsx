@@ -34,7 +34,8 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const discountPct = hasDiscount
     ? Math.round(
-        ((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100
+        ((product.compareAtPrice! - product.price) / product.compareAtPrice!) *
+          100
       )
     : 0;
 
@@ -46,7 +47,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/urun/${product.slug}`} className="group block">
       {/* Image container — 4:5 */}
-      <div className="relative w-full overflow-hidden bg-[#F6F6F4]" style={{ aspectRatio: '4/5' }}>
+      <div
+        className="relative w-full overflow-hidden bg-[#F6F6F4]"
+        style={{ aspectRatio: '4/5' }}
+      >
         {/* Primary image */}
         <Image
           src={img1}
@@ -75,7 +79,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
           {hasDiscount && (
-            <span className="bg-[#B8A574] text-white text-[10px] font-medium px-2 py-0.5">
+            <span className="bg-gold text-white text-[10px] font-medium px-2 py-0.5">
               %{discountPct}
             </span>
           )}
@@ -88,7 +92,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         >
           <button
             onClick={handleAddToCart}
-            className="w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-medium tracking-wide hover:bg-[#B8A574] transition-colors duration-200"
+            className="w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-medium tracking-wide hover:bg-gold transition-colors duration-200"
           >
             <ShoppingBag className="w-4 h-4" />
             Sepete Ekle
@@ -101,7 +105,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <p className="text-[11px] uppercase tracking-widest text-black/40 mb-0.5">
           {categoryLabel[product.category] ?? product.category}
         </p>
-        <h3 className="text-sm font-medium text-black leading-snug group-hover:text-[#B8A574] transition-colors duration-200">
+        <h3 className="text-sm font-medium text-black leading-snug group-hover:text-gold transition-colors duration-200">
           {product.name}
         </h3>
         <div className="flex items-baseline gap-2 mt-1">

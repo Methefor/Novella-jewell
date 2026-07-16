@@ -39,6 +39,10 @@ export const metadata: Metadata = {
     'suya dayanıklı takı',
     'alerji yapmaz takı',
     'novella takı',
+    'butik takı',
+    'takı koleksiyonu',
+    'çelik bileklik',
+    'çelik kolye',
   ],
   authors: [{ name: 'NOVELLA' }],
   creator: 'NOVELLA',
@@ -93,6 +97,9 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
+  verification: {
+    google: 'your-google-verification-code',
+  },
 };
 
 const orgJsonLd = {

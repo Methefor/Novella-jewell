@@ -35,7 +35,7 @@ export default function SonucClient() {
               transition={{ duration: 0.5, ease, delay: 0.1 }}
               className="flex justify-center mb-6"
             >
-              <CheckCircle2 className="w-16 h-16 text-[#B8A574]" strokeWidth={1.2} />
+              <CheckCircle2 className="w-16 h-16 text-gold" strokeWidth={1.2} />
             </motion.div>
 
             <h1 className="font-serif font-light text-3xl text-black mb-3">
@@ -43,7 +43,9 @@ export default function SonucClient() {
             </h1>
 
             {orderId && (
-              <p className="text-xs text-black/35 mb-1">Sipariş No: {orderId}</p>
+              <p className="text-xs text-black/35 mb-1">
+                Sipariş No: {orderId}
+              </p>
             )}
 
             <p className="text-sm text-black/50 leading-relaxed mb-8">
@@ -61,7 +63,10 @@ export default function SonucClient() {
                 <MessageCircle className="w-4 h-4" />
                 WhatsApp'tan Onayla
               </a>
-              <Link href="/koleksiyonlar" className="btn-ghost flex items-center justify-center">
+              <Link
+                href="/koleksiyonlar"
+                className="btn-ghost flex items-center justify-center"
+              >
                 Alışverişe Devam
               </Link>
             </div>
@@ -88,7 +93,10 @@ export default function SonucClient() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/sepet" className="btn-primary flex items-center justify-center">
+              <Link
+                href="/sepet"
+                className="btn-primary flex items-center justify-center"
+              >
                 Tekrar Dene
               </Link>
               <a

@@ -146,7 +146,7 @@ export default function ProductPageClient({ product, collection }: Props) {
                   </span>
                 )}
                 {hasDiscount && (
-                  <span className="bg-[#B8A574] text-white text-[10px] font-medium px-2 py-0.5">
+                  <span className="bg-gold text-white text-[10px] font-medium px-2 py-0.5">
                     İndirimli
                   </span>
                 )}
@@ -165,7 +165,7 @@ export default function ProductPageClient({ product, collection }: Props) {
             {collection && (
               <Link
                 href={`/koleksiyonlar/${product.collection}`}
-                className="section-label hover:text-[#B8A574] transition-colors"
+                className="section-label hover:text-gold transition-colors"
               >
                 {collection.sehir || 'Klasikler'} Koleksiyonu ↗
               </Link>
@@ -183,7 +183,7 @@ export default function ProductPageClient({ product, collection }: Props) {
             </h1>
 
             {/* Mikro hikaye */}
-            <div className="border-l-2 border-[#B8A574] pl-4">
+            <div className="border-l-2 border-gold pl-4">
               <p className="font-serif italic text-black/60 leading-relaxed text-base">
                 {product.story}
               </p>
@@ -266,7 +266,7 @@ export default function ProductPageClient({ product, collection }: Props) {
                               key={i}
                               className="flex items-start gap-2 text-sm text-black/60"
                             >
-                              <span className="text-[#B8A574] mt-0.5 flex-shrink-0">
+                              <span className="text-gold mt-0.5 flex-shrink-0">
                                 ·
                               </span>
                               {line}
@@ -295,7 +295,7 @@ export default function ProductPageClient({ product, collection }: Props) {
               {collection && (
                 <Link
                   href={`/koleksiyonlar/${product.collection}`}
-                  className="text-xs text-black/40 hover:text-[#B8A574] transition-colors"
+                  className="text-xs text-black/40 hover:text-gold transition-colors"
                 >
                   Tümünü gör →
                 </Link>

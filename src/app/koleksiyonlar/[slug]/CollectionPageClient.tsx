@@ -1,8 +1,8 @@
 'use client';
 
+import ProductCard from '@/components/product/ProductCard';
 import type { Collection } from '@/data/collections';
 import type { Product, ProductCategory } from '@/types/product';
-import ProductCard from '@/components/product/ProductCard';
 import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
@@ -41,13 +41,15 @@ export default function CollectionPageClient({ collection, products }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [selectedCategories, setSelectedCategories] = useState<ProductCategory[]>(
-    () => {
-      const tur = searchParams.get('tur');
-      return tur ? (tur.split(',') as ProductCategory[]) : [];
-    }
+  const [selectedCategories, setSelectedCategories] = useState<
+    ProductCategory[]
+  >(() => {
+    const tur = searchParams.get('tur');
+    return tur ? (tur.split(',') as ProductCategory[]) : [];
+  });
+  const [priceRange, setPriceRange] = useState(() =>
+    parsePriceParam(searchParams.get('fiyat'))
   );
-  const [priceRange, setPriceRange] = useState(() => parsePriceParam(searchParams.get('fiyat')));
 
   const updateURL = useCallback(
     (cats: ProductCategory[], price: { min: number; max: number }) => {
@@ -58,7 +60,10 @@ export default function CollectionPageClient({ collection, products }: Props) {
         params.delete('tur');
       }
       if (price.min > 0 || price.max !== Infinity) {
-        params.set('fiyat', `${price.min}-${price.max === Infinity ? '' : price.max}`);
+        params.set(
+          'fiyat',
+          `${price.min}-${price.max === Infinity ? '' : price.max}`
+        );
       } else {
         params.delete('fiyat');
       }
@@ -84,7 +89,8 @@ export default function CollectionPageClient({ collection, products }: Props) {
   const filtered = useMemo(() => {
     return products.filter((p) => {
       const catOk =
-        selectedCategories.length === 0 || selectedCategories.includes(p.category);
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(p.category);
       const priceOk = p.price >= priceRange.min && p.price <= priceRange.max;
       return catOk && priceOk;
     });
@@ -180,7 +186,11 @@ export default function CollectionPageClient({ collection, products }: Props) {
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: i * 0.04 }}
+                transition={{
+                  duration: 0.5,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: i * 0.04,
+                }}
               >
                 <ProductCard product={product} />
               </motion.div>
@@ -188,14 +198,16 @@ export default function CollectionPageClient({ collection, products }: Props) {
           </div>
         ) : (
           <div className="py-24 text-center">
-            <p className="font-serif text-2xl text-black/30">Bu filtreyle eşleşen ürün yok.</p>
+            <p className="font-serif text-2xl text-black/30">
+              Bu filtreyle eşleşen ürün yok.
+            </p>
             <button
               onClick={() => {
                 setSelectedCategories([]);
                 setPriceRange({ min: 0, max: Infinity });
                 updateURL([], { min: 0, max: Infinity });
               }}
-              className="mt-4 text-sm text-[#B8A574] hover:underline"
+              className="mt-4 text-sm text-gold hover:underline"
             >
               Filtreleri temizle
             </button>

@@ -20,7 +20,11 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
+  },
 };
 
 export default function CollectionsPage() {
@@ -81,7 +85,7 @@ export default function CollectionsPage() {
                 {/* Mobile Filter Toggle */}
                 <button
                   onClick={() => setIsSidebarOpen(true)}
-                  className="lg:hidden btn btn-secondary relative"
+                  className="lg:hidden inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F6] text-black rounded-full hover:bg-[#EBEBED] transition-colors relative"
                 >
                   <SlidersHorizontal className="w-5 h-5" />
                   <span>Filtreler</span>
@@ -227,7 +231,10 @@ export default function CollectionsPage() {
                   Aradığınız kriterlere uygun ürün bulunamadı. Filtreleri
                   değiştirmeyi deneyin.
                 </p>
-                <button onClick={resetFilters} className="btn btn-primary">
+                <button
+                  onClick={resetFilters}
+                  className="inline-flex items-center justify-center px-6 py-3 bg-black text-white rounded-full hover:bg-gold transition-colors text-sm font-medium"
+                >
                   Filtreleri Sıfırla
                 </button>
               </div>

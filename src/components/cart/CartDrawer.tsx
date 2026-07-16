@@ -19,7 +19,10 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
     useCartStore();
 
   const freeShippingLeft = Math.max(0, SHIPPING.freeThreshold - subtotal);
-  const freeShippingPct = Math.min(100, (subtotal / SHIPPING.freeThreshold) * 100);
+  const freeShippingPct = Math.min(
+    100,
+    (subtotal / SHIPPING.freeThreshold) * 100
+  );
 
   return (
     <AnimatePresence>
@@ -68,9 +71,14 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
             {items.length === 0 ? (
               /* Empty state */
               <div className="flex-1 flex flex-col items-center justify-center gap-5 px-6 text-center">
-                <ShoppingBag className="w-10 h-10 text-black/15" strokeWidth={1} />
+                <ShoppingBag
+                  className="w-10 h-10 text-black/15"
+                  strokeWidth={1}
+                />
                 <div>
-                  <p className="font-serif text-xl text-black/40">Sepetiniz boş</p>
+                  <p className="font-serif text-xl text-black/40">
+                    Sepetiniz boş
+                  </p>
                   <p className="text-sm text-black/30 mt-1">
                     Koleksiyonumuzu keşfedin
                   </p>
@@ -96,7 +104,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                     </div>
                     <div className="h-0.5 bg-black/8 rounded-full overflow-hidden">
                       <motion.div
-                        className="h-full bg-[#B8A574] rounded-full"
+                        className="h-full bg-gold rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${freeShippingPct}%` }}
                         transition={{ duration: 0.5, ease }}
@@ -105,7 +113,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                   </div>
                 )}
                 {freeShippingLeft === 0 && (
-                  <div className="px-5 py-2.5 bg-[#F9F9F7] border-b border-black/5 text-xs text-[#B8A574] font-medium">
+                  <div className="px-5 py-2.5 bg-[#F9F9F7] border-b border-black/5 text-xs text-gold font-medium">
                     Kargo bedava!
                   </div>
                 )}
@@ -139,7 +147,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                           <Link
                             href={`/urun/${item.product.slug}`}
                             onClick={onClose}
-                            className="text-sm font-medium text-black leading-snug hover:text-[#B8A574] transition-colors line-clamp-2"
+                            className="text-sm font-medium text-black leading-snug hover:text-gold transition-colors line-clamp-2"
                           >
                             {item.product.name}
                           </Link>
@@ -151,7 +159,9 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                           <div className="flex items-center gap-3 mt-2">
                             <div className="flex items-center gap-1">
                               <button
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                onClick={() =>
+                                  updateQuantity(item.id, item.quantity - 1)
+                                }
                                 className="w-6 h-6 flex items-center justify-center border border-black/15 rounded hover:border-black/40 transition-colors"
                                 aria-label="Azalt"
                               >
@@ -161,7 +171,9 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                                 {item.quantity}
                               </span>
                               <button
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                onClick={() =>
+                                  updateQuantity(item.id, item.quantity + 1)
+                                }
                                 className="w-6 h-6 flex items-center justify-center border border-black/15 rounded hover:border-black/40 transition-colors"
                                 aria-label="Artır"
                               >
@@ -180,7 +192,10 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
 
                         {/* Row total */}
                         <div className="text-sm font-medium text-black flex-shrink-0 pt-0.5">
-                          {(item.product.price * item.quantity).toLocaleString('tr-TR')} ₺
+                          {(item.product.price * item.quantity).toLocaleString(
+                            'tr-TR'
+                          )}{' '}
+                          ₺
                         </div>
                       </div>
                     );

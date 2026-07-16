@@ -7,7 +7,7 @@ const features = [
   {
     icon: Globe,
     title: 'Türkiye Geneli Kargo',
-    desc: 'Tüm Türkiye\'ye hızlı ve güvenli kargo hizmeti.',
+    desc: "Tüm Türkiye'ye hızlı ve güvenli kargo hizmeti.",
   },
   {
     icon: Truck,
@@ -35,7 +35,7 @@ const blocks = [
   {
     id: 'a3',
     title: 'Misyonumuz',
-    text: 'Her kadının kendini özel hissetmesini sağlamak için yüksek kaliteli takıları erişilebilir fiyatlarla sunmak. Novella\'yı takan her kadın, içindeki zarafeti dünyaya yansıtır.',
+    text: "Her kadının kendini özel hissetmesini sağlamak için yüksek kaliteli takıları erişilebilir fiyatlarla sunmak. Novella'yı takan her kadın, içindeki zarafeti dünyaya yansıtır.",
   },
 ];
 
@@ -46,7 +46,11 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+  },
 };
 
 export default function AboutUs() {
@@ -76,8 +80,8 @@ export default function AboutUs() {
               variants={itemVariants}
               className="flex items-start gap-4"
             >
-              <div className="w-12 h-12 rounded-full bg-[#C9A86A]/10 flex items-center justify-center flex-shrink-0">
-                <Icon className="w-5 h-5 text-[#C9A86A]" />
+              <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
+                <Icon className="w-5 h-5 text-gold" />
               </div>
               <div>
                 <h3 className="font-semibold text-[#1A1A1A] mb-1">{title}</h3>
@@ -99,7 +103,7 @@ export default function AboutUs() {
         {blocks.map(({ id, title, text }) => (
           <motion.div key={id} variants={itemVariants} className="space-y-4">
             <h2 className="font-serif text-2xl text-[#1A1A1A]">{title}</h2>
-            <div className="w-12 h-0.5 bg-[#C9A86A]" />
+            <div className="w-12 h-0.5 bg-gold" />
             <p className="text-[#6B6B6B] leading-relaxed text-sm">{text}</p>
           </motion.div>
         ))}

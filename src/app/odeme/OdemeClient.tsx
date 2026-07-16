@@ -1,8 +1,8 @@
 'use client';
 
+import type { Order, OrderItem } from '@/lib/checkout/types';
 import { SHIPPING } from '@/lib/config';
 import { ILLER } from '@/lib/turkiye';
-import type { Order, OrderItem } from '@/lib/checkout/types';
 import { useCartStore } from '@/store/cartStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -106,7 +106,9 @@ export default function OdemeClient() {
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Bir hata oluştu, lütfen tekrar deneyin.'
+        err instanceof Error
+          ? err.message
+          : 'Bir hata oluştu, lütfen tekrar deneyin.'
       );
       setLoading(false);
     }
@@ -132,16 +134,33 @@ export default function OdemeClient() {
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Ad" error={errors.name?.message}>
-                  <input {...register('name')} placeholder="Ada" className={inputCls(!!errors.name)} />
+                  <input
+                    {...register('name')}
+                    placeholder="Ada"
+                    className={inputCls(!!errors.name)}
+                  />
                 </Field>
                 <Field label="Soyad" error={errors.surname?.message}>
-                  <input {...register('surname')} placeholder="Yıldız" className={inputCls(!!errors.surname)} />
+                  <input
+                    {...register('surname')}
+                    placeholder="Yıldız"
+                    className={inputCls(!!errors.surname)}
+                  />
                 </Field>
                 <Field label="E-posta" error={errors.email?.message}>
-                  <input {...register('email')} type="email" placeholder="ada@novella.com" className={inputCls(!!errors.email)} />
+                  <input
+                    {...register('email')}
+                    type="email"
+                    placeholder="ada@novella.com"
+                    className={inputCls(!!errors.email)}
+                  />
                 </Field>
                 <Field label="Telefon" error={errors.phone?.message}>
-                  <input {...register('phone')} placeholder="05xx xxx xx xx" className={inputCls(!!errors.phone)} />
+                  <input
+                    {...register('phone')}
+                    placeholder="05xx xxx xx xx"
+                    className={inputCls(!!errors.phone)}
+                  />
                 </Field>
               </div>
             </section>
@@ -153,15 +172,24 @@ export default function OdemeClient() {
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="İl" error={errors.city?.message}>
-                  <select {...register('city')} className={inputCls(!!errors.city)}>
+                  <select
+                    {...register('city')}
+                    className={inputCls(!!errors.city)}
+                  >
                     <option value="">Seçin…</option>
                     {ILLER.map((il) => (
-                      <option key={il} value={il}>{il}</option>
+                      <option key={il} value={il}>
+                        {il}
+                      </option>
                     ))}
                   </select>
                 </Field>
                 <Field label="İlçe" error={errors.district?.message}>
-                  <input {...register('district')} placeholder="Kadıköy" className={inputCls(!!errors.district)} />
+                  <input
+                    {...register('district')}
+                    placeholder="Kadıköy"
+                    className={inputCls(!!errors.district)}
+                  />
                 </Field>
               </div>
               <div className="mt-4">
@@ -178,7 +206,10 @@ export default function OdemeClient() {
 
             {/* Sipariş notu */}
             <section>
-              <Field label="Sipariş Notu (opsiyonel)" error={errors.note?.message}>
+              <Field
+                label="Sipariş Notu (opsiyonel)"
+                error={errors.note?.message}
+              >
                 <textarea
                   {...register('note')}
                   rows={2}
@@ -198,7 +229,9 @@ export default function OdemeClient() {
           {/* Summary — sticky */}
           <div>
             <div className="sticky top-24 bg-[#F9F9F7] p-6 border border-black/6">
-              <h2 className="font-serif text-lg text-black mb-5">Sipariş Özeti</h2>
+              <h2 className="font-serif text-lg text-black mb-5">
+                Sipariş Özeti
+              </h2>
 
               <div className="space-y-2 mb-5">
                 {items.map((item) => (
@@ -208,7 +241,10 @@ export default function OdemeClient() {
                       <span className="text-black/35"> ×{item.quantity}</span>
                     </span>
                     <span className="font-medium text-black flex-shrink-0">
-                      {(item.product.price * item.quantity).toLocaleString('tr-TR')} ₺
+                      {(item.product.price * item.quantity).toLocaleString(
+                        'tr-TR'
+                      )}{' '}
+                      ₺
                     </span>
                   </div>
                 ))}
@@ -228,9 +264,11 @@ export default function OdemeClient() {
                   </span>
                 </div>
                 {subtotal < SHIPPING.freeThreshold && (
-                  <p className="text-xs text-[#B8A574]">
-                    {(SHIPPING.freeThreshold - subtotal).toLocaleString('tr-TR')} ₺ daha
-                    ekleyin, kargo bedava
+                  <p className="text-xs text-gold">
+                    {(SHIPPING.freeThreshold - subtotal).toLocaleString(
+                      'tr-TR'
+                    )}{' '}
+                    ₺ daha ekleyin, kargo bedava
                   </p>
                 )}
                 <div className="flex justify-between font-semibold text-black text-base pt-2 border-t border-black/8">

@@ -80,19 +80,22 @@ export default function CartPageClient() {
                   <div className="flex-1 min-w-0">
                     <Link
                       href={`/urun/${item.product.slug}`}
-                      className="text-base font-medium text-black hover:text-[#B8A574] transition-colors leading-snug"
+                      className="text-base font-medium text-black hover:text-gold transition-colors leading-snug"
                     >
                       {item.product.name}
                     </Link>
                     <p className="text-sm text-black/40 mt-0.5">
-                      Birim fiyat: {item.product.price.toLocaleString('tr-TR')} ₺
+                      Birim fiyat: {item.product.price.toLocaleString('tr-TR')}{' '}
+                      ₺
                     </p>
 
                     {/* Quantity stepper */}
                     <div className="flex items-center gap-3 mt-4">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity - 1)
+                          }
                           className="w-7 h-7 flex items-center justify-center border border-black/20 rounded hover:border-black/50 transition-colors"
                           aria-label="Azalt"
                         >
@@ -102,7 +105,9 @@ export default function CartPageClient() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity + 1)
+                          }
                           className="w-7 h-7 flex items-center justify-center border border-black/20 rounded hover:border-black/50 transition-colors"
                           aria-label="Artır"
                         >
@@ -123,7 +128,10 @@ export default function CartPageClient() {
 
                   {/* Row total */}
                   <div className="text-base font-semibold text-black flex-shrink-0 pt-0.5">
-                    {(item.product.price * item.quantity).toLocaleString('tr-TR')} ₺
+                    {(item.product.price * item.quantity).toLocaleString(
+                      'tr-TR'
+                    )}{' '}
+                    ₺
                   </div>
                 </motion.div>
               );
@@ -133,7 +141,9 @@ export default function CartPageClient() {
           {/* Summary */}
           <div>
             <div className="sticky top-24 bg-[#F9F9F7] p-6 border border-black/6">
-              <h2 className="font-serif text-lg text-black mb-5">Sipariş Özeti</h2>
+              <h2 className="font-serif text-lg text-black mb-5">
+                Sipariş Özeti
+              </h2>
 
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-black/60">
@@ -150,8 +160,9 @@ export default function CartPageClient() {
                 </div>
 
                 {freeShippingLeft > 0 && (
-                  <p className="text-xs text-[#B8A574]">
-                    {freeShippingLeft.toLocaleString('tr-TR')} ₺ daha ekleyin, kargo bedava
+                  <p className="text-xs text-gold">
+                    {freeShippingLeft.toLocaleString('tr-TR')} ₺ daha ekleyin,
+                    kargo bedava
                   </p>
                 )}
 

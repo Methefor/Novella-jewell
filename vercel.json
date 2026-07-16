@@ -1,0 +1,77 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "dev": false
+    }
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_SITE_URL": "https://novella-jewell.vercel.app"
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, s-maxage=86400"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/wishlist",
+      "destination": "/favoriler"
+    },
+    {
+      "source": "/collections",
+      "destination": "/koleksiyonlar"
+    },
+    {
+      "source": "/collections/:slug",
+      "destination": "/koleksiyonlar/:slug"
+    },
+    {
+      "source": "/products/:slug",
+      "destination": "/urun/:slug"
+    }
+  ]
+}
