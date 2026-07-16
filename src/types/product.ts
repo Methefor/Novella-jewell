@@ -60,7 +60,12 @@ export interface Product {
   // Set ürünler için parça sayısı — set çekimleri gelince fiyat formülü: toplamın %85-90
   setParcaSayisi?: number;
 
-  // Rating (ileride gerçek yorumlardan hesaplanacak)
+  // Rating — ŞU AN KULLANILMIYOR ve hiçbir üründe dolu değil.
+  // Daha önce elle yazılmış sahte değerler vardı ve bunlar ürün sayfasında
+  // aggregateRating olarak Google'a gönderiliyordu; gerçek olmayan review
+  // markup'ı manuel işlem (ceza) sebebi olduğu için hem veri hem markup silindi.
+  // Gerçek yorum sistemi kurulunca bu alanlar GERÇEK yorumlardan hesaplanmalı,
+  // ancak o zaman urun/[slug]/page.tsx'e aggregateRating geri eklenmeli.
   rating?: number;
   reviewCount?: number;
 

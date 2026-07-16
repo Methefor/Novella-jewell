@@ -2,6 +2,8 @@
 
 import ProductCard from '@/components/product/ProductCard';
 import type { Collection } from '@/data/collections';
+import { SHIPPING } from '@/lib/config';
+import { CAYMA_SURESI_GUN } from '@/lib/legal';
 import { getRelatedProducts } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
@@ -41,8 +43,10 @@ const accordionItems = [
     title: 'Kargo & İade',
     content: [
       '1–3 iş günü içinde kargoya verilir',
-      '300 ₺ üzeri siparişlerde kargo ücretsiz',
-      '14 gün içinde ücretsiz iade hakkı',
+      // Eşik SHIPPING config'inden okunur — sabit yazılırsa sepetteki
+      // gerçek hesapla çelişir ve yanıltıcı ticari uygulama olur.
+      `${SHIPPING.freeThreshold.toLocaleString('tr-TR')} ₺ üzeri siparişlerde kargo ücretsiz`,
+      `${CAYMA_SURESI_GUN} gün içinde cayma hakkı`,
       'Özenle paketlenir, hediye kutusunda gönderilir',
     ],
   },

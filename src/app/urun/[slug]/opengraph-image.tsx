@@ -13,7 +13,10 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const product = getProductBySlug(slug);
 
   const name = product?.name ?? 'NOVELLA';
-  const price = product ? `${product.price.toLocaleString('tr-TR')} ₺` : '';
+  // "₺" yerine "TL": OG görseli satori ile üretiliyor ve ₺ karakteri için
+  // dinamik font indirmesi 400 dönüyor (build log'unda "Failed to load dynamic
+  // font for ₺"). Sembol boş kutu olarak çıkıyordu. "TL" varsayılan fontta var.
+  const price = product ? `${product.price.toLocaleString('tr-TR')} TL` : '';
   const collection = product?.collection ?? '';
 
   return new ImageResponse(

@@ -10,8 +10,20 @@ const quickLinks = [
 
 const helpLinks = [
   { label: 'Kargo & Teslimat', href: '/kargo' },
-  { label: 'İade Koşulları', href: '/iade' },
-  { label: 'Sık Sorulan Sorular', href: '/#sss' },
+  { label: 'İade & Cayma Hakkı', href: '/iade' },
+  { label: 'İletişim', href: '/iletisim' },
+  // NOT: "Sık Sorulan Sorular" linki kaldırıldı — /#sss anchor'ı hiçbir
+  // sayfada yoktu, her sayfadan kırık bir yere gidiyordu. SSS sayfası
+  // yazılınca buraya geri eklenebilir.
+];
+
+// 6563 sayılı e-ticaret kanunu ve KVKK gereği her sayfadan erişilebilir olmalı.
+const legalLinks = [
+  { label: 'Mesafeli Satış Sözleşmesi', href: '/mesafeli-satis-sozlesmesi' },
+  { label: 'Ön Bilgilendirme Formu', href: '/on-bilgilendirme' },
+  { label: 'Gizlilik Politikası', href: '/gizlilik' },
+  { label: 'KVKK Aydınlatma Metni', href: '/kvkk' },
+  { label: 'Çerez Politikası', href: '/cerez-politikasi' },
 ];
 
 export default function Footer() {
@@ -100,9 +112,29 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Yasal linkler — her sayfadan erişilebilir olması zorunlu.
+            Mobilde alt alta sarar, dokunma hedefleri ayrıştırılmıştır. */}
+        <nav
+          aria-label="Yasal bilgiler"
+          className="pt-6 pb-5 border-t border-white/7"
+        >
+          <ul className="flex flex-wrap gap-x-5 gap-y-2.5">
+            {legalLinks.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className="font-sans font-light text-[11px] text-white/35 hover:text-white/70 transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         {/* Bottom bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/7">
-          <span className="font-sans font-light text-[11px] text-white/22">
+        <div className="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/7">
+          <span className="font-sans font-light text-[11px] text-white/22 text-center sm:text-left">
             © {year} Novella. Tüm hakları saklıdır.
           </span>
           <span className="flex items-center gap-1.5 font-sans font-light text-[11px] text-white/22">

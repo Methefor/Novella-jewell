@@ -250,10 +250,93 @@ SHOPIER_API_SECRET=…
 
 ---
 
+## Yasal Sayfalar
+
+Türkiye'de online satış için zorunlu 8 sayfa hazır:
+
+| Sayfa | Adres |
+|---|---|
+| Mesafeli Satış Sözleşmesi | `/mesafeli-satis-sozlesmesi` (noindex) |
+| Ön Bilgilendirme Formu | `/on-bilgilendirme` (noindex) |
+| Gizlilik Politikası | `/gizlilik` |
+| KVKK Aydınlatma Metni | `/kvkk` |
+| Çerez Politikası | `/cerez-politikasi` |
+| İade & Cayma Hakkı | `/iade` |
+| Kargo & Teslimat | `/kargo` |
+| İletişim + künye | `/iletisim` |
+
+### 🔴 Satıştan önce: `src/lib/legal.ts` doldurulmalı
+
+Şirket bilgileri **tek yerden** okunur: [`src/lib/legal.ts`](src/lib/legal.ts).
+Ticaret unvanı, adres, vergi dairesi/no ve e-postayı oraya yaz — 8 sayfa
+birden güncellenir.
+
+Doldurulmayan alanlar sitede **`[DOLDURULACAK: ...]`** şeklinde görünür.
+Bu bilinçli: sessizce boş kalıp yanlışlıkla yayına çıkmasındansa göze
+batması daha güvenli.
+
+### Sözleşme onayı
+
+Ödeme sayfasında iki zorunlu checkbox var (Mesafeli Sözleşmeler Yönetmeliği
+m.6). Onay **hem client hem sunucu** tarafında şart koşulur — `/api/checkout`
+`consent.sozlesme` ve `consent.kvkk` olmadan 400 döner. Onay olmadan sözleşme
+hukuken kurulmamış sayılır ve müşteri süresiz cayabilir.
+
+### Çerez onayı
+
+`CookieBanner` + `src/lib/cookies.ts`. Google Analytics **yalnızca** onay
+verilirse yüklenir — script pasif kalmaz, sayfaya hiç eklenmez. Onaysız GA
+çalıştırmak KVKK ihlalidir.
+
+---
+
+## Güvenlik Kuralları
+
+### Fiyat asla client'tan alınmaz
+
+`/api/checkout` client'tan **yalnızca** `productId + variantId + quantity`
+kabul eder. Fiyat, kargo ve toplam [`src/lib/checkout/buildOrder.ts`](src/lib/checkout/buildOrder.ts)
+içinde `PRODUCTS`'tan **sunucuda** yeniden hesaplanır.
+
+> Eskiden client `total` gönderiyordu ve sunucu onu doğrudan imzalıyordu.
+> Yani `{"total": 1}` POST eden biri 12.000 ₺'lik sepeti 1 ₺'ye alabiliyordu
+> ve imza geçerli oluyordu. Bu API'ye fiyat alanı **geri eklenmemeli**.
+
+### `NEXT_PUBLIC_` öneki ve secret
+
+`NEXT_PUBLIC_` ile başlayan her değişken client bundle'ına gömülür ve
+**herkese açık** olur. Shopier anahtarları bu yüzden öneksizdir
+(`SHOPIER_API_KEY`). Anahtarlara `NEXT_PUBLIC_` ekleme.
+
+`.env.local` git'te takip **edilmez**. Gerçek anahtarlar yalnızca
+Vercel > Settings > Environment Variables içine girilir.
+
+---
+
 ## Yapılacaklar
+
+### 🔴 Satış açılmadan önce (zorunlu)
+
+- [ ] **`src/lib/legal.ts`** — ticaret unvanı, adres, vergi no, e-posta
+- [ ] **Shopier anahtarları** — Vercel env'e `SHOPIER_API_KEY`, `SHOPIER_API_SECRET`
+      (production'da anahtar yoksa kod bilerek hata fırlatır, sessiz kalmaz)
+- [ ] **Shopier callback imza formülü** — `src/lib/checkout/shopier.ts:verifyCallback`
+      resmî dokümanla karşılaştırılıp sandbox'ta uçtan uca test edilmeli.
+      Mevcut sıralama (`order_id + status + random_nr`) doğrulanmadı.
+- [ ] **Sipariş kaydı (Supabase)** — `src/lib/orders.ts` şu an sadece
+      `console.log`. Ödeme başarılı olsa bile sipariş **hiçbir yere yazılmıyor**,
+      Vercel logları geçici. Kargo gönderebilmek için kalıcı kayıt şart.
+- [ ] **Sipariş onay e-postası** — Yönetmelik m.7 gereği kalıcı veri
+      saklayıcısıyla gönderim zorunlu. Şu an mail servisi yok.
+- [ ] **Sunucu tarafı stok düşümü** — `buildOrder.ts` stok kontrolü yapıyor
+      ama stok statik veride sabit, satış sonrası azalmıyor.
+
+### 🟡 Sonrası
 
 - [ ] `public/media/kolye/` görsellerini ekle (4 ürün bekliyor)
 - [ ] Hero görselini ekle (`Hero.tsx` → `HERO_IMAGE`)
-- [ ] `/kargo`, `/iade` sayfaları (footer'da link var, sayfa yok)
-- [ ] `layout.tsx` içindeki Google doğrulama kodunu gerçeğiyle değiştir
-- [ ] Shopier canlı anahtarları
+- [ ] Google Search Console doğrulama kodu (`layout.tsx` → `verification`)
+- [ ] `NEXT_PUBLIC_GA_ID` (gerçek GA ID; boşken GA yüklenmez)
+- [ ] SSS sayfası (footer'daki link kaldırıldı, `/#sss` anchor'ı yoktu)
+- [ ] Gerçek yorum sistemi — kurulunca `urun/[slug]/page.tsx`'e
+      `aggregateRating` GERÇEK verilerden hesaplanarak geri eklenebilir

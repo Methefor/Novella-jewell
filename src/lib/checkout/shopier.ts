@@ -15,12 +15,26 @@ export class ShopierProvider implements CheckoutProvider {
   private websiteIndex: string;
 
   constructor() {
+    // ⚠️ NEXT_PUBLIC_ öneki KULLANILMAZ. O önek değeri client bundle'ına gömer
+    // ve API secret'ı herkese açık hale getirir. Bunlar sunucuda okunur.
     this.apiKey = process.env.SHOPIER_API_KEY ?? '';
     this.apiSecret = process.env.SHOPIER_API_SECRET ?? '';
     this.websiteIndex = process.env.SHOPIER_WEBSITE_INDEX ?? '1';
 
     if (!this.apiKey || !this.apiSecret) {
-      console.warn('[Shopier] API anahtarları eksik — .env.local dosyasını kontrol edin.');
+      // Production'da sessizce devam etmek en kötüsü: boş secret'la imzalanan
+      // her ödeme Shopier tarafından reddedilir ve müşteri sebebini anlamaz.
+      // Gürültülü çökmek, sessizce satış kaybetmekten iyidir.
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error(
+          '[Shopier] SHOPIER_API_KEY / SHOPIER_API_SECRET tanımlı değil. ' +
+            'Vercel > Settings > Environment Variables içine ekleyin.'
+        );
+      }
+      console.warn(
+        '[Shopier] API anahtarları eksik — .env.local dosyasını kontrol edin. ' +
+          '(Geliştirme modunda uyarı, production’da hata verir.)'
+      );
     }
   }
 

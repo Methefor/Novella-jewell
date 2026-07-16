@@ -1,5 +1,7 @@
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
 import StoreHydration from '@/components/common/StoreHydration';
 import ToastContainer from '@/components/common/Toast';
+import CookieBanner from '@/components/legal/CookieBanner';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import PageTransition from '@/components/layout/PageTransition';
@@ -53,9 +55,10 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(SITE.url),
-  alternates: {
-    canonical: '/',
-  },
+  // ⚠️ Buraya `alternates.canonical` KOYMA.
+  // Next.js metadata'yı parent'tan miras verir; layout'a canonical konursa
+  // kendi canonical'ını tanımlamayan her sayfa ana sayfayı işaret eder ve
+  // Google o sayfaları indeksten düşürür. Canonical her sayfada ayrı verilir.
   openGraph: {
     type: 'website',
     locale: 'tr_TR',
@@ -64,21 +67,17 @@ export const metadata: Metadata = {
     description:
       '316L paslanmaz çelik takılar. El seçimi bilezik, küpe, yüzük ve kolye koleksiyonları. Suya dayanıklı, alerji yapmaz.',
     siteName: 'NOVELLA',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'NOVELLA Takı Koleksiyonu',
-      },
-    ],
+    // images YOK — src/app/opengraph-image.tsx zaten dinamik OG görseli üretiyor
+    // ve dosya konvansiyonu bu alanı otomatik doldurur. Buraya elle
+    // '/og-image.jpg' yazılmıştı ama o dosya public/ içinde hiç yoktu → 404.
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NOVELLA - Her Parça Bir Hikaye',
-    description: 'Butik takı koleksiyonları ile her parça bir hikaye.',
-    images: ['/og-image.jpg'],
-    creator: '@novella.tr',
+    title: 'NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet',
+    description:
+      '316L paslanmaz çelik takılar. Suya dayanıklı, alerji yapmaz, hediye kutusunda.',
+    // images YOK — aynı sebep. Elle verilen değer dosya konvansiyonunu ezip
+    // 404'e gidiyordu.
   },
   robots: {
     index: true,
@@ -94,12 +93,10 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
-  verification: {
-    google: 'your-google-verification-code',
-  },
+  // verification: Search Console'a kaydolunca gerçek kodu buraya ekle.
+  // Placeholder ('your-google-verification-code') sahte meta tag basıyordu.
 };
 
 /**
@@ -119,7 +116,9 @@ const orgJsonLd = {
   name: SITE.name,
   url: SITE.url,
   logo: `${SITE.url}/Yatay%20logo%20banner.png`,
-  image: `${SITE.url}/og-image.jpg`,
+  // image: dinamik OG görselini gösterir. Eskiden /og-image.jpg yazıyordu
+  // ama o dosya hiç yoktu (404).
+  image: `${SITE.url}/opengraph-image`,
   slogan: SITE.tagline,
   description:
     '316L cerrahi çelikten üretilen, kararmayan ve alerji yapmayan el seçimi takılar.',
@@ -158,6 +157,9 @@ export default function RootLayout({
         </main>
         <Footer />
         <ToastContainer />
+        {/* KVKK çerez onayı — GA yalnızca burada "Kabul et" seçilirse yüklenir. */}
+        <CookieBanner />
+        <GoogleAnalytics />
       </body>
     </html>
   );

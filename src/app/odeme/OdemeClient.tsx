@@ -1,11 +1,11 @@
 'use client';
 
-import type { Order, OrderItem } from '@/lib/checkout/types';
 import { SHIPPING } from '@/lib/config';
 import { ILLER } from '@/lib/turkiye';
 import { useCartStore } from '@/store/cartStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -22,19 +22,21 @@ const schema = z.object({
   district: z.string().min(2, 'İlçe girin'),
   address: z.string().min(10, 'Adres en az 10 karakter olmalı'),
   note: z.string().optional(),
+  // Mesafeli Sözleşmeler Yönetmeliği m.6 — ön bilgilendirmenin teyidi zorunlu.
+  // Onay alınmazsa sözleşme kurulmamış sayılır. Sunucu da bunu ayrıca şart koşar.
+  sozlesme: z.literal(true, {
+    message: 'Devam etmek için sözleşmeleri onaylamalısınız.',
+  }),
+  kvkk: z.literal(true, {
+    message: 'Devam etmek için aydınlatma metnini onaylamalısınız.',
+  }),
 });
 
 type FormData = z.infer<typeof schema>;
 
-function generateOrderId() {
-  const ts = Date.now().toString(36).toUpperCase();
-  const rnd = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return `NV-${ts}-${rnd}`;
-}
-
 export default function OdemeClient() {
   const router = useRouter();
-  const { items, subtotal, shippingCost, total, clearCart } = useCartStore();
+  const { items, subtotal, shippingCost, total } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,16 +56,16 @@ export default function OdemeClient() {
     setLoading(true);
     setError(null);
 
-    const orderItems: OrderItem[] = items.map((i) => ({
-      productId: i.product.id,
-      name: i.product.name,
-      price: i.product.price,
-      quantity: i.quantity,
-    }));
-
-    const order: Order = {
-      id: generateOrderId(),
-      items: orderItems,
+    // Sunucuya YALNIZCA ne istediğimizi gönderiyoruz.
+    // Fiyat/kargo/toplam sunucuda PRODUCTS'tan yeniden hesaplanır —
+    // buradan fiyat göndermek güvenlik açığıydı, bkz. lib/checkout/buildOrder.ts
+    const payload = {
+      items: items.map((i) => ({
+        productId: i.product.id,
+        variantId: i.variant.id,
+        quantity: i.quantity,
+        customization: i.customization,
+      })),
       customer: {
         name: data.name,
         surname: data.surname,
@@ -74,30 +76,28 @@ export default function OdemeClient() {
         district: data.district,
         note: data.note,
       },
-      subtotal,
-      shippingCost,
-      total,
-      currency: 'TRY',
-      createdAt: new Date().toISOString(),
+      consent: { sozlesme: data.sozlesme, kvkk: data.kvkk },
     };
 
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order }),
+        body: JSON.stringify(payload),
       });
-
-      if (!res.ok) throw new Error('Ödeme başlatılamadı.');
 
       const result = await res.json();
 
+      if (!res.ok) {
+        throw new Error(result?.error ?? 'Ödeme başlatılamadı.');
+      }
+
+      // NOT: Sepet burada TEMİZLENMEZ. Müşteri Shopier'de vazgeçer veya ödeme
+      // düşerse sepetini kaybetmemeli. Temizleme /odeme/sonuc sayfasında,
+      // yalnızca ödeme başarılıysa yapılır.
       if (result.type === 'redirect') {
-        clearCart();
         window.location.href = result.redirectUrl;
       } else if (result.type === 'form') {
-        clearCart();
-        // Shopier form HTML'i yeni bir div'e ekle ve otomatik submit et
         const container = document.createElement('div');
         container.innerHTML = result.formHtml;
         document.body.appendChild(container);
@@ -277,12 +277,72 @@ export default function OdemeClient() {
                 </div>
               </div>
 
+              {/* Yasal onaylar — Mesafeli Sözleşmeler Yönetmeliği m.6 gereği
+                  zorunlu. Onay olmadan sözleşme kurulmamış sayılır. */}
+              <div className="mt-6 pt-5 border-t border-black/8 space-y-3">
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    {...register('sozlesme')}
+                    className="mt-0.5 w-4 h-4 flex-shrink-0 rounded border-black/25 text-gold focus:ring-gold focus:ring-offset-0 cursor-pointer"
+                  />
+                  <span className="text-xs text-black/60 leading-relaxed">
+                    <Link
+                      href="/on-bilgilendirme"
+                      target="_blank"
+                      className="text-black underline underline-offset-2 hover:text-gold-dark"
+                    >
+                      Ön Bilgilendirme Formu
+                    </Link>{' '}
+                    ve{' '}
+                    <Link
+                      href="/mesafeli-satis-sozlesmesi"
+                      target="_blank"
+                      className="text-black underline underline-offset-2 hover:text-gold-dark"
+                    >
+                      Mesafeli Satış Sözleşmesi
+                    </Link>
+                    &apos;ni okudum, onaylıyorum.
+                  </span>
+                </label>
+                {errors.sozlesme && (
+                  <p className="text-xs text-red-600 pl-7">
+                    {errors.sozlesme.message}
+                  </p>
+                )}
+
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    {...register('kvkk')}
+                    className="mt-0.5 w-4 h-4 flex-shrink-0 rounded border-black/25 text-gold focus:ring-gold focus:ring-offset-0 cursor-pointer"
+                  />
+                  <span className="text-xs text-black/60 leading-relaxed">
+                    Kişisel verilerimin siparişimin işlenmesi amacıyla
+                    kullanılmasına ilişkin{' '}
+                    <Link
+                      href="/kvkk"
+                      target="_blank"
+                      className="text-black underline underline-offset-2 hover:text-gold-dark"
+                    >
+                      KVKK Aydınlatma Metni
+                    </Link>
+                    &apos;ni okudum.
+                  </span>
+                </label>
+                {errors.kvkk && (
+                  <p className="text-xs text-red-600 pl-7">
+                    {errors.kvkk.message}
+                  </p>
+                )}
+              </div>
+
               <button
                 type="submit"
                 form="odeme-form"
                 disabled={loading}
                 onClick={handleSubmit(onSubmit)}
-                className="btn-primary w-full flex items-center justify-center gap-2 mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="btn-primary w-full flex items-center justify-center gap-2 mt-5 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>

@@ -14,6 +14,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: base, lastModified: now, changeFrequency: 'daily', priority: 1 },
     { url: `${base}/koleksiyonlar`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${base}/hikayemiz`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${base}/kargo`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${base}/iade`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${base}/iletisim`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${base}/gizlilik`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${base}/kvkk`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${base}/cerez-politikasi`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    // NOT: /mesafeli-satis-sozlesmesi ve /on-bilgilendirme sitemap'e girmez —
+    // ikisi de noindex; arama sonucunda çıkmaları istenmiyor, sipariş akışının
+    // parçası olarak erişilebilir olmaları yeterli.
   ];
 
   // Kategori / vitrin sayfaları — /collections/[category]

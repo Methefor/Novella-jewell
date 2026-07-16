@@ -69,25 +69,22 @@ export default async function UrunPage({ params }: Props) {
     url: pageUrl,
     ...(absoluteImage ? { image: absoluteImage } : {}),
     brand: { '@type': 'Brand', name: 'NOVELLA' },
-    ...(product.rating && {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: product.rating,
-        reviewCount: product.reviewCount,
-        bestRating: 5,
-        worstRating: 1,
-      },
-    }),
+    itemCondition: 'https://schema.org/NewCondition',
+    // ⚠️ aggregateRating BİLEREK YOK.
+    // src/data/products.ts içindeki rating/reviewCount değerleri elle yazılmış
+    // örnek verilerdir — sitede gerçek bir yorum sistemi yok. Gerçek olmayan
+    // review markup'ı Google'ın structured data politikasını ihlal eder ve
+    // manuel işlem (ceza) sebebidir. Gerçek yorum toplamaya başlayınca
+    // aggregateRating'i buraya GERÇEK verilerden hesaplayarak ekle.
     offers: {
       '@type': 'Offer',
       priceCurrency: 'TRY',
-      price: product.price,
+      price: product.price.toFixed(2),
       url: pageUrl,
-      ...(product.compareAtPrice && {
-        priceValidUntil: new Date(
-          Date.now() + 30 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-      }),
+      // Google tüm offer'larda priceValidUntil bekler (sadece indirimlilerde değil).
+      priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0],
       availability: product.variants.some((v) => v.stock > 0)
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',

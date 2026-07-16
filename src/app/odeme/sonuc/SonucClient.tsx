@@ -1,9 +1,11 @@
 'use client';
 
+import { useCartStore } from '@/store/cartStore';
 import { motion } from 'framer-motion';
 import { CheckCircle2, MessageCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -12,8 +14,16 @@ export default function SonucClient() {
   const status = searchParams.get('status');
   const orderId = searchParams.get('orderId') ?? '';
   const reason = searchParams.get('reason');
+  const clearCart = useCartStore((s) => s.clearCart);
 
   const isSuccess = status === 'success';
+
+  // Sepet YALNIZCA ödeme başarılıysa temizlenir.
+  // Eskiden Shopier'e yönlenmeden önce temizleniyordu; müşteri ödemeden
+  // vazgeçtiğinde sepeti boş dönüyor ve sipariş tamamen kaybediliyordu.
+  useEffect(() => {
+    if (isSuccess) clearCart();
+  }, [isSuccess, clearCart]);
 
   const waText = encodeURIComponent(
     `Merhaba! Siparişim tamamlandı. Sipariş no: ${orderId}`

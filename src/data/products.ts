@@ -24,7 +24,6 @@ export const PRODUCTS: Product[] = [
     features: ['Suya dayanıklı', 'Hipoalerjenik', '316L paslanmaz çelik'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: true,
-    rating: 4.8, reviewCount: 45,
     createdAt: new Date('2025-01-15'), updatedAt: new Date('2025-01-15'),
   },
   {
@@ -41,7 +40,6 @@ export const PRODUCTS: Product[] = [
     features: ['Suya dayanıklı', 'Ayarlanabilir uzunluk', 'Gümüş kaplama'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 67,
     createdAt: new Date('2024-12-10'), updatedAt: new Date('2024-12-10'),
   },
   {
@@ -58,7 +56,6 @@ export const PRODUCTS: Product[] = [
     features: ['3 katmanlı tasarım', 'Ayarlanabilir', 'Suya dayanıklı'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: true,
-    rating: 4.7, reviewCount: 32,
     createdAt: new Date('2025-01-20'), updatedAt: new Date('2025-01-20'),
   },
   {
@@ -75,7 +72,6 @@ export const PRODUCTS: Product[] = [
     features: ['CZ taş', 'Suya dayanıklı', 'Hediye kutusunda'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 56,
     createdAt: new Date('2024-11-20'), updatedAt: new Date('2024-11-20'),
   },
 
@@ -96,7 +92,6 @@ export const PRODUCTS: Product[] = [
     features: ['3\'lü set', 'Ayarlanabilir', 'Suya dayanıklı'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 78,
     createdAt: new Date('2025-01-18'), updatedAt: new Date('2025-01-18'),
   },
   {
@@ -113,7 +108,6 @@ export const PRODUCTS: Product[] = [
     features: ['316L paslanmaz çelik', 'Ayarlanabilir', 'Unisex'],
     material: 'celik',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 65,
     createdAt: new Date('2024-12-05'), updatedAt: new Date('2024-12-05'),
   },
   {
@@ -130,7 +124,6 @@ export const PRODUCTS: Product[] = [
     features: ['Minimal tasarım', 'Günlük kullanım', 'Suya dayanıklı'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: true,
-    rating: 4.7, reviewCount: 43,
     createdAt: new Date('2025-01-12'), updatedAt: new Date('2025-01-12'),
   },
   {
@@ -147,7 +140,6 @@ export const PRODUCTS: Product[] = [
     features: ['Suya dayanıklı', 'Ayarlanabilir', 'Zarif'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 31,
     createdAt: new Date('2025-01-25'), updatedAt: new Date('2025-01-25'),
   },
   {
@@ -164,7 +156,6 @@ export const PRODUCTS: Product[] = [
     features: ['Kristal taş', 'Hipoalerjenik', 'Suya dayanıklı'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 52,
     createdAt: new Date('2024-12-20'), updatedAt: new Date('2024-12-20'),
   },
   {
@@ -181,7 +172,6 @@ export const PRODUCTS: Product[] = [
     features: ['Özel tasarım', 'Renkli boncuklar', 'Unisex'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: true,
-    rating: 4.6, reviewCount: 28,
     createdAt: new Date('2025-01-30'), updatedAt: new Date('2025-01-30'),
   },
   {
@@ -198,7 +188,6 @@ export const PRODUCTS: Product[] = [
     features: ['Charm eklenebilir', 'Kişiselleştirilebilir', 'Hediye kutusunda'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: true,
-    rating: 4.9, reviewCount: 67,
     createdAt: new Date('2025-01-10'), updatedAt: new Date('2025-01-10'),
   },
   {
@@ -215,7 +204,6 @@ export const PRODUCTS: Product[] = [
     features: ['316L paslanmaz çelik', 'Geometrik desen', 'Unisex'],
     material: 'celik',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 39,
     createdAt: new Date('2024-11-15'), updatedAt: new Date('2024-11-15'),
   },
   {
@@ -232,7 +220,6 @@ export const PRODUCTS: Product[] = [
     features: ['Yaprak motifi', 'Doğa temalı', 'Ayarlanabilir'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 44,
     createdAt: new Date('2024-12-01'), updatedAt: new Date('2024-12-01'),
   },
   {
@@ -249,7 +236,6 @@ export const PRODUCTS: Product[] = [
     features: ['Çift sıra', 'Rose gold', 'Zarif tasarım'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 33,
     createdAt: new Date('2025-01-18'), updatedAt: new Date('2025-01-18'),
   },
   {
@@ -266,7 +252,6 @@ export const PRODUCTS: Product[] = [
     features: ['Günlük kullanım', 'İnce tasarım', 'Suya dayanıklı'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 89,
     createdAt: new Date('2024-10-20'), updatedAt: new Date('2024-10-20'),
   },
   {
@@ -283,7 +268,6 @@ export const PRODUCTS: Product[] = [
     features: ['Mermer desen', 'Özel tasarım', 'Paslanmaz'],
     material: 'celik',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 26,
     createdAt: new Date('2025-02-01'), updatedAt: new Date('2025-02-01'),
   },
   {
@@ -300,7 +284,6 @@ export const PRODUCTS: Product[] = [
     features: ['Örgü tasarım', 'Üç sıra', 'Lüks görünüm'],
     material: 'rose-gold-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 57,
     createdAt: new Date('2024-11-25'), updatedAt: new Date('2024-11-25'),
   },
   {
@@ -317,7 +300,6 @@ export const PRODUCTS: Product[] = [
     features: ['Yıldız motifi', 'Romantik', 'Suya dayanıklı'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 41,
     createdAt: new Date('2025-01-22'), updatedAt: new Date('2025-01-22'),
   },
   {
@@ -334,7 +316,6 @@ export const PRODUCTS: Product[] = [
     features: ['Kalın zincir', 'Unisex', '316L çelik'],
     material: 'celik',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.6, reviewCount: 35,
     createdAt: new Date('2024-12-10'), updatedAt: new Date('2024-12-10'),
   },
   {
@@ -351,7 +332,6 @@ export const PRODUCTS: Product[] = [
     features: ['Klasik tasarım', 'Zamansız', 'Günlük'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 73,
     createdAt: new Date('2024-10-10'), updatedAt: new Date('2024-10-10'),
   },
   {
@@ -368,7 +348,6 @@ export const PRODUCTS: Product[] = [
     features: ['CZ taş', 'Pırlanta görünüm', 'Hediye kutusunda'],
     material: 'gumus-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 84,
     createdAt: new Date('2025-01-05'), updatedAt: new Date('2025-01-05'),
   },
   {
@@ -385,7 +364,6 @@ export const PRODUCTS: Product[] = [
     features: ["4'lü set", 'Farklı kalınlıklar', 'Ayarlanabilir'],
     material: 'rose-gold-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 42,
     createdAt: new Date('2024-12-15'), updatedAt: new Date('2024-12-15'),
   },
   {
@@ -402,7 +380,6 @@ export const PRODUCTS: Product[] = [
     features: ['Ay-yıldız motifi', 'Romantik', 'Hediye kutusunda'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 49,
     createdAt: new Date('2025-01-28'), updatedAt: new Date('2025-01-28'),
   },
   {
@@ -419,7 +396,6 @@ export const PRODUCTS: Product[] = [
     features: ['El işçiliği', 'Örgü teknik', 'Özel tasarım'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 61,
     createdAt: new Date('2025-01-08'), updatedAt: new Date('2025-01-08'),
   },
   {
@@ -436,7 +412,6 @@ export const PRODUCTS: Product[] = [
     features: ['Kübik zirkon', 'Zarif', 'Hipoalerjenik'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 56,
     createdAt: new Date('2024-11-05'), updatedAt: new Date('2024-11-05'),
   },
   {
@@ -453,7 +428,6 @@ export const PRODUCTS: Product[] = [
     features: ['Minimal tasarım', 'Bar motifi', 'Günlük kullanım'],
     material: 'rose-gold-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 38,
     createdAt: new Date('2024-12-05'), updatedAt: new Date('2024-12-05'),
   },
   {
@@ -470,7 +444,6 @@ export const PRODUCTS: Product[] = [
     features: ['Topaz taş', 'Renkli koleksiyon', 'Özel tasarım'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 30,
     createdAt: new Date('2025-02-05'), updatedAt: new Date('2025-02-05'),
   },
   {
@@ -487,7 +460,6 @@ export const PRODUCTS: Product[] = [
     features: ['Kelebek motifi', 'Vintage stil', 'Romantik'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 34,
     createdAt: new Date('2024-11-20'), updatedAt: new Date('2024-11-20'),
   },
   {
@@ -504,7 +476,6 @@ export const PRODUCTS: Product[] = [
     features: ['Sonsuzluk sembolü', 'Anlamlı hediye', 'Suya dayanıklı'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 78,
     createdAt: new Date('2024-10-25'), updatedAt: new Date('2024-10-25'),
   },
   {
@@ -521,7 +492,6 @@ export const PRODUCTS: Product[] = [
     features: ['Çiçek motifi', 'Romantik', 'Hafif'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 45,
     createdAt: new Date('2025-01-15'), updatedAt: new Date('2025-01-15'),
   },
   {
@@ -538,7 +508,6 @@ export const PRODUCTS: Product[] = [
     features: ['Elmas kesim', 'Işıltılı', '316L çelik'],
     material: 'celik',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 37,
     createdAt: new Date('2024-12-20'), updatedAt: new Date('2024-12-20'),
   },
   {
@@ -555,7 +524,6 @@ export const PRODUCTS: Product[] = [
     features: ['Bohem stil', 'Özgür ruh', 'Ayarlanabilir'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 29,
     createdAt: new Date('2025-02-10'), updatedAt: new Date('2025-02-10'),
   },
   {
@@ -572,7 +540,6 @@ export const PRODUCTS: Product[] = [
     features: ['Sade tasarım', 'Evrensel uyum', 'Suya dayanıklı'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 63,
     createdAt: new Date('2024-11-10'), updatedAt: new Date('2024-11-10'),
   },
   {
@@ -589,7 +556,6 @@ export const PRODUCTS: Product[] = [
     features: ['Örgü dokulu', 'El işçiliği', 'Özel tasarım'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 55,
     createdAt: new Date('2025-01-20'), updatedAt: new Date('2025-01-20'),
   },
   {
@@ -606,7 +572,6 @@ export const PRODUCTS: Product[] = [
     features: ['CZ taş', '316L çelik', 'Modern'],
     material: 'celik',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 41,
     createdAt: new Date('2024-12-18'), updatedAt: new Date('2024-12-18'),
   },
   {
@@ -623,7 +588,6 @@ export const PRODUCTS: Product[] = [
     features: ['Mercan taş', 'Renkli koleksiyon', 'Çarpıcı'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 27,
     createdAt: new Date('2025-02-15'), updatedAt: new Date('2025-02-15'),
   },
   {
@@ -640,7 +604,6 @@ export const PRODUCTS: Product[] = [
     features: ['Spiral tasarım', 'Eşsiz', 'Yaratıcı'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 48,
     createdAt: new Date('2024-12-12'), updatedAt: new Date('2024-12-12'),
   },
   {
@@ -657,7 +620,6 @@ export const PRODUCTS: Product[] = [
     features: ['Kelebek motifi', 'Detaylı işçilik', 'Zarif'],
     material: 'gumus-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 32,
     createdAt: new Date('2025-01-25'), updatedAt: new Date('2025-01-25'),
   },
   {
@@ -674,7 +636,6 @@ export const PRODUCTS: Product[] = [
     features: ['Çok renkli taş', 'Çiçek bahçesi', 'Özel koleksiyon'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 59,
     createdAt: new Date('2025-01-12'), updatedAt: new Date('2025-01-12'),
   },
   {
@@ -691,7 +652,6 @@ export const PRODUCTS: Product[] = [
     features: ['Dokuma tekniği', 'Özel yapım', 'Dayanıklı'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 36,
     createdAt: new Date('2024-12-22'), updatedAt: new Date('2024-12-22'),
   },
   {
@@ -708,7 +668,6 @@ export const PRODUCTS: Product[] = [
     features: ['Zincir çerçeve', 'Özgün tasarım', 'Suya dayanıklı'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 29,
     createdAt: new Date('2024-12-08'), updatedAt: new Date('2024-12-08'),
   },
   {
@@ -725,7 +684,6 @@ export const PRODUCTS: Product[] = [
     features: ["3'lü set", 'İnce tasarım', 'Çok yönlü'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 71,
     createdAt: new Date('2025-01-08'), updatedAt: new Date('2025-01-08'),
   },
   {
@@ -742,7 +700,6 @@ export const PRODUCTS: Product[] = [
     features: ['Altın boncuk', 'Şık görünüm', 'Hafif'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 33,
     createdAt: new Date('2024-11-28'), updatedAt: new Date('2024-11-28'),
   },
   {
@@ -759,7 +716,6 @@ export const PRODUCTS: Product[] = [
     features: ['Taş şerit', '316L çelik', 'Göz alıcı'],
     material: 'celik',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 38,
     createdAt: new Date('2025-01-30'), updatedAt: new Date('2025-01-30'),
   },
   {
@@ -776,7 +732,6 @@ export const PRODUCTS: Product[] = [
     features: ['Zümrüt taş', 'Özel koleksiyon', 'Nadir'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 47,
     createdAt: new Date('2025-02-01'), updatedAt: new Date('2025-02-01'),
   },
   {
@@ -793,7 +748,6 @@ export const PRODUCTS: Product[] = [
     features: ['İnci detay', 'Klasik zarafet', 'Modern çizgi'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 64,
     createdAt: new Date('2024-12-28'), updatedAt: new Date('2024-12-28'),
   },
   {
@@ -810,7 +764,6 @@ export const PRODUCTS: Product[] = [
     features: ['İsim yazılabilir', 'Plaka detay', 'Kişiselleştirilebilir'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: true,
-    rating: 4.8, reviewCount: 53,
     createdAt: new Date('2025-01-18'), updatedAt: new Date('2025-01-18'),
   },
   {
@@ -827,7 +780,6 @@ export const PRODUCTS: Product[] = [
     features: ['Klasik tasarım', 'Zamansız', 'Her tarz'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 86,
     createdAt: new Date('2024-10-15'), updatedAt: new Date('2024-10-15'),
   },
   {
@@ -844,7 +796,6 @@ export const PRODUCTS: Product[] = [
     features: ['Deniz kabuk motifi', 'Yaz koleksiyonu', 'Hafif'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 31,
     createdAt: new Date('2025-02-08'), updatedAt: new Date('2025-02-08'),
   },
   {
@@ -861,7 +812,6 @@ export const PRODUCTS: Product[] = [
     features: ['Doğal taş', 'Eşsiz desen', 'Koleksiyon'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 42,
     createdAt: new Date('2025-02-12'), updatedAt: new Date('2025-02-12'),
   },
   {
@@ -878,7 +828,6 @@ export const PRODUCTS: Product[] = [
     features: ['İşlemeli desen', 'Antik görünüm', 'Özel'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 28,
     createdAt: new Date('2024-12-02'), updatedAt: new Date('2024-12-02'),
   },
   {
@@ -895,7 +844,6 @@ export const PRODUCTS: Product[] = [
     features: ['Yuvarlak charm', 'Kişiselleştirilebilir', 'Rose gold'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: true,
-    rating: 4.8, reviewCount: 36,
     createdAt: new Date('2025-01-28'), updatedAt: new Date('2025-01-28'),
   },
   {
@@ -912,7 +860,6 @@ export const PRODUCTS: Product[] = [
     features: ['Parlak yüzey', 'Şerit tasarım', 'Lüks'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 54,
     createdAt: new Date('2024-12-28'), updatedAt: new Date('2024-12-28'),
   },
   {
@@ -929,7 +876,6 @@ export const PRODUCTS: Product[] = [
     features: ['Sınırlı üretim', 'Özel koleksiyon', 'Hediye kutusunda'],
     material: 'celik',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 5.0, reviewCount: 19,
     createdAt: new Date('2025-02-20'), updatedAt: new Date('2025-02-20'),
   },
 
@@ -950,7 +896,6 @@ export const PRODUCTS: Product[] = [
     features: ['Hipoalerjenik', 'Hafif', 'Suya dayanıklı'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 92,
     createdAt: new Date('2024-10-15'), updatedAt: new Date('2024-10-15'),
   },
   {
@@ -967,7 +912,6 @@ export const PRODUCTS: Product[] = [
     features: ['CZ taş', 'Özel davet uygun', 'Hediye kutusunda'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 54,
     createdAt: new Date('2025-01-22'), updatedAt: new Date('2025-01-22'),
   },
   {
@@ -984,7 +928,6 @@ export const PRODUCTS: Product[] = [
     features: ['Günlük kullanım', 'Hipoalerjenik', 'Hafif'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 87,
     createdAt: new Date('2024-11-10'), updatedAt: new Date('2024-11-10'),
   },
   {
@@ -1001,7 +944,6 @@ export const PRODUCTS: Product[] = [
     features: ['Damla tasarım', 'Hafif', 'Hipoalerjenik'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 38,
     createdAt: new Date('2025-01-20'), updatedAt: new Date('2025-01-20'),
   },
   {
@@ -1018,7 +960,6 @@ export const PRODUCTS: Product[] = [
     features: ['Çiçek motifi', 'Egzotik', 'Suya dayanıklı'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 76,
     createdAt: new Date('2024-11-15'), updatedAt: new Date('2024-11-15'),
   },
   {
@@ -1035,7 +976,6 @@ export const PRODUCTS: Product[] = [
     features: ['Fantezi tasarım', 'Özel davet', 'Göz alıcı'],
     material: 'gumus-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 44,
     createdAt: new Date('2025-01-15'), updatedAt: new Date('2025-01-15'),
   },
   {
@@ -1052,7 +992,6 @@ export const PRODUCTS: Product[] = [
     features: ['Tribal desen', 'Etnik stil', 'El işçiliği görünüm'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 31,
     createdAt: new Date('2024-12-10'), updatedAt: new Date('2024-12-10'),
   },
   {
@@ -1069,7 +1008,6 @@ export const PRODUCTS: Product[] = [
     features: ['CZ taş', 'Elmas efekti', 'Lüks görünüm'],
     material: 'gumus-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 68,
     createdAt: new Date('2025-01-08'), updatedAt: new Date('2025-01-08'),
   },
   {
@@ -1086,7 +1024,6 @@ export const PRODUCTS: Product[] = [
     features: ['Minimal tasarım', 'Günlük kullanım', 'Hafif'],
     material: 'rose-gold-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 83,
     createdAt: new Date('2024-10-20'), updatedAt: new Date('2024-10-20'),
   },
   {
@@ -1103,7 +1040,6 @@ export const PRODUCTS: Product[] = [
     features: ['Özel koleksiyon', 'Türk tasarım', 'Hediye kutusu'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 57,
     createdAt: new Date('2025-01-28'), updatedAt: new Date('2025-01-28'),
   },
   {
@@ -1120,7 +1056,6 @@ export const PRODUCTS: Product[] = [
     features: ['İnci detay', 'Paris tasarım', 'Hediye kutusunda'],
     material: 'gumus-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 42,
     createdAt: new Date('2025-02-10'), updatedAt: new Date('2025-02-10'),
   },
 
@@ -1141,7 +1076,6 @@ export const PRODUCTS: Product[] = [
     features: ['Ayarlanabilir beden', 'CZ taş', 'Suya dayanıklı'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 38,
     createdAt: new Date('2025-01-08'), updatedAt: new Date('2025-01-08'),
   },
   {
@@ -1158,7 +1092,6 @@ export const PRODUCTS: Product[] = [
     features: ['316L çelik', 'Ayarlanabilir', 'Günlük kullanım'],
     material: 'celik',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 61,
     createdAt: new Date('2024-12-01'), updatedAt: new Date('2024-12-01'),
   },
   {
@@ -1175,7 +1108,6 @@ export const PRODUCTS: Product[] = [
     features: ['Rose gold kaplama', 'Ayarlanabilir', 'Özel tasarım'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: true,
-    rating: 4.9, reviewCount: 72,
     createdAt: new Date('2025-01-14'), updatedAt: new Date('2025-01-14'),
   },
   {
@@ -1192,7 +1124,6 @@ export const PRODUCTS: Product[] = [
     features: ['Bohem stil', 'Ayarlanabilir', 'Suya dayanıklı'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 35,
     createdAt: new Date('2025-01-22'), updatedAt: new Date('2025-01-22'),
   },
   {
@@ -1209,7 +1140,6 @@ export const PRODUCTS: Product[] = [
     features: ['Fransız moda', 'İnce tasarım', 'Zarif'],
     material: 'altin-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 62,
     createdAt: new Date('2024-11-20'), updatedAt: new Date('2024-11-20'),
   },
   {
@@ -1226,7 +1156,6 @@ export const PRODUCTS: Product[] = [
     features: ['Swarovski kristal', 'Parlak', 'Özel davet'],
     material: 'gumus-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 79,
     createdAt: new Date('2025-01-10'), updatedAt: new Date('2025-01-10'),
   },
   {
@@ -1243,7 +1172,6 @@ export const PRODUCTS: Product[] = [
     features: ['Düğüm motifi', 'Romantik', 'Hediye uygun'],
     material: 'rose-gold-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 48,
     createdAt: new Date('2024-12-05'), updatedAt: new Date('2024-12-05'),
   },
   {
@@ -1260,7 +1188,6 @@ export const PRODUCTS: Product[] = [
     features: ['Merkez taş', 'Nişan tarzı', 'Hediye kutusu'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: true,
-    rating: 4.9, reviewCount: 91,
     createdAt: new Date('2025-01-05'), updatedAt: new Date('2025-01-05'),
   },
   {
@@ -1277,7 +1204,6 @@ export const PRODUCTS: Product[] = [
     features: ['316L çelik', 'Minimal', 'Günlük kullanım'],
     material: 'celik',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 95,
     createdAt: new Date('2024-10-10'), updatedAt: new Date('2024-10-10'),
   },
   {
@@ -1294,7 +1220,6 @@ export const PRODUCTS: Product[] = [
     features: ['Yaprak motifi', 'Doğa ilhamlı', 'Zarif'],
     material: 'rose-gold-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 40,
     createdAt: new Date('2025-01-18'), updatedAt: new Date('2025-01-18'),
   },
   {
@@ -1311,7 +1236,6 @@ export const PRODUCTS: Product[] = [
     features: ['Tamtur taş', 'Eternity', 'Lüks'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: false,
-    rating: 4.9, reviewCount: 67,
     createdAt: new Date('2025-01-12'), updatedAt: new Date('2025-01-12'),
   },
   {
@@ -1328,7 +1252,6 @@ export const PRODUCTS: Product[] = [
     features: ['Antik stil', 'İşlemeli desen', 'Tarihi esinti'],
     material: 'gumus-kaplama',
     isNew: false, isBestSeller: false, isCustomizable: false,
-    rating: 4.7, reviewCount: 33,
     createdAt: new Date('2024-12-15'), updatedAt: new Date('2024-12-15'),
   },
   {
@@ -1345,7 +1268,6 @@ export const PRODUCTS: Product[] = [
     features: ['Çift halka', 'Sembolik', 'Hediye uygun'],
     material: 'rose-gold-kaplama',
     isNew: false, isBestSeller: true, isCustomizable: false,
-    rating: 4.8, reviewCount: 58,
     createdAt: new Date('2024-11-08'), updatedAt: new Date('2024-11-08'),
   },
   {
@@ -1362,7 +1284,6 @@ export const PRODUCTS: Product[] = [
     features: ['Büyük taş', 'Cocktail tarzı', 'Özel gece'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: false, isCustomizable: false,
-    rating: 4.8, reviewCount: 29,
     createdAt: new Date('2025-02-01'), updatedAt: new Date('2025-02-01'),
   },
   {
@@ -1379,7 +1300,6 @@ export const PRODUCTS: Product[] = [
     features: ['İsim yazılabilir', 'Kişiselleştirilebilir', 'Özel hediye'],
     material: 'altin-kaplama',
     isNew: true, isBestSeller: true, isCustomizable: true,
-    rating: 4.9, reviewCount: 82,
     createdAt: new Date('2025-01-25'), updatedAt: new Date('2025-01-25'),
   },
 ];

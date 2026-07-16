@@ -1,6 +1,8 @@
 'use client';
 
 import { COLLECTIONS } from '@/data/collections';
+import { SHIPPING } from '@/lib/config';
+import { CAYMA_SURESI_GUN } from '@/lib/legal';
 import { motion } from 'framer-motion';
 import { Droplets, Gift, ShieldCheck, Sparkles } from 'lucide-react';
 import Link from 'next/link';
@@ -319,8 +321,9 @@ export default function HikayemizClient() {
               className="font-sans font-light text-black/60 mb-9 text-balance"
               style={{ fontSize: '16px', lineHeight: 1.75 }}
             >
-              Bir parça seçin, biz kutusunu hazırlayalım. 500 ₺ üzeri
-              siparişlerde kargo bizden, 14 gün içinde koşulsuz iade.
+              Bir parça seçin, biz kutusunu hazırlayalım.{' '}
+              {SHIPPING.freeThreshold.toLocaleString('tr-TR')} ₺ üzeri
+              siparişlerde kargo bizden, {CAYMA_SURESI_GUN} gün cayma hakkı.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
