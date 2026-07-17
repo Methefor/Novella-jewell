@@ -7,7 +7,7 @@ import { CAYMA_SURESI_GUN } from '@/lib/legal';
 import { getRelatedProducts } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, MessageCircle, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -72,6 +72,10 @@ export default function ProductPageClient({ product, collection }: Props) {
   const [activeImg, setActiveImg] = useState(0);
   const [openAccordion, setOpenAccordion] = useState<string>('malzeme');
 
+  // Hareket azaltma tercihi açıksa yakınlaşma yapılmaz; geçiş yine de
+  // çapraz söner (sert kesme rahatsız edici olurdu), sadece hareket kalkar.
+  const galeriHareket = !useReducedMotion();
+
   const hasDiscount =
     product.compareAtPrice && product.compareAtPrice > product.price;
 
@@ -101,15 +105,20 @@ export default function ProductPageClient({ product, collection }: Props) {
                 {gallery.map((src, i) => (
                   <button
                     key={i}
+                    type="button"
                     onClick={() => setActiveImg(i)}
-                    className={`relative w-16 overflow-hidden border transition-colors duration-200 ${
-                      activeImg === i ? 'border-black' : 'border-transparent'
+                    aria-label={`${i + 1}. görseli göster`}
+                    aria-current={activeImg === i}
+                    className={`relative w-16 overflow-hidden rounded-sm border transition-all duration-300 ${
+                      activeImg === i
+                        ? 'border-black opacity-100'
+                        : 'border-transparent opacity-55 hover:opacity-90'
                     }`}
                     style={{ aspectRatio: '1/1' }}
                   >
                     <Image
                       src={src}
-                      alt={`${product.name} görsel ${i + 1}`}
+                      alt=""
                       fill
                       className="object-cover bg-[#F6F6F4]"
                       sizes="64px"
@@ -124,13 +133,37 @@ export default function ProductPageClient({ product, collection }: Props) {
               className="relative flex-1 overflow-hidden bg-[#F6F6F4]"
               style={{ aspectRatio: '1/1' }}
             >
-              <AnimatePresence mode="wait">
+              {/*
+                mode="wait" YOK — bilerek.
+                O ayar çıkan görselin tamamen kaybolmasını bekleyip sonra
+                yenisini getiriyordu: A soluyor → boş gri zemin görünüyor →
+                B beliriyor. Çapraz geçiş değil, arada göz kırpması olan bir
+                kesme. Şimdi ikisi aynı anda sahnede: biri sönerken diğeri
+                beliriyor, zemin hiç görünmüyor.
+              */}
+              <AnimatePresence initial={false}>
                 <motion.div
                   key={activeImg}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
+                  initial={
+                    galeriHareket ? { opacity: 0, scale: 1.06 } : { opacity: 0 }
+                  }
+                  animate={{ opacity: 1, scale: 1 }}
+                  /*
+                    Çıkan görsel TAM OPAK kalır, sonra bir anda kaldırılır.
+                    Sebep: ikisi aynı anda yarı saydam olursa arkadaki gri
+                    zemin ortada ~%25 sızar (0.5 üstüne 0.5 = 0.75 örtme).
+                    Krem zeminli fotoğraflarda fark edilmez ama koyu zeminli
+                    bileklik çekimlerinde gri bir titreme olarak görünür.
+                    Böylece yeni görsel eskisinin ÜSTÜNE belirir, zemin hiç
+                    devreye girmez.
+                  */
+                  exit={{ opacity: 0, transition: { duration: 0.01, delay: 0.5 } }}
+                  transition={{
+                    opacity: { duration: 0.5, ease: 'easeInOut' },
+                    // Yakınlaşma sönümlemeden uzun sürer: görsel yerine
+                    // oturmaya devam ederken geçiş çoktan bitmiş olur.
+                    scale: { duration: 1.1, ease },
+                  }}
                   className="absolute inset-0"
                 >
                   <Image
@@ -138,7 +171,9 @@ export default function ProductPageClient({ product, collection }: Props) {
                     alt={product.name}
                     fill
                     className="object-cover"
-                    priority
+                    // priority yalnızca ilk görselde: diğerleri kullanıcı
+                    // tıklayınca gerekiyor, sayfa açılışında indirmeye gerek yok.
+                    priority={activeImg === 0}
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 </motion.div>
