@@ -1,11 +1,12 @@
 'use client';
 
+import BedenRehberi from '@/components/product/BedenRehberi';
 import Lightbox from '@/components/product/Lightbox';
 import ProductCard from '@/components/product/ProductCard';
 import type { Collection } from '@/data/collections';
 import { SHIPPING } from '@/lib/config';
 import { CAYMA_SURESI_GUN } from '@/lib/legal';
-import { getRelatedProducts } from '@/lib/products';
+import { dusukStok, getRelatedProducts } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
@@ -73,6 +74,8 @@ export default function ProductPageClient({ product, collection }: Props) {
   const [activeImg, setActiveImg] = useState(0);
   const [openAccordion, setOpenAccordion] = useState<string>('malzeme');
   const [zoomAcik, setZoomAcik] = useState(false);
+
+  const stokBilgi = dusukStok(product);
 
   // Hareket azaltma tercihi açıksa yakınlaşma yapılmaz; geçiş yine de
   // çapraz söner (sert kesme rahatsız edici olurdu), sadece hareket kalkar.
@@ -316,6 +319,19 @@ export default function ProductPageClient({ product, collection }: Props) {
               )}
             </div>
 
+            {/* Düşük stok — yalnızca gerçekten az kaldıysa. Sayı GERÇEK stok. */}
+            {stokBilgi.goster && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold/60" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-gold" />
+                </span>
+                <span className="text-gold-dark font-medium">
+                  Son {stokBilgi.adet} adet
+                </span>
+              </div>
+            )}
+
             {/* CTA'lar */}
             <div className="flex flex-col gap-3">
               <button
@@ -335,6 +351,14 @@ export default function ProductPageClient({ product, collection }: Props) {
                 <MessageCircle className="w-4 h-4" />
                 WhatsApp ile Sipariş
               </a>
+
+              {/* Beden rehberi — yalnızca yüzükte. Online takıda en büyük
+                  iade sebebi ölçü tutmaması; rehber iadeyi düşürür. */}
+              {product.category === 'yuzuk' && (
+                <div className="pt-1">
+                  <BedenRehberi />
+                </div>
+              )}
             </div>
 
             {/* Kategori + Malzeme chips */}

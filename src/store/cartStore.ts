@@ -52,6 +52,30 @@ interface CartStore {
 const calculateShipping = (subtotal: number): number =>
   subtotal >= SHIPPING.freeThreshold ? 0 : SHIPPING.fee;
 
+/**
+ * items + discount'tan türetilen tüm değerleri hesaplar.
+ *
+ * Neden gerekli: persist yalnızca `items` ve `discount`'u saklıyor
+ * (partialize). Sayfa yenilenip rehydrate çalışınca ürünler geri geliyor ama
+ * subtotal/total/itemCount ilk değerlerinde (0) kalıyordu — sepette 799 ₺'lik
+ * ürün varken "Toplam: 0 ₺" görünüyordu. onRehydrateStorage bunu çağırarak
+ * türetilen alanları yeniden hesaplıyor.
+ */
+const turetilenler = (items: CartItem[], discount: number) => {
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0
+  );
+  const shippingCost = calculateShipping(subtotal);
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  return {
+    subtotal,
+    shippingCost,
+    itemCount,
+    total: subtotal + shippingCost - discount,
+  };
+};
+
 export const useCartStore = create<CartStore>()(
   devtools(
     persist(
@@ -255,6 +279,17 @@ export const useCartStore = create<CartStore>()(
           items: state.items,
           discount: state.discount,
         }),
+        // Rehydrate sonrası türetilen alanları (subtotal/total/itemCount)
+        // yeniden hesapla. Bunlar persist edilmiyor; hesaplanmazsa geri gelen
+        // sepette ürün görünür ama toplam 0 ₺ kalır.
+        onRehydrateStorage: () => (state) => {
+          if (!state) return;
+          const t = turetilenler(state.items, state.discount);
+          state.subtotal = t.subtotal;
+          state.shippingCost = t.shippingCost;
+          state.itemCount = t.itemCount;
+          state.total = t.total;
+        },
       }
     )
   )

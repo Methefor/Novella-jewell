@@ -1,5 +1,6 @@
 'use client';
 
+import { dusukStok } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
 import { motion } from 'framer-motion';
@@ -27,6 +28,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   const gallery = product.images ?? defaultVariant.images;
   const img1 = gallery[0];
   const img2 = gallery[1] ?? null;
+
+  const stokBilgi = dusukStok(product);
 
   const hasDiscount =
     product.compareAtPrice && product.compareAtPrice > product.price;
@@ -138,6 +141,13 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
         </div>
+
+        {/* Düşük stok — kıtlık sinyali, gerçek stokla */}
+        {stokBilgi.goster && (
+          <p className="text-[11px] text-gold-dark font-medium mt-1">
+            Son {stokBilgi.adet} adet
+          </p>
+        )}
       </div>
     </Link>
   );

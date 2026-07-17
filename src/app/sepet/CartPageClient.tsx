@@ -14,6 +14,11 @@ export default function CartPageClient() {
     useCartStore();
 
   const freeShippingLeft = Math.max(0, SHIPPING.freeThreshold - subtotal);
+  // İlerleme yüzdesi — drawer'daki çubukla aynı mantık.
+  const freeShippingPct = Math.min(
+    100,
+    (subtotal / SHIPPING.freeThreshold) * 100
+  );
 
   if (items.length === 0) {
     return (
@@ -159,10 +164,36 @@ export default function CartPageClient() {
                   </span>
                 </div>
 
-                {freeShippingLeft > 0 && (
-                  <p className="text-xs text-gold">
-                    {freeShippingLeft.toLocaleString('tr-TR')} ₺ daha ekleyin,
-                    kargo bedava
+                {/* Kargo çubuğu — drawer'la aynı görsel dil. Sadece metin
+                    yerine ilerleme gösterince "biraz daha ekleyeyim" hissi
+                    somutlaşıyor; sepet ortalamasını yükselten kanıtlı taktik. */}
+                {freeShippingLeft > 0 ? (
+                  <div className="pt-1">
+                    <p className="text-xs text-black/60 mb-1.5">
+                      <span className="font-medium text-gold-dark">
+                        {freeShippingLeft.toLocaleString('tr-TR')} ₺
+                      </span>{' '}
+                      daha ekleyin, kargo bedava
+                    </p>
+                    <div
+                      className="h-1 bg-black/8 rounded-full overflow-hidden"
+                      role="progressbar"
+                      aria-valuenow={Math.round(freeShippingPct)}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-label="Ücretsiz kargoya ilerleme"
+                    >
+                      <motion.div
+                        className="h-full bg-gold rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${freeShippingPct}%` }}
+                        transition={{ duration: 0.5, ease }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-gold-dark font-medium pt-1">
+                    Ücretsiz kargo kazandınız
                   </p>
                 )}
 
