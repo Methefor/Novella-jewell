@@ -418,6 +418,19 @@ export default function ProductPageClient({ product, collection }: Props) {
                 </div>
               ))}
             </div>
+
+            {/* SSS'e iç link — merak edilenlerin tamamı orada.
+                Not: FAQPage schema BİLEREK burada değil, /sss'te. Aynı jenerik
+                FAQ markup'ını 80 ürün sayfasına basmak yinelenen işaretleme
+                olur; Google 2023'ten beri FAQ zengin sonuçlarını zaten yalnızca
+                yetkili sitelerde gösteriyor. İç link ise güvenli SEO değeri. */}
+            <Link
+              href="/sss"
+              className="inline-flex items-center gap-1.5 mt-6 text-sm text-black/50 hover:text-gold-dark transition-colors"
+            >
+              Tüm sorular ve cevaplar
+              <span aria-hidden="true">→</span>
+            </Link>
           </motion.div>
         </div>
 

@@ -9,12 +9,10 @@ const quickLinks = [
 ];
 
 const helpLinks = [
+  { label: 'Sık Sorulan Sorular', href: '/sss' },
   { label: 'Kargo & Teslimat', href: '/kargo' },
   { label: 'İade & Cayma Hakkı', href: '/iade' },
   { label: 'İletişim', href: '/iletisim' },
-  // NOT: "Sık Sorulan Sorular" linki kaldırıldı — /#sss anchor'ı hiçbir
-  // sayfada yoktu, her sayfadan kırık bir yere gidiyordu. SSS sayfası
-  // yazılınca buraya geri eklenebilir.
 ];
 
 // 6563 sayılı e-ticaret kanunu ve KVKK gereği her sayfadan erişilebilir olmalı.

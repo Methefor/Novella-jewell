@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: base, lastModified: now, changeFrequency: 'daily', priority: 1 },
     { url: `${base}/koleksiyonlar`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${base}/hikayemiz`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${base}/sss`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/kargo`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${base}/iade`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${base}/iletisim`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
