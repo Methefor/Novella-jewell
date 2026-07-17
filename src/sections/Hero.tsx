@@ -50,7 +50,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
  *   çekilince aşağıdaki yol onunla değiştirilecek — başka hiçbir
  *   şeye dokunmaya gerek yok.
  */
-const HERO_WRIST: string | null = '/media/bileklik/bileklik-5.jpg';
+const HERO_WRIST: string | null = '/media/yuzuk/yuzuk-16c.jpg';
 
 /** MOD 2 yedeği — HERO_WRIST null olursa devreye girer. */
 const HERO_PRODUCT = '/media/bileklik/bileklik-1.jpg';

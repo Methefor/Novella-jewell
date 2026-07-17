@@ -1302,6 +1302,25 @@ export const PRODUCTS: Product[] = [
     isNew: true, isBestSeller: true, isCustomizable: true,
     createdAt: new Date('2025-01-25'), updatedAt: new Date('2025-01-25'),
   },
+  {
+    // ⚠️ FİYATI ONAYLA — 799 ₺ önerilen bir değer, gerçek fiyatını sen belirle.
+    // Öne çıkan katman (699–899 ₺): statement, taşlı, geometrik.
+    id: 'yuzuk-16',
+    name: 'Barcelona Ritm Altın Yüzük',
+    slug: 'barcelona-ritm-altin-yuzuk',
+    description:
+      'Geometrik üçgen deseni ve sıra taşlarıyla dikkat çeken altın kaplama yüzük. Günlük kullanıma uygun genişlikte, tek başına takıldığında bile tamamlanmış bir görünüm verir.',
+    collection: 'barcelona',
+    story: 'Ritim tekrar eder, zarafet kalır.',
+    category: 'yuzuk',
+    price: 799,
+    variants: [{ id: 'v1', color: 'altin', material: 'altin-kaplama', stock: 12, images: ['/media/yuzuk/yuzuk-16.jpg', '/media/yuzuk/yuzuk-16c.jpg'] }],
+    defaultVariant: 'v1',
+    features: ['Geometrik üçgen desen', 'Sıra taşlı', 'Suya dayanıklı', '316L paslanmaz çelik'],
+    material: 'altin-kaplama',
+    isNew: true, isBestSeller: false, isCustomizable: false,
+    createdAt: new Date('2026-07-17'), updatedAt: new Date('2026-07-17'),
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────

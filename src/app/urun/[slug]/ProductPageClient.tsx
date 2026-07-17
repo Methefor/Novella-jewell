@@ -91,7 +91,10 @@ export default function ProductPageClient({ product, collection }: Props) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease }}
-            className="flex gap-3"
+            // items-start ŞART: grid, bu sütunu sağdaki ürün bilgisi sütununun
+            // boyuna kadar geriyor. Geren yükseklik aspect-ratio'yu ezdiği için
+            // ana görsel 1:1 yerine 2:3'e dönüşüp yanlardan kırpılıyordu.
+            className="flex gap-3 items-start"
           >
             {/* Thumbnails */}
             {gallery.length > 1 && (
