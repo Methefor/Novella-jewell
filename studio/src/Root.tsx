@@ -1,6 +1,7 @@
 import React from 'react';
 import { Composition } from 'remotion';
 import { FORMAT_DIKEY, FORMAT_KARE } from './brand';
+import { HeroDongu, type HeroDonguProps } from './HeroDongu';
 import { UrunReklami, type UrunReklamiProps } from './UrunReklami';
 
 /**
@@ -17,6 +18,27 @@ import { UrunReklami, type UrunReklamiProps } from './UrunReklami';
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* ────────────────────────────────────────────────────────────
+          SİTE HERO DÖNGÜSÜ — yazısız, sessiz, sonsuz döner.
+          Reklamlardan ayrı: sitede metni sayfanın kendisi söylüyor,
+          videonun içine gömmek gereksiz tekrar olur.
+          Çıktı: ../public/media/video/hero-loop.mp4
+          ──────────────────────────────────────────────────────────── */}
+      <Composition
+        id="Site-HeroDongu"
+        component={HeroDongu}
+        durationInFrames={180} // 6 sn @30fps
+        fps={30}
+        width={900}
+        height={1200} // 3:4 — hero yuvasının oranı
+        defaultProps={
+          {
+            gorsel: 'media/yuzuk/yuzuk-16c.jpg',
+            gorselIkinci: 'media/yuzuk/yuzuk-17c.jpg',
+          } satisfies HeroDonguProps
+        }
+      />
+
       {/* ── Stockholm Nova Yıldız Yüzük — Reels/Story ── */}
       <Composition
         id="Reels-StockholmNova"

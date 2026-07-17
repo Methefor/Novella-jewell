@@ -52,6 +52,22 @@ const ease = [0.16, 1, 0.3, 1] as const;
  */
 const HERO_WRIST: string | null = '/media/yuzuk/yuzuk-16c.jpg';
 
+/**
+ * ── VİDEO MODU (HERO_WRIST'ten önceliklidir) ──
+ *
+ * Sessiz, yazısız, sonsuz dönen döngü. studio/ ile üretilir:
+ *   cd studio && npx remotion render src/index.ts Site-HeroDongu \
+ *     ../public/media/video/hero-loop.mp4 --crf=30
+ *
+ * Neden yazısız: Instagram reklamında marka adı, fiyat ve rozetler piksele
+ * gömülü. Sitede o bilgiler zaten HTML olarak var — videoya gömmek Google'ın
+ * okuyamayacağı, seçilemeyen bir tekrar olur.
+ *
+ * null yaparsan sessizce HERO_WRIST görseline döner.
+ */
+const HERO_VIDEO: string | null = '/media/video/hero-loop.mp4';
+const HERO_VIDEO_POSTER = '/media/video/hero-poster.jpg';
+
 /** MOD 2 yedeği — HERO_WRIST null olursa devreye girer. */
 const HERO_PRODUCT = '/media/bileklik/bileklik-1.jpg';
 
@@ -245,6 +261,73 @@ function HeroVisual({
   // eritir, böylece bilek ışığın içinden çıkıyormuş gibi görünür.
   const feather =
     'radial-gradient(ellipse 72% 60% at 50% 40%, #000 40%, rgba(0,0,0,0.85) 62%, transparent 88%)';
+
+  // ── Video modu ──
+  // Hareket azaltma tercihi açıksa video HİÇ yüklenmez; poster gösterilir.
+  // Bu hem erişilebilirlik hem de 674 KB'lık gereksiz indirmeyi önleme.
+  if (HERO_VIDEO && !reduceMotion) {
+    return (
+      <motion.div
+        initial={{ y: '18%', scale: 1.08, opacity: 0 }}
+        animate={{ y: '0%', scale: 1, opacity: 1 }}
+        transition={{ duration: 1.8, delay: 0.15, ease }}
+        className="relative w-full max-w-[560px] h-[88%]"
+        style={{ maskImage: feather, WebkitMaskImage: feather }}
+      >
+        <video
+          // autoPlay + muted + playsInline üçü birden ŞART: iOS Safari
+          // sessiz olmayan videoyu otomatik oynatmaz, playsInline olmadan da
+          // tam ekrana geçirir.
+          autoPlay
+          muted
+          loop
+          playsInline
+          // poster: video yüklenene kadar ilk kare görünür, boş kutu olmaz.
+          poster={HERO_VIDEO_POSTER}
+          preload="auto"
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        >
+          <source src={HERO_VIDEO} type="video/mp4" />
+        </video>
+
+        {/* Metin perdesi */}
+        <div
+          className="absolute inset-x-0 top-0 h-[52%] pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(250,248,245,0.92) 0%, rgba(250,248,245,0.55) 55%, transparent 100%)',
+          }}
+        />
+      </motion.div>
+    );
+  }
+
+  // ── Video var ama hareket azaltma açık: sadece poster ──
+  if (HERO_VIDEO && reduceMotion) {
+    return (
+      <div
+        className="relative w-full max-w-[560px] h-[88%]"
+        style={{ maskImage: feather, WebkitMaskImage: feather }}
+      >
+        <Image
+          src={HERO_VIDEO_POSTER}
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 640px) 100vw, 560px"
+          className="object-cover object-center"
+        />
+        <div
+          className="absolute inset-x-0 top-0 h-[52%] pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(250,248,245,0.92) 0%, rgba(250,248,245,0.55) 55%, transparent 100%)',
+          }}
+        />
+      </div>
+    );
+  }
 
   if (hasWrist) {
     return (
