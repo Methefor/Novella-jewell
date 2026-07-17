@@ -55,23 +55,6 @@
         }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/wishlist",
-      "destination": "/favoriler"
-    },
-    {
-      "source": "/collections",
-      "destination": "/koleksiyonlar"
-    },
-    {
-      "source": "/collections/:slug",
-      "destination": "/koleksiyonlar/:slug"
-    },
-    {
-      "source": "/products/:slug",
-      "destination": "/urun/:slug"
-    }
   ]
 }
+

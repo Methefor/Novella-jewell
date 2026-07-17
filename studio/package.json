@@ -1,0 +1,24 @@
+{
+  "name": "novella-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NOVELLA motion tasarım stüdyosu — reklam videoları, ürün animasyonları. Mağazadan bağımsızdır, Vercel build'ine dahil değildir.",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "still": "remotion still",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.490",
+    "@remotion/google-fonts": "^4.0.490",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "remotion": "^4.0.490"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}
