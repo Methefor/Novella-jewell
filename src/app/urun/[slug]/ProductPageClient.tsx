@@ -1,8 +1,10 @@
 'use client';
 
 import BedenRehberi from '@/components/product/BedenRehberi';
+import FavoriButton from '@/components/product/FavoriButton';
 import Lightbox from '@/components/product/Lightbox';
 import ProductCard from '@/components/product/ProductCard';
+import SonGoruntulenenler from '@/components/product/SonGoruntulenenler';
 import type { Collection } from '@/data/collections';
 import { SHIPPING } from '@/lib/config';
 import { CAYMA_SURESI_GUN } from '@/lib/legal';
@@ -342,15 +344,20 @@ export default function ProductPageClient({ product, collection }: Props) {
                 Sepete Ekle
               </button>
 
-              <a
-                href={`https://wa.me/905451125059?text=${waText}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost w-full flex items-center justify-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4" />
-                WhatsApp ile Sipariş
-              </a>
+              <div className="flex gap-3">
+                <a
+                  href={`https://wa.me/905451125059?text=${waText}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost flex-1 flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp
+                </a>
+                <div className="flex-1">
+                  <FavoriButton product={product} variant="detail" />
+                </div>
+              </div>
 
               {/* Beden rehberi — yalnızca yüzükte. Online takıda en büyük
                   iade sebebi ölçü tutmaması; rehber iadeyi düşürür. */}
@@ -460,6 +467,9 @@ export default function ProductPageClient({ product, collection }: Props) {
             </div>
           </section>
         )}
+
+        {/* Son görüntülenenler — bu ürünü geçmişe ekler + öncekileri gösterir */}
+        <SonGoruntulenenler currentId={product.id} />
       </div>
 
       {/* Tam ekran büyüteç — ana görsele tıklanınca açılır. */}

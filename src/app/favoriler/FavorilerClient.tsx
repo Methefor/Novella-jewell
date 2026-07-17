@@ -1,67 +1,78 @@
-/**
- * NOVELLA - Favoriler Client Component
- * Favori ürünler sayfası client component
- */
-
 'use client';
 
+import OneriSeridi from '@/components/product/OneriSeridi';
 import SimpleProductGrid from '@/components/product/SimpleProductGrid';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { Heart } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function FavorilerClient() {
   const items = useWishlistStore((state) => state.items);
   const clearAll = useWishlistStore((state) => state.clearAll);
 
+  // Wishlist skipHydration ile geliyor: ilk render'da boş, rehydrate sonrası
+  // dolu. mounted guard olmadan hydrate tamamlanana kadar "boş" ekranı yanıp
+  // sönerdi. mounted olana dek nötr (yükleniyor) tutuyoruz.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return <main className="min-h-[70vh] bg-cream" aria-busy="true" />;
+  }
+
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-cream flex items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <div className="w-24 h-24 rounded-full bg-cream-100 flex items-center justify-center mx-auto mb-6">
-            <Heart className="w-12 h-12 text-gold/40" />
+      <main className="min-h-[70vh] bg-cream px-6 pt-24 pb-20">
+        <div className="text-center max-w-md mx-auto">
+          <div className="w-20 h-20 rounded-full bg-cream-deep flex items-center justify-center mx-auto mb-6">
+            <Heart className="w-9 h-9 text-gold/50" />
           </div>
-          <h1 className="font-serif text-3xl text-black mb-4">
-            Favorileriniz Boş
+          <h1 className="font-serif font-light text-3xl text-black mb-3">
+            Favorileriniz boş
           </h1>
-          <p className="text-black/60 mb-6">
-            Henüz favori ürününüz yok. Beğendiğiniz ürünleri favorilere
-            ekleyerek daha sonra kolayca bulabilirsiniz.
+          <p className="text-black/55 mb-7 leading-relaxed">
+            Beğendiğiniz ürünlerin kalbine dokunun; burada birikip sizi
+            bekler.
           </p>
-          <Link
-            href="/koleksiyonlar"
-            className="inline-block px-6 py-3 bg-gold text-white rounded-lg hover:bg-gold/90 transition-colors font-medium"
-          >
-            Ürünleri Keşfet
+          <Link href="/koleksiyonlar" className="btn-primary">
+            Koleksiyonu Keşfet
           </Link>
         </div>
-      </div>
+
+        <OneriSeridi baslik="Yeni Gelenler" />
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream">
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
+    <main className="min-h-screen bg-cream">
+      <div className="container-custom py-16 md:py-20">
+        <div className="flex items-end justify-between mb-8">
           <div>
-            <h1 className="font-serif text-3xl lg:text-4xl text-black mb-2">
-              Favorilerim
+            <p className="section-label mb-2">Favorilerim</p>
+            <h1
+              className="font-serif font-light text-black"
+              style={{
+                fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              {items.length} ürün beğendiniz
             </h1>
-            <p className="text-black/60">{items.length} ürün</p>
           </div>
 
-          {items.length > 0 && (
-            <button
-              onClick={clearAll}
-              className="px-4 py-2 border-2 border-cream-300 rounded-lg hover:border-red-500 hover:text-red-500 transition-colors text-sm font-medium"
-            >
-              Tümünü Temizle
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={clearAll}
+            className="text-sm text-black/45 hover:text-red-600 transition-colors"
+          >
+            Tümünü temizle
+          </button>
         </div>
 
         <SimpleProductGrid products={items} columns={4} />
       </div>
-    </div>
+    </main>
   );
 }

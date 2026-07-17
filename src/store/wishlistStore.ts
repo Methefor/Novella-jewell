@@ -41,6 +41,10 @@ export const useWishlistStore = create<WishlistStore>()(
     }),
     {
       name: 'novella-wishlist',
+      // Cart ile aynı desen: SSR'da boş, client'ta StoreHydration tetikler.
+      // Böylece sunucu/istemci ilk render'ı aynı olur, hydration uyuşmazlığı
+      // (ve header sayacının yanıp sönmesi) önlenir.
+      skipHydration: true,
     }
   )
 );

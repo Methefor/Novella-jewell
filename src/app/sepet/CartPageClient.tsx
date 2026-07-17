@@ -1,5 +1,6 @@
 'use client';
 
+import OneriSeridi from '@/components/product/OneriSeridi';
 import { SHIPPING } from '@/lib/config';
 import { useCartStore } from '@/store/cartStore';
 import { motion } from 'framer-motion';
@@ -22,7 +23,7 @@ export default function CartPageClient() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-[70vh] flex flex-col items-center justify-center gap-6 px-6 text-center">
+      <main className="min-h-[70vh] flex flex-col items-center justify-center gap-6 px-6 pt-24 pb-20 text-center">
         <ShoppingBag className="w-12 h-12 text-black/15" strokeWidth={1} />
         <div>
           <h1 className="font-serif text-2xl text-black/40">Sepetiniz boş</h1>
@@ -33,6 +34,9 @@ export default function CartPageClient() {
         <Link href="/koleksiyonlar" className="btn-primary">
           Koleksiyonu Keşfet
         </Link>
+
+        {/* Boş sepette bile kullanıcıyı ürüne yönlendir */}
+        <OneriSeridi baslik="Yeni Gelenler" />
       </main>
     );
   }

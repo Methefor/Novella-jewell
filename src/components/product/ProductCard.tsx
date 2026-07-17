@@ -1,5 +1,6 @@
 'use client';
 
+import FavoriButton from '@/components/product/FavoriButton';
 import { dusukStok } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
@@ -78,6 +79,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         )}
+
+        {/* Favori (kalp) — sağ üst köşe */}
+        <FavoriButton product={product} variant="card" />
 
         {/* Badges */}
         <div
