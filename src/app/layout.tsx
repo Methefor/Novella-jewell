@@ -30,21 +30,19 @@ export const metadata: Metadata = {
     template: '%s | NOVELLA',
   },
   description:
-    '316L paslanmaz çelik takılar. El seçimi bilezik, küpe, yüzük ve kolye koleksiyonları. Suya dayanıklı, alerji yapmaz, hediye kutusunda.',
+    '316L paslanmaz çelik takılar. El seçimi bilezik, küpe ve yüzük koleksiyonları. Suya dayanıklı, alerji yapmaz, hediye kutusunda.',
   keywords: [
     'paslanmaz çelik takı',
     '316L çelik takı',
     'bilezik',
     'küpe',
     'yüzük',
-    'kolye',
     'suya dayanıklı takı',
     'alerji yapmaz takı',
     'novella takı',
     'butik takı',
     'takı koleksiyonu',
     'çelik bileklik',
-    'çelik kolye',
   ],
   authors: [{ name: 'NOVELLA' }],
   creator: 'NOVELLA',
@@ -65,7 +63,7 @@ export const metadata: Metadata = {
     url: SITE.url,
     title: 'NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet',
     description:
-      '316L paslanmaz çelik takılar. El seçimi bilezik, küpe, yüzük ve kolye koleksiyonları. Suya dayanıklı, alerji yapmaz.',
+      '316L paslanmaz çelik takılar. El seçimi bilezik, küpe ve yüzük koleksiyonları. Suya dayanıklı, alerji yapmaz.',
     siteName: 'NOVELLA',
     // images YOK — src/app/opengraph-image.tsx zaten dinamik OG görseli üretiyor
     // ve dosya konvansiyonu bu alanı otomatik doldurur. Buraya elle

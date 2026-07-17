@@ -13,7 +13,6 @@ const CATEGORIES: { value: ProductCategory; label: string }[] = [
   { value: 'bilezik', label: 'Bileklik' },
   { value: 'kupe', label: 'Küpe' },
   { value: 'yuzuk', label: 'Yüzük' },
-  { value: 'kolye', label: 'Kolye' },
 ];
 
 const PRICE_RANGES = [

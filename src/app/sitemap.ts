@@ -29,7 +29,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const categoryPages: MetadataRoute.Sitemap = [
     'yeni-gelenler',
     'cok-satanlar',
-    'kolye',
     'bilezik',
     'kupe',
     'yuzuk',

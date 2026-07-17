@@ -1,4 +1,7 @@
-export type ProductCategory = 'kolye' | 'bilezik' | 'kupe' | 'yuzuk';
+// NOT: 'kolye' bilerek YOK — şu an satılan kolye ürünü bulunmuyor.
+// Kolye envantere girince buraya geri eklenir; tip dar tutulduğu için
+// kolye ürünü eklemeye çalışırsan derleme hatası verir ve fark edersin.
+export type ProductCategory = 'bilezik' | 'kupe' | 'yuzuk';
 
 export type ProductMaterial =
   | 'celik'

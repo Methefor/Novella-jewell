@@ -12,7 +12,6 @@ interface ProductCardProps {
 }
 
 const categoryLabel: Record<string, string> = {
-  kolye: 'Kolye',
   kupe: 'Küpe',
   bilezik: 'Bileklik',
   yuzuk: 'Yüzük',

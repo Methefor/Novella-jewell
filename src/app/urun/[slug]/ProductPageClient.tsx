@@ -21,7 +21,6 @@ interface Props {
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const categoryLabel: Record<string, string> = {
-  kolye: 'Kolye',
   kupe: 'Küpe',
   bilezik: 'Bileklik',
   yuzuk: 'Yüzük',

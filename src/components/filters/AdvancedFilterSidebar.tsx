@@ -12,7 +12,7 @@ interface AdvancedFilterSidebarProps {
   productCount: number;
 }
 
-const categories = ['Kolye', 'Bilezik', 'Küpe', 'Yüzük'];
+const categories = ['Bilezik', 'Küpe', 'Yüzük'];
 const materials = ['Çelik', 'Gümüş', 'Altın Kaplama', 'Rose Gold'];
 const colors = ['Altın', 'Gümüş', 'Rose Gold', 'Siyah'];
 

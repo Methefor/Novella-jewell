@@ -18,7 +18,6 @@ interface SearchModalProps {
 }
 
 const popularSearches = [
-  'Kolye',
   'Bilezik',
   'Küpe',
   'Yüzük',
@@ -184,7 +183,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       </h3>
                       <div className="grid grid-cols-2 gap-3">
                         {[
-                          { name: 'Kolyeler', href: '/collections/kolye' },
                           { name: 'Bilezikler', href: '/collections/bilezik' },
                           { name: 'Küpeler', href: '/collections/kupe' },
                           { name: 'Yüzükler', href: '/collections/yuzuk' },

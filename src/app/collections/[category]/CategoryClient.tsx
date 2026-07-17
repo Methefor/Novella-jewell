@@ -16,7 +16,6 @@ const categoryNames: Record<string, string> = {
   'yeni-gelenler': 'Yeni Gelenler',
   'cok-satanlar': 'Çok Satanlar',
   indirimler: 'İndirimli Ürünler',
-  kolye: 'Kolyeler',
   bilezik: 'Bilezikler',
   kupe: 'Küpeler',
   yuzuk: 'Yüzükler',
@@ -44,7 +43,6 @@ export default function CategoryClient({ category }: CategoryClientProps) {
     );
   } else {
     const categoryMap: Record<string, string> = {
-      kolye: 'Kolye',
       bilezik: 'Bilezik',
       kupe: 'Küpe',
       yuzuk: 'Yüzük',

@@ -31,11 +31,6 @@ const CATEGORIES: Record<string, { title: string; description: string }> = {
     title: 'İndirimdekiler',
     description: 'NOVELLA takılarında indirimli fiyatlar. Sınırlı stok.',
   },
-  kolye: {
-    title: 'Kolyeler',
-    description:
-      'Paslanmaz çelik kolye modelleri. Kararmayan, suya dayanıklı, alerji yapmayan 316L çelik.',
-  },
   bilezik: {
     title: 'Bileklikler',
     description:
