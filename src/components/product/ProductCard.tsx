@@ -53,7 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Image container — 4:5 */}
       <div
         className="relative w-full overflow-hidden img-slot"
-        style={{ aspectRatio: '4/5' }}
+        style={{ aspectRatio: '1/1' }}
         role="img"
         aria-label={`${product.name} ürün görseli`}
       >

@@ -129,7 +129,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                           href={`/urun/${item.product.slug}`}
                           onClick={onClose}
                           className="relative flex-shrink-0 w-16 overflow-hidden bg-[#F6F6F4]"
-                          style={{ aspectRatio: '4/5' }}
+                          style={{ aspectRatio: '1/1' }}
                         >
                           {img && (
                             <Image

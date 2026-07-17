@@ -103,7 +103,7 @@ export default function ProductPageClient({ product, collection }: Props) {
                     className={`relative w-16 overflow-hidden border transition-colors duration-200 ${
                       activeImg === i ? 'border-black' : 'border-transparent'
                     }`}
-                    style={{ aspectRatio: '4/5' }}
+                    style={{ aspectRatio: '1/1' }}
                   >
                     <Image
                       src={src}
@@ -120,7 +120,7 @@ export default function ProductPageClient({ product, collection }: Props) {
             {/* Main image */}
             <div
               className="relative flex-1 overflow-hidden bg-[#F6F6F4]"
-              style={{ aspectRatio: '4/5' }}
+              style={{ aspectRatio: '1/1' }}
             >
               <AnimatePresence mode="wait">
                 <motion.div

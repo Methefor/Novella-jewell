@@ -63,7 +63,7 @@ export default function CartPageClient() {
                   <Link
                     href={`/urun/${item.product.slug}`}
                     className="relative flex-shrink-0 w-24 md:w-28 overflow-hidden bg-[#F6F6F4]"
-                    style={{ aspectRatio: '4/5' }}
+                    style={{ aspectRatio: '1/1' }}
                   >
                     {img && (
                       <Image
