@@ -1,5 +1,6 @@
 'use client';
 
+import Lightbox from '@/components/product/Lightbox';
 import ProductCard from '@/components/product/ProductCard';
 import type { Collection } from '@/data/collections';
 import { SHIPPING } from '@/lib/config';
@@ -8,7 +9,7 @@ import { getRelatedProducts } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ChevronDown, MessageCircle, ShoppingBag } from 'lucide-react';
+import { ChevronDown, MessageCircle, ShoppingBag, ZoomIn } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -71,6 +72,7 @@ export default function ProductPageClient({ product, collection }: Props) {
   const gallery = product.images ?? defaultVariant.images;
   const [activeImg, setActiveImg] = useState(0);
   const [openAccordion, setOpenAccordion] = useState<string>('malzeme');
+  const [zoomAcik, setZoomAcik] = useState(false);
 
   // Hareket azaltma tercihi açıksa yakınlaşma yapılmaz; geçiş yine de
   // çapraz söner (sert kesme rahatsız edici olurdu), sadece hareket kalkar.
@@ -152,8 +154,15 @@ export default function ProductPageClient({ product, collection }: Props) {
 
             {/* Main image */}
             <motion.div
-              className="relative flex-1 overflow-hidden bg-[#F6F6F4] touch-pan-y cursor-grab active:cursor-grabbing"
+              className="relative flex-1 overflow-hidden bg-[#F6F6F4] touch-pan-y cursor-zoom-in"
               style={{ aspectRatio: '1/1' }}
+              /*
+                onTap büyüteci açar. framer-motion'un onTap'i, bir sürükleme
+                gerçekleştiyse ATEŞLENMEZ — yani kaydırınca yanlışlıkla zoom
+                açılmaz, sadece gerçek tıklama/dokunma açar. onClick ile ayrı
+                bir "sürükledi mi?" bayrağı tutmaya gerek kalmıyor.
+              */
+              onTap={() => setZoomAcik(true)}
               /*
                 Parmakla kaydırma. Trafiğin çoğu mobil olacak ve şu an tek
                 gezinme yolu 64px'lik küçük resimlere dokunmak.
@@ -233,6 +242,11 @@ export default function ProductPageClient({ product, collection }: Props) {
                     İndirimli
                   </span>
                 )}
+              </div>
+
+              {/* Büyüteç ipucu — görsele tıklanabileceğini belli eder. */}
+              <div className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/70 backdrop-blur-sm text-black/60 pointer-events-none">
+                <ZoomIn className="w-4 h-4" />
               </div>
 
               {/* Kaydırma ipucu — yalnızca mobilde ve birden fazla görsel varsa.
@@ -410,6 +424,19 @@ export default function ProductPageClient({ product, collection }: Props) {
           </section>
         )}
       </div>
+
+      {/* Tam ekran büyüteç — ana görsele tıklanınca açılır. */}
+      <AnimatePresence>
+        {zoomAcik && (
+          <Lightbox
+            gallery={gallery}
+            index={activeImg}
+            urunAdi={product.name}
+            onClose={() => setZoomAcik(false)}
+            onIndexChange={setActiveImg}
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 }
