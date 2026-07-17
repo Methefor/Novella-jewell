@@ -21,24 +21,31 @@ const fadeUp = {
 export default function HomeClient() {
   const products = getAllProducts();
 
-  const newArrivals = [
-    ...products.filter((p) => p.category === 'bilezik').slice(0, 3),
-    ...products.filter((p) => p.category === 'kupe').slice(0, 2),
-    ...products.filter((p) => p.category === 'yuzuk').slice(0, 1),
-  ];
+  /**
+   * Yeni Gelenler — GERÇEKTEN yeni olanlar.
+   *
+   * Eskiden burada "ilk 3 bileklik + ilk 2 küpe + ilk 1 yüzük" alınıyordu;
+   * isNew ve createdAt'e hiç bakmadığı için kaç yeni ürün eklenirse eklensin
+   * hep aynı 6 eski ürün görünüyordu. Artık isNew işaretli ürünler eklenme
+   * tarihine göre yeniden eskiye sıralanıyor — yeni ürün ekleyince ana sayfaya
+   * kendiliğinden düşer, burayı elle güncellemek gerekmez.
+   */
+  const newArrivals = products
+    .filter((p) => p.isNew)
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 6);
 
-  const allBilezik = products.filter((p) => p.category === 'bilezik');
-  const allYuzuk = products.filter((p) => p.category === 'yuzuk');
-  const allKupe = products.filter((p) => p.category === 'kupe');
-
-  const bestSellers = [
-    allKupe.find((p) => p.id === 'kupe-11'),
-    allYuzuk[0],
-    allBilezik[3],
-    allBilezik[4],
-    allYuzuk[1],
-    allKupe.find((p) => p.id === 'kupe-2'),
-  ].filter(Boolean) as typeof products;
+  /**
+   * Çok Satanlar — isBestSeller işaretine göre.
+   * Eskiden ürün ID'leri elle yazılıydı (kupe-11, allBilezik[3]…); katalog
+   * değişince kırılmaya açıktı ve gerçek satışla ilgisi yoktu.
+   * Gerçek satış verisi (Supabase) gelince burası sipariş sayısına göre
+   * hesaplanmalı; şimdilik işaretlenen ürünlerden en yenileri gösteriliyor.
+   */
+  const bestSellers = products
+    .filter((p) => p.isBestSeller)
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 6);
 
   return (
     <main>
@@ -66,7 +73,10 @@ export default function HomeClient() {
                   letterSpacing: '-0.025em',
                 }}
               >
-                En Yeni Koleksiyon
+                {/* "En Yeni Koleksiyon" DEĞİL: burada gösterilenler koleksiyon
+                    değil, yeni eklenen ürünler. Koleksiyon = Barcelona,
+                    Stockholm, Paris, Klasikler — onlar /koleksiyonlar'da. */}
+                Son Eklenen Parçalar
               </h2>
             </div>
             <Link
