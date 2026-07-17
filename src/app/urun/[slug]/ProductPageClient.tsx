@@ -11,7 +11,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, MessageCircle, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   product: Product;
@@ -76,6 +76,28 @@ export default function ProductPageClient({ product, collection }: Props) {
   // çapraz söner (sert kesme rahatsız edici olurdu), sadece hareket kalkar.
   const galeriHareket = !useReducedMotion();
 
+  /**
+   * Galeri gezinmesi — kaydırma, klavye ve küçük resimler aynı mantığı kullanır.
+   * Başa/sona gelince döner: son görselde sola kaydırınca ilkine geçer.
+   */
+  const gorselGec = useCallback(
+    (yon: 1 | -1) => {
+      setActiveImg((i) => (i + yon + gallery.length) % gallery.length);
+    },
+    [gallery.length]
+  );
+
+  // Klavye okları — masaüstünde galeri üzerindeyken ← → ile gezinme.
+  useEffect(() => {
+    if (gallery.length < 2) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') gorselGec(-1);
+      else if (e.key === 'ArrowRight') gorselGec(1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [gorselGec, gallery.length]);
+
   const hasDiscount =
     product.compareAtPrice && product.compareAtPrice > product.price;
 
@@ -129,9 +151,29 @@ export default function ProductPageClient({ product, collection }: Props) {
             )}
 
             {/* Main image */}
-            <div
-              className="relative flex-1 overflow-hidden bg-[#F6F6F4]"
+            <motion.div
+              className="relative flex-1 overflow-hidden bg-[#F6F6F4] touch-pan-y cursor-grab active:cursor-grabbing"
               style={{ aspectRatio: '1/1' }}
+              /*
+                Parmakla kaydırma. Trafiğin çoğu mobil olacak ve şu an tek
+                gezinme yolu 64px'lik küçük resimlere dokunmak.
+
+                touch-pan-y ŞART: yatay sürüklemeyi biz alırız ama dikey
+                kaydırma tarayıcıda kalır. Olmazsa kullanıcı galeri üzerinde
+                sayfayı aşağı kaydıramaz — parmağı galeriye takılır.
+              */
+              drag={gallery.length > 1 ? 'x' : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.18}
+              dragMomentum={false}
+              onDragEnd={(_, info) => {
+                // Hem mesafe hem hız: yavaş uzun sürükleme de, hızlı kısa
+                // fiske de çalışsın.
+                const mesafe = info.offset.x;
+                const hiz = info.velocity.x;
+                if (mesafe < -60 || hiz < -450) gorselGec(1);
+                else if (mesafe > 60 || hiz > 450) gorselGec(-1);
+              }}
             >
               {/*
                 mode="wait" YOK — bilerek.
@@ -192,7 +234,25 @@ export default function ProductPageClient({ product, collection }: Props) {
                   </span>
                 )}
               </div>
-            </div>
+
+              {/* Kaydırma ipucu — yalnızca mobilde ve birden fazla görsel varsa.
+                  Kullanıcı kaydırılabildiğini bilmezse özellik yok sayılır. */}
+              {gallery.length > 1 && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 sm:hidden">
+                  {gallery.map((_, i) => (
+                    <span
+                      key={i}
+                      aria-hidden="true"
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        activeImg === i
+                          ? 'w-5 bg-black/70'
+                          : 'w-1.5 bg-black/25'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </motion.div>
           </motion.div>
 
           {/* ── Product info (sağ) ── */}

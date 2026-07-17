@@ -1276,6 +1276,40 @@ export const PRODUCTS: Product[] = [
     isNew: true, isBestSeller: false, isCustomizable: false,
     createdAt: new Date('2026-07-17'), updatedAt: new Date('2026-07-17'),
   },
+  {
+    id: 'yuzuk-18',
+    name: 'Paris Amour Zincir Yüzük',
+    slug: 'paris-amour-zincir-yuzuk',
+    description:
+      'Zincir gövdesinin üzerinde taşlarla çevrelenmiş kalp formu. Zincir hattı parmağa yumuşak oturur, kalp tek başına takıldığında bile öne çıkar.',
+    collection: 'paris',
+    story: 'Zincir bağlar, kalp kalır.',
+    category: 'yuzuk',
+    price: 519,
+    variants: [{ id: 'v1', color: 'altin', material: 'altin-kaplama', stock: 15, images: ['/media/yuzuk/yuzuk-18.jpg', '/media/yuzuk/yuzuk-18b.jpg'] }],
+    defaultVariant: 'v1',
+    features: ['Taşlı kalp formu', 'Zincir gövde', 'Suya dayanıklı', '316L paslanmaz çelik'],
+    material: 'altin-kaplama',
+    isNew: true, isBestSeller: false, isCustomizable: false,
+    createdAt: new Date('2026-07-17'), updatedAt: new Date('2026-07-17'),
+  },
+  {
+    id: 'yuzuk-19',
+    name: 'Paris Grace Tektaş Yüzük',
+    slug: 'paris-grace-tektas-yuzuk',
+    description:
+      'İri kesim merkez taşı ve yanlarındaki baget taşlarla klasik tektaş formu. İnce altın kaplama bant, taşı öne çıkarmak için sade bırakıldı.',
+    collection: 'paris',
+    story: 'Tek taş, tek cümle.',
+    category: 'yuzuk',
+    price: 519,
+    variants: [{ id: 'v1', color: 'altin', material: 'altin-kaplama', stock: 10, images: ['/media/yuzuk/yuzuk-19.jpg', '/media/yuzuk/yuzuk-19b.jpg'] }],
+    defaultVariant: 'v1',
+    features: ['İri kesim merkez taş', 'Baget yan taşlar', 'Suya dayanıklı', '316L paslanmaz çelik'],
+    material: 'altin-kaplama',
+    isNew: true, isBestSeller: false, isCustomizable: false,
+    createdAt: new Date('2026-07-17'), updatedAt: new Date('2026-07-17'),
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────
