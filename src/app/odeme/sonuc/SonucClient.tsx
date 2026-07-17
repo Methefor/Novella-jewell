@@ -1,5 +1,6 @@
 'use client';
 
+import { trackPurchase } from '@/lib/analytics';
 import { useCartStore } from '@/store/cartStore';
 import { motion } from 'framer-motion';
 import { CheckCircle2, MessageCircle, XCircle } from 'lucide-react';
@@ -21,9 +22,15 @@ export default function SonucClient() {
   // Sepet YALNIZCA ödeme başarılıysa temizlenir.
   // Eskiden Shopier'e yönlenmeden önce temizleniyordu; müşteri ödemeden
   // vazgeçtiğinde sepeti boş dönüyor ve sipariş tamamen kaybediliyordu.
+  // Aynı anda GA4 purchase olayı gönderilir. transaction_id sayesinde sayfa
+  // yenilenirse GA çift saymaz. value: total URL'den; yoksa 0 (dönüşüm yine
+  // sayılır, gelir Supabase kalıcı kaydı gelince netleşir).
   useEffect(() => {
-    if (isSuccess) clearCart();
-  }, [isSuccess, clearCart]);
+    if (!isSuccess) return;
+    clearCart();
+    const total = Number(searchParams.get('total')) || 0;
+    trackPurchase(orderId || `NV-${Date.now()}`, total);
+  }, [isSuccess, clearCart, orderId, searchParams]);
 
   const waText = encodeURIComponent(
     `Merhaba! Siparişim tamamlandı. Sipariş no: ${orderId}`

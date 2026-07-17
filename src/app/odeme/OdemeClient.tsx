@@ -1,5 +1,6 @@
 'use client';
 
+import { trackBeginCheckout } from '@/lib/analytics';
 import { SHIPPING } from '@/lib/config';
 import { ILLER } from '@/lib/turkiye';
 import { useCartStore } from '@/store/cartStore';
@@ -7,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -49,6 +50,17 @@ export default function OdemeClient() {
   useEffect(() => {
     if (items.length === 0) router.replace('/sepet');
   }, [items.length, router]);
+
+  // GA4 begin_checkout — ödeme sayfası açıldığında bir kez (sepette ürün varsa).
+  const izlendiRef = useRef(false);
+  useEffect(() => {
+    if (izlendiRef.current || items.length === 0) return;
+    izlendiRef.current = true;
+    trackBeginCheckout(
+      total,
+      items.map((i) => i.product)
+    );
+  }, [items, total]);
 
   if (items.length === 0) return null;
 

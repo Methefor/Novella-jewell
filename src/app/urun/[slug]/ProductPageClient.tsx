@@ -1,5 +1,6 @@
 'use client';
 
+import { trackAddToCart, trackViewItem } from '@/lib/analytics';
 import BedenRehberi from '@/components/product/BedenRehberi';
 import FavoriButton from '@/components/product/FavoriButton';
 import Lightbox from '@/components/product/Lightbox';
@@ -78,6 +79,11 @@ export default function ProductPageClient({ product, collection }: Props) {
   const [zoomAcik, setZoomAcik] = useState(false);
 
   const stokBilgi = dusukStok(product);
+
+  // GA4 view_item — ürün sayfası açıldığında bir kez.
+  useEffect(() => {
+    trackViewItem(product);
+  }, [product]);
 
   // Hareket azaltma tercihi açıksa yakınlaşma yapılmaz; geçiş yine de
   // çapraz söner (sert kesme rahatsız edici olurdu), sadece hareket kalkar.
@@ -337,7 +343,10 @@ export default function ProductPageClient({ product, collection }: Props) {
             {/* CTA'lar */}
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => addToCart(product, product.defaultVariant, 1)}
+                onClick={() => {
+                  addToCart(product, product.defaultVariant, 1);
+                  trackAddToCart(product, 1);
+                }}
                 className="btn-primary w-full flex items-center justify-center gap-2"
               >
                 <ShoppingBag className="w-4 h-4" />

@@ -60,7 +60,12 @@ async function handleCallback(req: NextRequest) {
   }
 
   const status = isPaid ? 'success' : 'error';
+  // GA4 purchase için toplam tutar. Shopier geri gönderirse (total_order_value)
+  // kullanılır; sipariş kalıcı kaydı (Supabase) gelince asıl kaynak orası olmalı.
+  const total = params.total_order_value ?? '';
   return NextResponse.redirect(
-    `${siteUrl}/odeme/sonuc?status=${status}&orderId=${platform_order_id ?? ''}`
+    `${siteUrl}/odeme/sonuc?status=${status}&orderId=${platform_order_id ?? ''}${
+      total ? `&total=${encodeURIComponent(total)}` : ''
+    }`
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import FavoriButton from '@/components/product/FavoriButton';
+import { trackAddToCart } from '@/lib/analytics';
 import { dusukStok } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
@@ -45,6 +46,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addToCart(product, product.defaultVariant, 1);
+    trackAddToCart(product, 1);
   };
 
   return (
