@@ -9,7 +9,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8F6F3] px-4">
+    <main className="min-h-screen flex items-center justify-center bg-cream px-4">
       <div className="text-center max-w-md">
         <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
           <svg
@@ -46,6 +46,6 @@ export default function Error({
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

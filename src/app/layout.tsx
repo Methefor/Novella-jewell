@@ -148,11 +148,22 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
+        {/* Klavye kullanıcıları için içeriğe atla — Tab'a basınca görünür,
+            header'ı baştan sona gezmeden ana içeriğe geçmeyi sağlar (WCAG 2.4.1). */}
+        <a href="#icerik" className="skip-link">
+          İçeriğe geç
+        </a>
         <StoreHydration />
         <Header />
-        <main className="min-h-screen">
+        {/*
+          Bu bir <div>, <main> DEĞİL — bilerek. Her sayfa client'ı kendi
+          <main>'ini render ediyor. Buraya da main koyulunca sayfada iki iç içe
+          main oluyordu (geçersiz HTML, ekran okuyucuyu şaşırtır). Skip linkin
+          hedefi olarak id taşıyor.
+        */}
+        <div id="icerik" className="min-h-screen">
           <PageTransition>{children}</PageTransition>
-        </main>
+        </div>
         <Footer />
         <ToastContainer />
         {/* KVKK çerez onayı — GA yalnızca burada "Kabul et" seçilirse yüklenir. */}
