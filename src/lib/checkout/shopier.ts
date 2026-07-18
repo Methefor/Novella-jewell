@@ -46,8 +46,9 @@ export class ShopierProvider implements CheckoutProvider {
     }
   }
 
-  async createPayment(order: Order): Promise<PaymentResult> {
-    const randomNr = String(Math.floor(Math.random() * 900000) + 100000); // 6 haneli
+  async createPayment(order: Order, randomNr: string): Promise<PaymentResult> {
+    // randomNr çağırandan gelir (checkout route) — aynı değer DB pending
+    // siparişe kaydedildi ve imzada kullanılıyor.
     const productName = order.items.map((i) => i.name).join(', ').slice(0, 80);
     const totalStr = order.total.toFixed(2);
 

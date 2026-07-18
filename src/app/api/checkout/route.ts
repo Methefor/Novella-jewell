@@ -1,6 +1,6 @@
 import { getCheckoutProvider } from '@/lib/checkout';
 import { buildOrder } from '@/lib/checkout/buildOrder';
-import { saveOrder } from '@/lib/orders';
+import { createPendingOrder } from '@/lib/orders';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -53,20 +53,33 @@ export async function POST(req: NextRequest) {
 
     const { items, customer } = parsed.data;
 
-    const orderId = `NV${Date.now()}${Math.floor(Math.random() * 1000)
-      .toString()
-      .padStart(3, '0')}`;
+    // random_nr'ı burada üretiyoruz: aynı değer hem DB pending siparişe
+    // kaydedilecek hem de Shopier imzasında kullanılacak (tek kaynak).
+    const randomNr = String(Math.floor(Math.random() * 900000) + 100000);
 
-    // Fiyat, kargo ve stok burada yeniden hesaplanır.
-    const built = buildOrder(items, customer, orderId);
+    // Fiyat, kargo ve stok burada yeniden hesaplanır. id geçici — birazdan
+    // DB'nin ürettiği order_no ile değiştirilecek.
+    const built = buildOrder(items, customer, '');
     if (!built.ok) {
       return NextResponse.json({ error: built.error }, { status: 400 });
     }
 
-    await saveOrder(built.order, 'pending');
+    // Pending siparişi DB'ye yaz; DB order_no (NJ-2026-0001) üretir.
+    const pending = await createPendingOrder(built.order, randomNr);
+    if (!pending) {
+      // DATABASE_URL yoksa sipariş kaydedilemez → ödeme başlatma (kargo
+      // gönderilemeyecek bir sipariş almaktansa hata döndürmek daha güvenli).
+      return NextResponse.json(
+        { error: 'Sipariş sistemi şu anda hazır değil, lütfen sonra deneyin.' },
+        { status: 503 }
+      );
+    }
+
+    // order_no → Shopier platform_order_id. Callback bu numarayla kaydı bulacak.
+    built.order.id = pending.orderNo;
 
     const provider = getCheckoutProvider();
-    const result = await provider.createPayment(built.order);
+    const result = await provider.createPayment(built.order, randomNr);
 
     return NextResponse.json(result);
   } catch (err) {

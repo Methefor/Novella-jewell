@@ -86,6 +86,7 @@ export function buildOrder(
 
     items.push({
       productId: product.id,
+      slug: product.slug,
       name: product.name,
       price,
       quantity,

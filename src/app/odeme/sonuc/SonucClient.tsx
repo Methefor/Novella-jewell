@@ -13,7 +13,9 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export default function SonucClient() {
   const searchParams = useSearchParams();
   const status = searchParams.get('status');
-  const orderId = searchParams.get('orderId') ?? '';
+  // Callback order_no gönderiyor (NJ-2026-0001); eski orderId parametresi fallback.
+  const orderNo =
+    searchParams.get('orderNo') ?? searchParams.get('orderId') ?? '';
   const reason = searchParams.get('reason');
   const clearCart = useCartStore((s) => s.clearCart);
 
@@ -29,11 +31,11 @@ export default function SonucClient() {
     if (!isSuccess) return;
     clearCart();
     const total = Number(searchParams.get('total')) || 0;
-    trackPurchase(orderId || `NV-${Date.now()}`, total);
-  }, [isSuccess, clearCart, orderId, searchParams]);
+    trackPurchase(orderNo || `NV-${Date.now()}`, total);
+  }, [isSuccess, clearCart, orderNo, searchParams]);
 
   const waText = encodeURIComponent(
-    `Merhaba! Siparişim tamamlandı. Sipariş no: ${orderId}`
+    `Merhaba! Siparişim tamamlandı. Sipariş no: ${orderNo}`
   );
 
   return (
@@ -59,9 +61,9 @@ export default function SonucClient() {
               Siparişiniz alındı
             </h1>
 
-            {orderId && (
+            {orderNo && (
               <p className="text-xs text-black/35 mb-1">
-                Sipariş No: {orderId}
+                Sipariş No: {orderNo}
               </p>
             )}
 

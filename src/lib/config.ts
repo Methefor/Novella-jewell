@@ -23,3 +23,16 @@ export const SITE = {
   whatsapp: '905451125059',
   instagram: 'https://www.instagram.com/jewelry.novella/',
 } as const;
+
+/**
+ * E-posta gönderici adresi (Resend).
+ *
+ * ⚠️ Şu an domain doğrulaması YOK. Resend'in test göndericisi
+ * 'onboarding@resend.dev' yalnızca Resend hesabının SAHİBİ e-postasına teslim
+ * eder — gerçek müşterilere gitmez. Domain (ör. novella.com) Resend'de
+ * doğrulanınca bu satırı 'NOVELLA <siparis@novella.com>' yap, başka yeri
+ * değiştirmene gerek yok.
+ */
+export const EMAIL = {
+  from: 'NOVELLA <onboarding@resend.dev>',
+} as const;

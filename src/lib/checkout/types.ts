@@ -1,5 +1,6 @@
 export interface OrderItem {
   productId: string;
+  slug: string;
   name: string;
   price: number;
   quantity: number;
@@ -32,6 +33,8 @@ export type PaymentResult =
   | { type: 'form'; formHtml: string };
 
 export interface CheckoutProvider {
-  createPayment(order: Order): Promise<PaymentResult>;
+  // randomNr dışarıdan verilir: aynı değer hem imzada kullanılır hem DB'ye
+  // pending sipariş olarak kaydedilir (tek kaynak).
+  createPayment(order: Order, randomNr: string): Promise<PaymentResult>;
   verifyCallback(params: Record<string, string>): boolean;
 }

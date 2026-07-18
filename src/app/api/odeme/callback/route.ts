@@ -1,5 +1,6 @@
 import { getCheckoutProvider } from '@/lib/checkout';
-import { saveOrder } from '@/lib/orders';
+import { sendOrderConfirmationEmail } from '@/lib/email';
+import { markOrderFailed, markOrderPaid } from '@/lib/orders';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Shopier callback: GET veya POST olarak gelebilir
@@ -17,58 +18,69 @@ async function handleCallback(req: NextRequest) {
   // Parametre toplama (query string + form body)
   const url = new URL(req.url);
   const params: Record<string, string> = {};
-  url.searchParams.forEach((v, k) => { params[k] = v; });
+  url.searchParams.forEach((v, k) => {
+    params[k] = v;
+  });
 
   try {
     const contentType = req.headers.get('content-type') ?? '';
     if (contentType.includes('application/x-www-form-urlencoded')) {
       const text = await req.text();
-      new URLSearchParams(text).forEach((v, k) => { params[k] = v; });
+      new URLSearchParams(text).forEach((v, k) => {
+        params[k] = v;
+      });
     }
   } catch {
     // body okuma opsiyonel
   }
 
-  const { platform_order_id } = params;
+  const orderNo = params.platform_order_id ?? '';
 
-  // İmza doğrulama — başarısız → hata sayfası
+  // İmza doğrulama — başarısız → hata sayfası (kayda dokunma)
   const provider = getCheckoutProvider();
   if (!provider.verifyCallback(params)) {
-    console.error('[callback] İmza doğrulama başarısız', { platform_order_id });
+    console.error('[callback] İmza doğrulama başarısız', { orderNo });
     return NextResponse.redirect(
       `${siteUrl}/odeme/sonuc?status=error&reason=signature`
     );
   }
 
-  // Ödeme durumu. Shopier güncel akış 'status=success' gönderiyor; eski
-  // modüllerde 'payment_status=1' geliyordu — ikisini de kabul et.
+  // Ödeme durumu. Güncel Shopier akışı 'status=success'; eski modüllerde
+  // 'payment_status=1' geliyordu — ikisini de kabul et.
   const isPaid =
     params.status === 'success' || params.payment_status === '1';
 
-  // Geçici sipariş logu — Supabase fazında DB kaydına dönüşecek
-  if (isPaid && platform_order_id) {
-    await saveOrder(
-      {
-        id: platform_order_id,
-        items: [],
-        customer: { name: '', surname: '', email: '', phone: '', address: '', city: '', district: '' },
-        subtotal: 0,
-        shippingCost: 0,
-        total: 0,
-        currency: 'TRY',
-        createdAt: new Date().toISOString(),
-      },
-      'paid'
-    );
+  let total = '';
+
+  if (isPaid) {
+    // IDEMPOTENT: aynı callback iki kez gelirse ikinci sefer no-op olur.
+    const sonuc = await markOrderPaid(orderNo, params.payment_id);
+
+    // E-posta YALNIZCA ilk paid geçişinde ve kayıt varsa gönderilir.
+    // Gönderim başarısız olsa bile sipariş akışı KIRILMAZ (try/catch içinde).
+    if (sonuc.ok && !sonuc.zatenPaid && sonuc.order) {
+      total = sonuc.order.total;
+      try {
+        await sendOrderConfirmationEmail(sonuc.order);
+      } catch (e) {
+        console.error('[callback] Onay e-postası gönderilemedi', {
+          orderNo,
+          err: e,
+        });
+      }
+    } else if (sonuc.ok && sonuc.zatenPaid) {
+      console.warn('[callback] Tekrar gelen paid callback (idempotent no-op)', {
+        orderNo,
+      });
+    }
+  } else {
+    await markOrderFailed(orderNo);
   }
 
   const status = isPaid ? 'success' : 'error';
-  // GA4 purchase için toplam tutar. Shopier geri gönderirse (total_order_value)
-  // kullanılır; sipariş kalıcı kaydı (Supabase) gelince asıl kaynak orası olmalı.
-  const total = params.total_order_value ?? '';
   return NextResponse.redirect(
-    `${siteUrl}/odeme/sonuc?status=${status}&orderId=${platform_order_id ?? ''}${
-      total ? `&total=${encodeURIComponent(total)}` : ''
-    }`
+    `${siteUrl}/odeme/sonuc?status=${status}&orderNo=${encodeURIComponent(
+      orderNo
+    )}${total ? `&total=${encodeURIComponent(total)}` : ''}`
   );
 }
