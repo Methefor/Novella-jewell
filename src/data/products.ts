@@ -1316,22 +1316,25 @@ export const PRODUCTS: Product[] = [
 // HELPER FUNCTIONS
 // ─────────────────────────────────────────────────────────────
 
-export const getAllProducts = (): Product[] => PRODUCTS;
+// getAllProducts gizli ürünleri ELER — tüm listeler, arama ve sitemap bunu
+// kullandığı için gizli ürün hiçbir yerde görünmez. getProductBySlug ise tam
+// listede arar, böylece gizli ürün doğrudan URL'den (test için) açılabilir.
+export const getAllProducts = (): Product[] => PRODUCTS.filter((p) => !p.hidden);
 
 export const getProductBySlug = (slug: string): Product | undefined =>
   PRODUCTS.find((p) => p.slug === slug);
 
 export const getProductsByCategory = (category: string): Product[] =>
-  PRODUCTS.filter((p) => p.category === category);
+  PRODUCTS.filter((p) => p.category === category && !p.hidden);
 
 export const getProductsByCollection = (collection: string): Product[] =>
-  PRODUCTS.filter((p) => p.collection === collection);
+  PRODUCTS.filter((p) => p.collection === collection && !p.hidden);
 
 export const getNewProducts = (limit = 8): Product[] =>
-  PRODUCTS.filter((p) => p.isNew).slice(0, limit);
+  PRODUCTS.filter((p) => p.isNew && !p.hidden).slice(0, limit);
 
 export const getBestSellers = (limit = 8): Product[] =>
-  PRODUCTS.filter((p) => p.isBestSeller).slice(0, limit);
+  PRODUCTS.filter((p) => p.isBestSeller && !p.hidden).slice(0, limit);
 
 export const getRelatedProducts = (
   productId: string,
@@ -1339,5 +1342,5 @@ export const getRelatedProducts = (
   limit = 4
 ): Product[] =>
   PRODUCTS.filter(
-    (p) => p.collection === collection && p.id !== productId
+    (p) => p.collection === collection && p.id !== productId && !p.hidden
   ).slice(0, limit);

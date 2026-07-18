@@ -5,9 +5,17 @@ import type { CheckoutProvider, Order, PaymentResult } from './types';
 const API_ENDPOINT = 'https://www.shopier.com/ShowProduct/api_pay4.php';
 const MODULE_VERSION = '1.0.4';
 
+/** HMAC-SHA256 → base64 (Shopier'in beklediği format). */
 function sign(data: string, secret: string): string {
   return crypto.createHmac('sha256', secret).update(data).digest('base64');
 }
+
+/**
+ * Currency kodu. Shopier: 0 = TRY, 1 = USD, 2 = EUR.
+ * Bu değer HEM form alanında HEM imzada AYNI kullanılmalı; yoksa Shopier'in
+ * sunucusu imzayı yeniden hesaplarken tutmaz ve ödeme reddedilir.
+ */
+const CURRENCY_TRY = '0';
 
 export class ShopierProvider implements CheckoutProvider {
   private apiKey: string;
@@ -39,20 +47,24 @@ export class ShopierProvider implements CheckoutProvider {
   }
 
   async createPayment(order: Order): Promise<PaymentResult> {
-    const randomNr = Math.floor(Math.random() * 900000) + 100000; // 6 haneli
+    const randomNr = String(Math.floor(Math.random() * 900000) + 100000); // 6 haneli
     const productName = order.items.map((i) => i.name).join(', ').slice(0, 80);
+    const totalStr = order.total.toFixed(2);
 
-    // İmza verisi: API_key + website_index + platform_order_id + product_name + product_type + total_order_value + currency + random_nr
-    const sigData =
-      this.apiKey +
-      this.websiteIndex +
-      order.id +
-      productName +
-      '0' + // product_type: 0 = diğer
-      order.total.toFixed(2) +
-      '0' + // currency: 0 = TRY
-      randomNr;
-
+    /**
+     * ⚠️ İMZA FORMÜLÜ — Shopier'in resmî akışı.
+     *   sign = base64( HMAC-SHA256( random_nr + platform_order_id + total_order_value + currency ) )
+     *
+     * Bu sıra iki bağımsız resmî-uyumlu SDK ile birebir doğrulandı
+     * (erkineren/shopier · canavci2016/shopier). Bu dört alan DIŞINDA hiçbir
+     * şey (api_key, website_index, product_name, product_type) imzaya girmez.
+     *
+     * ⚠️ İmzadaki her değer, aşağıdaki form alanında GÖNDERİLEN değerle
+     * BİREBİR aynı string olmalı — Shopier sunucusu imzayı form değerlerinden
+     * yeniden hesaplıyor. random_nr, platform_order_id, total_order_value ve
+     * currency dördü de eşleşmeli.
+     */
+    const sigData = randomNr + order.id + totalStr + CURRENCY_TRY;
     const signature = sign(sigData, this.apiSecret);
 
     const callbackBase = SITE.url;
@@ -71,13 +83,13 @@ export class ShopierProvider implements CheckoutProvider {
       buyer_account_age: '0',
       buyer_history_order_count: '0',
       buyer_history_sentpackage_count: '0',
-      total_order_value: order.total.toFixed(2),
-      currency: '0', // TRY
+      total_order_value: totalStr, // imzayla AYNI string
+      currency: CURRENCY_TRY, // imzayla AYNI değer
       platform: '0',
       is_in_frame: '0',
       current_language: 'tr',
       modul_version: MODULE_VERSION,
-      random_nr: String(randomNr),
+      random_nr: randomNr, // imzayla AYNI string
       signature,
       // Kargo adresi
       shipping_full_name: `${order.customer.name} ${order.customer.surname}`,
@@ -102,15 +114,36 @@ export class ShopierProvider implements CheckoutProvider {
     return { type: 'form', formHtml };
   }
 
+  /**
+   * ⚠️ CALLBACK İMZA DOĞRULAMA — Shopier'in resmî akışı.
+   *   expected = HMAC-SHA256( random_nr + platform_order_id )   [ham binary]
+   *   gelen signature base64-DECODE edilip expected ile karşılaştırılır.
+   *
+   * İki bağımsız SDK ile birebir doğrulandı. Dikkat:
+   *  - Alan sırası: random_nr ÖNCE, platform_order_id SONRA.
+   *  - payment_status/status İMZAYA GİRMEZ (eski kod yanlışlıkla ekliyordu).
+   *  - Karşılaştırma HAM BINARY üzerinden; gelen base64 decode edilir.
+   *  - timingSafeEqual: zamanlama saldırısına karşı sabit süreli karşılaştırma.
+   */
   verifyCallback(params: Record<string, string>): boolean {
-    const { platform_order_id, payment_status, random_nr, signature } = params;
-    if (!platform_order_id || !payment_status || !random_nr || !signature) {
+    const { platform_order_id, random_nr, signature } = params;
+    if (!platform_order_id || !random_nr || !signature) {
       return false;
     }
-    const expected = sign(
-      platform_order_id + payment_status + random_nr,
-      this.apiSecret
-    );
-    return expected === signature;
+
+    const expected = crypto
+      .createHmac('sha256', this.apiSecret)
+      .update(random_nr + platform_order_id)
+      .digest(); // Buffer (ham binary)
+
+    let incoming: Buffer;
+    try {
+      incoming = Buffer.from(signature, 'base64');
+    } catch {
+      return false;
+    }
+
+    if (incoming.length !== expected.length) return false;
+    return crypto.timingSafeEqual(incoming, expected);
   }
 }

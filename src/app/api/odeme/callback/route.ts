@@ -29,7 +29,7 @@ async function handleCallback(req: NextRequest) {
     // body okuma opsiyonel
   }
 
-  const { platform_order_id, payment_status } = params;
+  const { platform_order_id } = params;
 
   // İmza doğrulama — başarısız → hata sayfası
   const provider = getCheckoutProvider();
@@ -40,7 +40,10 @@ async function handleCallback(req: NextRequest) {
     );
   }
 
-  const isPaid = payment_status === '1';
+  // Ödeme durumu. Shopier güncel akış 'status=success' gönderiyor; eski
+  // modüllerde 'payment_status=1' geliyordu — ikisini de kabul et.
+  const isPaid =
+    params.status === 'success' || params.payment_status === '1';
 
   // Geçici sipariş logu — Supabase fazında DB kaydına dönüşecek
   if (isPaid && platform_order_id) {

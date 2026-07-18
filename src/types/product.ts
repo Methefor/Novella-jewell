@@ -60,6 +60,13 @@ export interface Product {
   isBestSeller?: boolean;
   isCustomizable?: boolean;
 
+  /**
+   * true ise ürün hiçbir listede/aramada/sitemap'te GÖRÜNMEZ, ama doğrudan
+   * URL'den (slug) erişilebilir kalır. Ödeme akışını canlıda test etmek için
+   * gizli 49 ₺'lik test ürünü koymaya yarar. Test bitince sil.
+   */
+  hidden?: boolean;
+
   // Set ürünler için parça sayısı — set çekimleri gelince fiyat formülü: toplamın %85-90
   setParcaSayisi?: number;
 
