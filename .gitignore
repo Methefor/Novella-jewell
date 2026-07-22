@@ -40,3 +40,6 @@ next-env.d.ts
 # Remotion stüdyosu
 studio/node_modules/
 studio/out/
+
+# Ürün ekleme aracının giriş klasörü (npm run urun:ekle)
+gelen-gorseller/
