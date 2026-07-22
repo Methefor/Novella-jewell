@@ -1,6 +1,11 @@
 import LegalPage from '@/components/legal/LegalPage';
 import { SHIPPING, SITE } from '@/lib/config';
-import { CAYMA_SURESI_GUN, COMPANY, TESLIMAT_SURESI_GUN, alan } from '@/lib/legal';
+import {
+  CAYMA_SURESI_GUN,
+  COMPANY,
+  TESLIMAT_SURESI_GUN,
+  alan,
+} from '@/lib/legal';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,7 +17,9 @@ export const metadata: Metadata = {
 };
 
 const esik = SHIPPING.freeThreshold.toLocaleString('tr-TR');
-const ucret = SHIPPING.fee.toLocaleString('tr-TR', { minimumFractionDigits: 2 });
+const ucret = SHIPPING.fee.toLocaleString('tr-TR', {
+  minimumFractionDigits: 2,
+});
 
 export default function OnBilgilendirmePage() {
   return (
@@ -62,13 +69,13 @@ export default function OnBilgilendirmePage() {
           eklenir.
         </li>
         <li>
-          Ödenecek toplam tutar (ürün bedeli + varsa kargo) siparişi
-          onaylamadan önce ödeme sayfasında açıkça gösterilir.
+          Ödenecek toplam tutar (ürün bedeli + varsa kargo) siparişi onaylamadan
+          önce ödeme sayfasında açıkça gösterilir.
         </li>
         <li>
-          Ödeme, <strong>Shopier</strong> güvenli ödeme altyapısı üzerinden
-          kredi kartı / banka kartı ile yapılır. Kart bilgileriniz sitemize
-          hiçbir zaman iletilmez ve tarafımızca saklanmaz.
+          Ödeme, kredi kartı / banka kartı ile güvenli ödeme sayfası üzerinden
+          yapılır. Kart bilgileriniz sitemize hiçbir zaman iletilmez ve
+          tarafımızca saklanmaz.
         </li>
       </ul>
 
@@ -95,17 +102,16 @@ export default function OnBilgilendirmePage() {
       <p>
         Ürünü teslim aldığınız tarihten itibaren{' '}
         <strong>{CAYMA_SURESI_GUN} gün</strong> içinde, hiçbir gerekçe
-        göstermeden ve cezai şart ödemeden sözleşmeden cayma hakkına
-        sahipsiniz.
+        göstermeden ve cezai şart ödemeden sözleşmeden cayma hakkına sahipsiniz.
       </p>
       <p>
         Cayma bildiriminizi WhatsApp veya e-posta ile iletebilirsiniz. Cayma
         hakkını kullandığınızda ödemeniz en geç 14 gün içinde iade edilir.
       </p>
       <p>
-        Fikir değişikliğine bağlı iadelerde <strong>iade kargo ücreti
-        alıcıya</strong>; hatalı, kusurlu veya yanlış gönderilen üründe{' '}
-        <strong>satıcıya</strong> aittir.
+        Fikir değişikliğine bağlı iadelerde{' '}
+        <strong>iade kargo ücreti alıcıya</strong>; hatalı, kusurlu veya yanlış
+        gönderilen üründe <strong>satıcıya</strong> aittir.
       </p>
 
       <h3>Cayma hakkının kullanılamayacağı hâller</h3>

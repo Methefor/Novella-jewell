@@ -64,7 +64,7 @@ export default function HomeClient() {
             className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 md:mb-14"
           >
             <div>
-              <p className="section-label mb-3">Yeni Gelenler</p>
+              <p className="section-label mb-3">Koleksiyon</p>
               <h2
                 className="font-serif font-light text-black"
                 style={{
@@ -76,7 +76,7 @@ export default function HomeClient() {
                 {/* "En Yeni Koleksiyon" DEĞİL: burada gösterilenler koleksiyon
                     değil, yeni eklenen ürünler. Koleksiyon = Barcelona,
                     Stockholm, Paris, Klasikler — onlar /koleksiyonlar'da. */}
-                Son Eklenen Parçalar
+                Yeni Sezon
               </h2>
             </div>
             <Link
@@ -107,7 +107,7 @@ export default function HomeClient() {
 
       {/* Divider */}
       <div className="container-custom">
-        <hr className="divider" />
+        <hr className="rule-gold" />
       </div>
 
       {/* Best Sellers */}
@@ -122,7 +122,7 @@ export default function HomeClient() {
             className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 md:mb-14"
           >
             <div>
-              <p className="section-label mb-3">Çok Satanlar</p>
+              <p className="section-label mb-3">İlgi Görenler</p>
               <h2
                 className="font-serif font-light text-black"
                 style={{
@@ -216,9 +216,9 @@ export default function HomeClient() {
       </section>
 
       {/* Values strip */}
-      <section className="py-12 md:py-14 bg-cream-deep border-y border-border">
+      <section className="py-14 md:py-16 bg-cream-deep border-y border-border">
         <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
             {[
               {
                 title: '316L Paslanmaz Çelik',
@@ -242,17 +242,20 @@ export default function HomeClient() {
                 viewport={{ once: true }}
                 variants={fadeUp}
                 custom={0.1}
-                className="py-4"
+                className="py-2"
               >
+                <div className="flex items-center justify-center mb-3">
+                  <span className="h-px w-6 bg-gold/40" aria-hidden="true" />
+                </div>
                 <p
-                  className="font-serif font-light text-black mb-1"
-                  style={{ fontSize: '1.15rem', letterSpacing: '-0.015em' }}
+                  className="font-serif font-light text-black mb-1.5"
+                  style={{ fontSize: '1.2rem', letterSpacing: '-0.015em' }}
                 >
                   {title}
                 </p>
                 <p
                   className="font-sans font-light"
-                  style={{ fontSize: '13px', color: 'rgba(10,10,10,0.50)' }}
+                  style={{ fontSize: '13px', color: 'rgba(10,10,10,0.45)' }}
                 >
                   {body}
                 </p>

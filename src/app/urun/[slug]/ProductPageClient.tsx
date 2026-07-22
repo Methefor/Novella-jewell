@@ -312,8 +312,8 @@ export default function ProductPageClient({ product, collection }: Props) {
             </h1>
 
             {/* Mikro hikaye */}
-            <div className="border-l-2 border-gold pl-4">
-              <p className="font-serif italic text-black/60 leading-relaxed text-base">
+            <div className="border-l border-gold/40 pl-5">
+              <p className="font-serif italic text-black/55 leading-relaxed text-base">
                 {product.story}
               </p>
             </div>
@@ -390,8 +390,20 @@ export default function ProductPageClient({ product, collection }: Props) {
               <span className="pill pill-light">Alerji Yapmaz</span>
             </div>
 
+            {/* Güvence şeridi — premium marka hissi */}
+            <div className="flex items-center gap-4 pt-2 text-xs text-black/40">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-gold" />
+                Ömür boyu parlaklık
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-gold" />
+                Hediye kutusunda
+              </span>
+            </div>
+
             {/* Akordeon */}
-            <div className="border-t border-black/8 pt-4 space-y-0">
+            <div className="border-t border-black/8 pt-5 space-y-0">
               {accordionItems.map((item) => (
                 <div key={item.id} className="border-b border-black/8">
                   <button
@@ -455,14 +467,17 @@ export default function ProductPageClient({ product, collection }: Props) {
 
         {/* ── "Aynı hikayeden" ── */}
         {related.length > 0 && (
-          <section className="mt-24 border-t border-black/8 pt-14">
-            <div className="flex items-baseline justify-between mb-8">
-              <h2
-                className="font-serif font-light text-2xl text-black"
-                style={{ letterSpacing: '-0.02em' }}
-              >
-                Aynı hikayeden
-              </h2>
+          <section className="mt-24 border-t border-black/8 pt-16">
+            <div className="flex items-baseline justify-between mb-10">
+              <div>
+                <p className="section-label mb-2">Devamı</p>
+                <h2
+                  className="font-serif font-light text-2xl text-black"
+                  style={{ letterSpacing: '-0.02em' }}
+                >
+                  Aynı hikayeden
+                </h2>
+              </div>
               {collection && (
                 <Link
                   href={`/koleksiyonlar/${product.collection}`}

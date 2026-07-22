@@ -46,11 +46,11 @@ export default function GizlilikPage() {
 
       <h2>Ödeme bilgileriniz</h2>
       <p>
-        Ödemeleriniz <strong>Shopier</strong> güvenli ödeme altyapısı üzerinden
-        alınır. Kart numaranız, son kullanma tarihiniz ve CVV bilginiz
-        sitemize <strong>hiçbir zaman iletilmez</strong>, sunucumuza düşmez ve
-        tarafımızca saklanmaz. Bu bilgiler yalnızca Shopier&apos;in PCI-DSS
-        uyumlu sistemlerinde işlenir.
+        Ödemeleriniz güvenli ödeme sistemi üzerinden alınır. Kart numaranız, son
+        kullanma tarihiniz ve CVV bilginiz sitemize{' '}
+        <strong>hiçbir zaman iletilmez</strong>, sunucumuza düşmez ve
+        tarafımızca saklanmaz. Bu bilgiler yalnızca PCI-DSS uyumlu sistemlerde
+        işlenir.
       </p>
 
       <h2>Kimlerle paylaşıyoruz?</h2>
@@ -60,8 +60,8 @@ export default function GizlilikPage() {
           adres ve telefonunuz.
         </li>
         <li>
-          <strong>Shopier</strong> — ödemenizi alabilmek için ad, e-posta ve
-          tutar.
+          <strong>Ödeme sağlayıcısı</strong> — ödemenizi alabilmek için ad,
+          e-posta ve tutar.
         </li>
         <li>
           <strong>Vercel</strong> — sitenin barındırıldığı altyapı sağlayıcısı.

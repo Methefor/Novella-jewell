@@ -5,7 +5,7 @@ import { SHIPPING } from '@/lib/config';
 import { ILLER } from '@/lib/turkiye';
 import { useCartStore } from '@/store/cartStore';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -88,12 +88,12 @@ export default function OdemeClient() {
       <main className="min-h-screen bg-white pt-24 pb-20 px-6">
         <div className="max-w-3xl mx-auto">
           <h1 className="font-serif font-light text-2xl text-black mb-6">
-            Güvenli ödeme
+            Güvenli Ödeme
           </h1>
           <iframe
             src={iframeUrl}
             id="paytriframe"
-            title="PayTR Güvenli Ödeme"
+            title="Güvenli Ödeme"
             className="w-full min-h-[600px] border-0"
           />
         </div>
@@ -412,8 +412,9 @@ export default function OdemeClient() {
                 )}
               </button>
 
-              <p className="text-xs text-black/30 text-center mt-3">
-                PayTR güvenli ödeme altyapısı
+              <p className="text-xs text-black/30 text-center mt-3 flex items-center justify-center gap-1.5">
+                <Lock className="w-3 h-3" />
+                256-bit SSL ile güvenli ödeme
               </p>
             </div>
           </div>

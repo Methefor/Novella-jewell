@@ -35,14 +35,14 @@ export default function Footer() {
           {/* Brand column */}
           <div>
             <Link href="/" className="inline-block mb-5">
-              <span className="font-serif text-2xl font-light tracking-tight">
+              <span className="font-serif text-2xl font-light tracking-[0.15em]">
                 NOVELLA
               </span>
             </Link>
-            <p className="font-sans font-light leading-relaxed mb-6 text-white/45 text-sm">
+            <p className="font-sans font-light leading-relaxed mb-6 text-white/55 text-sm">
               El seçimi 316L paslanmaz çelik takılar.
               <br />
-              Her parça bir hikaye.
+              Her parça bir hikaye taşıyan zarafet.
             </p>
 
             {/* Social icons */}
@@ -52,31 +52,31 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 rounded-full flex items-center justify-center border border-white/10 hover:border-white/35 transition-colors duration-300"
+                className="w-9 h-9 rounded-full flex items-center justify-center border border-white/15 hover:border-white/40 hover:bg-white/5 transition-all duration-300"
               >
-                <Instagram className="w-4 h-4 text-white/45" />
+                <Instagram className="w-4 h-4 text-white/55" />
               </a>
               <a
                 href="https://api.whatsapp.com/send?phone=905451125059"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="w-9 h-9 rounded-full flex items-center justify-center border border-white/10 hover:border-white/35 transition-colors duration-300"
+                className="w-9 h-9 rounded-full flex items-center justify-center border border-white/15 hover:border-white/40 hover:bg-white/5 transition-all duration-300"
               >
-                <MessageCircle className="w-4 h-4 text-white/45" />
+                <MessageCircle className="w-4 h-4 text-white/55" />
               </a>
             </div>
           </div>
 
           {/* Quick links */}
           <div>
-            <p className="section-label text-white/30 mb-5">Sayfalar</p>
+            <p className="section-label text-white/35 mb-5">Sayfalar</p>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="font-sans font-light text-sm text-white/45 hover:text-white transition-colors duration-200"
+                    className="font-sans font-light text-sm text-white/55 hover:text-white transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -87,23 +87,23 @@ export default function Footer() {
 
           {/* Help + contact */}
           <div>
-            <p className="section-label text-white/30 mb-5">Yardım</p>
+            <p className="section-label text-white/35 mb-5">Yardım</p>
             <ul className="space-y-3 mb-8">
               {helpLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="font-sans font-light text-sm text-white/45 hover:text-white transition-colors duration-200"
+                    className="font-sans font-light text-sm text-white/55 hover:text-white transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-            <p className="section-label text-white/30 mb-3">İletişim</p>
+            <p className="section-label text-white/35 mb-3">İletişim</p>
             <a
               href="https://api.whatsapp.com/send?phone=905451125059"
-              className="font-sans font-light text-sm text-white/45 hover:text-white transition-colors duration-200"
+              className="font-sans font-light text-sm text-white/55 hover:text-white transition-colors duration-200"
             >
               +90 545 112 50 59
             </a>
@@ -121,7 +121,7 @@ export default function Footer() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className="font-sans font-light text-[11px] text-white/35 hover:text-white/70 transition-colors duration-200"
+                  className="font-sans font-light text-[11px] text-white/40 hover:text-white/75 transition-colors duration-200"
                 >
                   {link.label}
                 </Link>
@@ -132,10 +132,10 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/7">
-          <span className="font-sans font-light text-[11px] text-white/22 text-center sm:text-left">
+          <span className="font-sans font-light text-[11px] text-white/30 text-center sm:text-left">
             © {year} Novella. Tüm hakları saklıdır.
           </span>
-          <span className="flex items-center gap-1.5 font-sans font-light text-[11px] text-white/22">
+          <span className="flex items-center gap-1.5 font-sans font-light text-[11px] text-white/30">
             <span className="w-[5px] h-[5px] rounded-full flex-shrink-0 bg-gold" />
             316L Paslanmaz Çelik
           </span>

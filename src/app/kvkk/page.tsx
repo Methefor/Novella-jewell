@@ -64,7 +64,7 @@ export default function KvkkPage() {
       <h3>İşlemediğimiz veriler</h3>
       <p>
         <strong>Kart bilgilerinizi görmüyor ve saklamıyoruz.</strong> Ödeme,
-        Shopier altyapısı üzerinden yapılır; kart numaranız, son kullanma
+        güvenli ödeme sistemi üzerinden yapılır; kart numaranız, son kullanma
         tarihiniz ve CVV bilginiz hiçbir zaman sitemize iletilmez.
       </p>
 
@@ -74,7 +74,9 @@ export default function KvkkPage() {
         <li>Ödemenin alınması ve gerektiğinde iade edilmesi,</li>
         <li>Sipariş ve kargo süreci hakkında sizinle iletişim kurulması,</li>
         <li>İade ve cayma taleplerinizin karşılanması,</li>
-        <li>Yasal saklama ve faturalandırma yükümlülüklerinin yerine getirilmesi,</li>
+        <li>
+          Yasal saklama ve faturalandırma yükümlülüklerinin yerine getirilmesi,
+        </li>
         <li>Site güvenliğinin sağlanması,</li>
         <li>
           Açık rızanız varsa: ziyaret istatistikleri ve pazarlama faaliyetleri.
@@ -92,8 +94,8 @@ export default function KvkkPage() {
           mevzuatı kapsamında kayıt ve saklama.
         </li>
         <li>
-          <strong>Meşru menfaat (m.5/2-f):</strong> Site güvenliği ve dolandırıcılık
-          önleme.
+          <strong>Meşru menfaat (m.5/2-f):</strong> Site güvenliği ve
+          dolandırıcılık önleme.
         </li>
         <li>
           <strong>Açık rıza (m.5/1):</strong> Zorunlu olmayan çerezler ve
@@ -113,8 +115,8 @@ export default function KvkkPage() {
           için zorunlu.
         </li>
         <li>
-          <strong>Shopier (ödeme kuruluşu):</strong> Ad, soyad, e-posta,
-          sipariş tutarı — ödemenin alınması için zorunlu.
+          <strong>Shopier (ödeme kuruluşu):</strong> Ad, soyad, e-posta, sipariş
+          tutarı — ödemenin alınması için zorunlu.
         </li>
         <li>
           <strong>Barındırma sağlayıcısı (Vercel):</strong> Sitenin çalışması
@@ -154,16 +156,24 @@ export default function KvkkPage() {
       <ul>
         <li>Kişisel verinizin işlenip işlenmediğini öğrenme,</li>
         <li>İşlenmişse buna ilişkin bilgi talep etme,</li>
-        <li>İşlenme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme,</li>
+        <li>
+          İşlenme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme,
+        </li>
         <li>Yurt içinde/dışında aktarıldığı üçüncü kişileri bilme,</li>
         <li>Eksik veya yanlış işlenmişse düzeltilmesini isteme,</li>
         <li>Şartları oluşmuşsa silinmesini veya yok edilmesini isteme,</li>
-        <li>Düzeltme/silme işlemlerinin aktarıldığı kişilere bildirilmesini isteme,</li>
+        <li>
+          Düzeltme/silme işlemlerinin aktarıldığı kişilere bildirilmesini
+          isteme,
+        </li>
         <li>
           Otomatik sistemlerle analiz sonucu aleyhinize bir sonuç çıkmasına
           itiraz etme,
         </li>
-        <li>Kanuna aykırı işleme nedeniyle zarara uğradıysanız tazminat talep etme.</li>
+        <li>
+          Kanuna aykırı işleme nedeniyle zarara uğradıysanız tazminat talep
+          etme.
+        </li>
       </ul>
 
       <h2>8. Başvuru yolu</h2>
@@ -174,10 +184,10 @@ export default function KvkkPage() {
         ) : (
           alan(COMPANY.email, 'e-posta')
         )}{' '}
-        adresine iletebilirsiniz. Başvurunuz en geç{' '}
-        <strong>30 gün</strong> içinde ücretsiz olarak sonuçlandırılır.
-        İşlemin ayrıca maliyet gerektirmesi hâlinde Kurul&apos;ca belirlenen
-        tarifedeki ücret alınabilir.
+        adresine iletebilirsiniz. Başvurunuz en geç <strong>30 gün</strong>{' '}
+        içinde ücretsiz olarak sonuçlandırılır. İşlemin ayrıca maliyet
+        gerektirmesi hâlinde Kurul&apos;ca belirlenen tarifedeki ücret
+        alınabilir.
       </p>
       <p>
         Başvurunuzun reddedilmesi veya süresinde yanıt alamamanız hâlinde

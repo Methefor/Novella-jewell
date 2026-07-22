@@ -1,6 +1,11 @@
 'use client';
 
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRef } from 'react';
@@ -134,8 +139,8 @@ export default function Hero() {
           className="flex items-center justify-center gap-3 mb-5"
         >
           <span className="h-px w-8 bg-gold/50" aria-hidden="true" />
-          <span className="font-sans font-light text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-gold-dark">
-            El seçimi paslanmaz çelik
+          <span className="font-sans font-light text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-gold-dark">
+            El seçimi paslanmaz çelik takı
           </span>
           <span className="h-px w-8 bg-gold/50" aria-hidden="true" />
         </motion.div>
@@ -154,6 +159,22 @@ export default function Hero() {
             <span className="italic text-gold-dark">Eskimeyen zarafet.</span>
           </RisingLine>
         </h1>
+
+        {/* Subtitle — premium marka dili */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.6, ease }}
+          className="font-sans font-light text-black/50 text-center text-balance mb-7"
+          style={{
+            fontSize: 'clamp(14px, 1.5vw, 16px)',
+            lineHeight: 1.7,
+            maxWidth: '32rem',
+          }}
+        >
+          Ömür boyu parlaklığını koruyan 316L paslanmaz çelikle üretilmiş, az
+          bulunur parçalardan oluşan bir koleksiyon.
+        </motion.p>
 
         {/* Pills */}
         <motion.div
@@ -332,7 +353,9 @@ function HeroVisual({
   if (hasWrist) {
     return (
       <motion.div
-        initial={reduceMotion ? undefined : { y: '18%', scale: 1.08, opacity: 0 }}
+        initial={
+          reduceMotion ? undefined : { y: '18%', scale: 1.08, opacity: 0 }
+        }
         animate={{ y: '0%', scale: 1, opacity: 1 }}
         transition={{ duration: 1.8, delay: 0.15, ease }}
         className="relative w-full max-w-[560px] h-[88%]"

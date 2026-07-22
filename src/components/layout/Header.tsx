@@ -55,7 +55,7 @@ export default function Header() {
             {/* Logotype */}
             <Link
               href="/"
-              className="font-serif text-[22px] font-medium tracking-tight text-black leading-none"
+              className="font-serif text-[22px] font-medium tracking-[0.15em] text-black leading-none"
             >
               NOVELLA
             </Link>
@@ -73,17 +73,6 @@ export default function Header() {
                 Menü
               </span>
             </button>
-
-            {/* Feature pills — desktop only */}
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-[7px] bg-[#F4F4F6] rounded-full">
-              <span className="text-[11px] font-sans font-light text-black/60">
-                316L Çelik
-              </span>
-              <span className="text-black/20 text-[10px]">·</span>
-              <span className="text-[11px] font-sans font-light text-black/60">
-                El Seçimi
-              </span>
-            </div>
           </div>
 
           {/* Right group */}
@@ -154,7 +143,7 @@ export default function Header() {
               style={{ height: 'var(--navbar-h)' }}
               className="flex items-center justify-between px-6 md:px-10 border-b border-black/5 flex-shrink-0"
             >
-              <span className="font-serif text-[22px] font-medium tracking-tight">
+              <span className="font-serif text-[22px] font-medium tracking-[0.15em]">
                 NOVELLA
               </span>
               <button

@@ -4,7 +4,7 @@ import OneriSeridi from '@/components/product/OneriSeridi';
 import { SHIPPING } from '@/lib/config';
 import { useCartStore } from '@/store/cartStore';
 import { motion } from 'framer-motion';
-import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
+import { Lock, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -216,8 +216,9 @@ export default function CartPageClient() {
                 Ödemeye Geç
               </Link>
 
-              <p className="text-xs text-black/30 text-center mt-4">
-                Güvenli ödeme · PayTR altyapısı
+              <p className="text-xs text-black/30 text-center mt-4 flex items-center justify-center gap-1.5">
+                <Lock className="w-3 h-3" />
+                256-bit SSL ile güvenli ödeme
               </p>
             </div>
           </div>

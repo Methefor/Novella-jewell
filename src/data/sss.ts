@@ -1,5 +1,5 @@
-import { CAYMA_SURESI_GUN, TESLIMAT_SURESI_GUN } from '@/lib/legal';
 import { SHIPPING } from '@/lib/config';
+import { CAYMA_SURESI_GUN, TESLIMAT_SURESI_GUN } from '@/lib/legal';
 
 /**
  * SSS içeriği — TEK KAYNAK.
@@ -25,7 +25,9 @@ export interface SSSGrup {
 }
 
 const esik = SHIPPING.freeThreshold.toLocaleString('tr-TR');
-const ucret = SHIPPING.fee.toLocaleString('tr-TR', { minimumFractionDigits: 2 });
+const ucret = SHIPPING.fee.toLocaleString('tr-TR', {
+  minimumFractionDigits: 2,
+});
 
 export const SSS: SSSGrup[] = [
   {
@@ -106,12 +108,12 @@ export const SSS: SSSGrup[] = [
       {
         soru: 'Hangi ödeme yöntemlerini kullanabilirim?',
         cevap:
-          'Ödemeler Shopier güvenli ödeme altyapısı üzerinden kredi kartı ve banka kartı ile alınır. Kart bilgileriniz sitemize hiçbir zaman iletilmez ve tarafımızca saklanmaz.',
+          'Kredi kartı ve banka kartı ile güvenli ödeme yapabilirsiniz. Kart bilgileriniz sitemize hiçbir zaman iletilmez ve tarafımızca saklanmaz.',
       },
       {
         soru: 'Kart bilgilerim güvende mi?',
         cevap:
-          'Evet. Ödeme adımında Shopier’in PCI-DSS uyumlu güvenli sayfasına yönlendirilirsiniz. Kart numaranız, son kullanma tarihiniz ve CVV bilginiz sitemize hiç ulaşmaz.',
+          'Evet. Ödeme adımında PCI-DSS uyumlu güvenli ödeme sayfasına yönlendirilirsiniz. Kart numaranız, son kullanma tarihiniz ve CVV bilginiz sitemize hiç ulaşmaz.',
       },
     ],
   },

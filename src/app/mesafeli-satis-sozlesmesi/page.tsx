@@ -1,6 +1,11 @@
 import LegalPage from '@/components/legal/LegalPage';
 import { SHIPPING, SITE } from '@/lib/config';
-import { CAYMA_SURESI_GUN, COMPANY, TESLIMAT_SURESI_GUN, alan } from '@/lib/legal';
+import {
+  CAYMA_SURESI_GUN,
+  COMPANY,
+  TESLIMAT_SURESI_GUN,
+  alan,
+} from '@/lib/legal';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,7 +17,9 @@ export const metadata: Metadata = {
 };
 
 const esik = SHIPPING.freeThreshold.toLocaleString('tr-TR');
-const ucret = SHIPPING.fee.toLocaleString('tr-TR', { minimumFractionDigits: 2 });
+const ucret = SHIPPING.fee.toLocaleString('tr-TR', {
+  minimumFractionDigits: 2,
+});
 
 export default function MesafeliSatisPage() {
   return (
@@ -43,19 +50,18 @@ export default function MesafeliSatisPage() {
 
       <h3>1.2. Alıcı</h3>
       <p>
-        Sipariş formunda ad, soyad, adres, telefon ve e-posta bilgilerini
-        beyan eden kişidir. Alıcı, beyan ettiği bilgilerin doğruluğundan
-        sorumludur.
+        Sipariş formunda ad, soyad, adres, telefon ve e-posta bilgilerini beyan
+        eden kişidir. Alıcı, beyan ettiği bilgilerin doğruluğundan sorumludur.
       </p>
 
       <h2>Madde 2 — Sözleşmenin konusu</h2>
       <p>
         İşbu sözleşmenin konusu, Alıcı&apos;nın {SITE.url} adresinden elektronik
         ortamda siparişini verdiği, nitelikleri ve satış fiyatı sipariş
-        sayfasında belirtilen ürünlerin satışı ve teslimi ile ilgili olarak
-        6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli
-        Sözleşmeler Yönetmeliği hükümleri uyarınca tarafların hak ve
-        yükümlülüklerinin belirlenmesidir.
+        sayfasında belirtilen ürünlerin satışı ve teslimi ile ilgili olarak 6502
+        sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler
+        Yönetmeliği hükümleri uyarınca tarafların hak ve yükümlülüklerinin
+        belirlenmesidir.
       </p>
 
       <h2>Madde 3 — Sözleşme konusu ürün ve bedel</h2>
@@ -91,12 +97,13 @@ export default function MesafeliSatisPage() {
           iade eder.
         </li>
         <li>
-          Ürünün tesliminden sonra Alıcı&apos;ya ait kredi kartının Alıcı&apos;nın
-          kusurundan kaynaklanmayan bir şekilde yetkisiz kişilerce haksız veya
-          hukuka aykırı olarak kullanılması nedeniyle ilgili banka veya finans
-          kuruluşunun ürün bedelini Satıcı&apos;ya ödememesi hâlinde, ürün
-          Alıcı&apos;ya teslim edilmişse Alıcı ürünü Satıcı&apos;ya iade eder;
-          bu durumda kargo giderleri Alıcı&apos;ya aittir.
+          Ürünün tesliminden sonra Alıcı&apos;ya ait kredi kartının
+          Alıcı&apos;nın kusurundan kaynaklanmayan bir şekilde yetkisiz
+          kişilerce haksız veya hukuka aykırı olarak kullanılması nedeniyle
+          ilgili banka veya finans kuruluşunun ürün bedelini Satıcı&apos;ya
+          ödememesi hâlinde, ürün Alıcı&apos;ya teslim edilmişse Alıcı ürünü
+          Satıcı&apos;ya iade eder; bu durumda kargo giderleri Alıcı&apos;ya
+          aittir.
         </li>
         <li>
           Mücbir sebepler (doğal afet, salgın, kargo hizmetlerinin durması vb.)
@@ -105,8 +112,8 @@ export default function MesafeliSatisPage() {
           hakkına sahiptir.
         </li>
         <li>
-          Alıcı, ürünü teslim aldığı anda kontrol etmek ve hasar durumunda
-          kargo görevlisine tutanak tutturmakla yükümlüdür.
+          Alıcı, ürünü teslim aldığı anda kontrol etmek ve hasar durumunda kargo
+          görevlisine tutanak tutturmakla yükümlüdür.
         </li>
       </ol>
 
@@ -130,8 +137,8 @@ export default function MesafeliSatisPage() {
 
       <h2>Madde 6 — Cayma hakkının kullanılamayacağı ürünler</h2>
       <p>
-        Mesafeli Sözleşmeler Yönetmeliği m.15 uyarınca aşağıdaki ürünlerde
-        cayma hakkı kullanılamaz:
+        Mesafeli Sözleşmeler Yönetmeliği m.15 uyarınca aşağıdaki ürünlerde cayma
+        hakkı kullanılamaz:
       </p>
       <ul>
         <li>
@@ -153,16 +160,16 @@ export default function MesafeliSatisPage() {
       <p>
         Alıcı&apos;nın kişisel verileri, 6698 sayılı KVKK kapsamında,{' '}
         <a href="/kvkk">Aydınlatma Metni</a>&apos;nde belirtilen amaç ve
-        sınırlar dâhilinde işlenir. Ödeme bilgileri Satıcı tarafından
-        saklanmaz; ödeme Shopier altyapısı üzerinden gerçekleştirilir.
+        sınırlar dâhilinde işlenir. Ödeme bilgileri Satıcı tarafından saklanmaz;
+        ödeme güvenli ödeme sistemi üzerinden gerçekleştirilir.
       </p>
 
       <h2>Madde 8 — Uyuşmazlıkların çözümü</h2>
       <p>
-        İşbu sözleşmeden doğan uyuşmazlıklarda, Ticaret Bakanlığı tarafından
-        her yıl ilan edilen parasal sınırlar dâhilinde Alıcı&apos;nın veya
-        Satıcı&apos;nın yerleşim yerindeki Tüketici Hakem Heyetleri ile
-        Tüketici Mahkemeleri yetkilidir.
+        İşbu sözleşmeden doğan uyuşmazlıklarda, Ticaret Bakanlığı tarafından her
+        yıl ilan edilen parasal sınırlar dâhilinde Alıcı&apos;nın veya
+        Satıcı&apos;nın yerleşim yerindeki Tüketici Hakem Heyetleri ile Tüketici
+        Mahkemeleri yetkilidir.
       </p>
 
       <h2>Madde 9 — Yürürlük</h2>
