@@ -40,6 +40,7 @@ export default function OdemeClient() {
   const { items, subtotal, shippingCost, total } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [iframeUrl, setIframeUrl] = useState<string | null>(null);
 
   const {
     register,
@@ -62,7 +63,43 @@ export default function OdemeClient() {
     );
   }, [items, total]);
 
+  // PayTR iframe açıldığında formu gizle; iframeResizer script'ini yükle.
+  useEffect(() => {
+    if (!iframeUrl) return;
+    if (document.getElementById('paytr-iframe-resizer')) return;
+
+    const script = document.createElement('script');
+    script.id = 'paytr-iframe-resizer';
+    script.src = 'https://www.paytr.com/js/iframeResizer.min.js';
+    script.onload = () => {
+      // @ts-expect-error paytr iframeResizer global'i
+      if (typeof window.iFrameResize === 'function') {
+        // @ts-expect-error paytr iframeResizer global'i
+        window.iFrameResize({}, '#paytriframe');
+      }
+    };
+    document.body.appendChild(script);
+  }, [iframeUrl]);
+
   if (items.length === 0) return null;
+
+  if (iframeUrl) {
+    return (
+      <main className="min-h-screen bg-white pt-24 pb-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="font-serif font-light text-2xl text-black mb-6">
+            Güvenli ödeme
+          </h1>
+          <iframe
+            src={iframeUrl}
+            id="paytriframe"
+            title="PayTR Güvenli Ödeme"
+            className="w-full min-h-[600px] border-0"
+          />
+        </div>
+      </main>
+    );
+  }
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -104,8 +141,8 @@ export default function OdemeClient() {
         throw new Error(result?.error ?? 'Ödeme başlatılamadı.');
       }
 
-      // NOT: Sepet burada TEMİZLENMEZ. Müşteri Shopier'de vazgeçer veya ödeme
-      // düşerse sepetini kaybetmemeli. Temizleme /odeme/sonuc sayfasında,
+      // NOT: Sepet burada TEMİZLENMEZ. Müşteri ödeme sayfasında vazgeçer veya
+      // ödeme düşerse sepetini kaybetmemeli. Temizleme /odeme/sonuc sayfasında,
       // yalnızca ödeme başarılıysa yapılır.
       if (result.type === 'redirect') {
         window.location.href = result.redirectUrl;
@@ -113,6 +150,8 @@ export default function OdemeClient() {
         const container = document.createElement('div');
         container.innerHTML = result.formHtml;
         document.body.appendChild(container);
+      } else if (result.type === 'iframe') {
+        setIframeUrl(result.iframeUrl);
       } else {
         throw new Error('Bilinmeyen ödeme yanıtı.');
       }
@@ -138,7 +177,11 @@ export default function OdemeClient() {
 
         <div className="grid lg:grid-cols-[1fr_360px] gap-12">
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            id="odeme-form"
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-8"
+          >
             {/* Kişisel bilgiler */}
             <section>
               <h2 className="text-sm font-medium text-black/50 uppercase tracking-widest mb-5">
@@ -240,19 +283,22 @@ export default function OdemeClient() {
 
           {/* Summary — sticky */}
           <div>
-            <div className="sticky top-24 bg-[#F9F9F7] p-6 border border-black/6">
+            <div className="sticky top-24 bg-[#F9F9F7] p-6 rounded-lg border border-black/8 shadow-sm">
               <h2 className="font-serif text-lg text-black mb-5">
                 Sipariş Özeti
               </h2>
 
-              <div className="space-y-2 mb-5">
+              <div className="space-y-3 mb-5">
                 {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-black/70 truncate pr-2">
+                  <div
+                    key={item.id}
+                    className="flex justify-between text-sm gap-2"
+                  >
+                    <span className="text-black/70 truncate">
                       {item.product.name}
                       <span className="text-black/35"> ×{item.quantity}</span>
                     </span>
-                    <span className="font-medium text-black flex-shrink-0">
+                    <span className="font-medium text-black flex-shrink-0 whitespace-nowrap">
                       {(item.product.price * item.quantity).toLocaleString(
                         'tr-TR'
                       )}{' '}
@@ -367,7 +413,7 @@ export default function OdemeClient() {
               </button>
 
               <p className="text-xs text-black/30 text-center mt-3">
-                Shopier güvenli ödeme altyapısı
+                PayTR güvenli ödeme altyapısı
               </p>
             </div>
           </div>
@@ -378,9 +424,9 @@ export default function OdemeClient() {
 }
 
 function inputCls(hasError: boolean) {
-  return `w-full px-3.5 py-2.5 text-sm bg-white border ${
-    hasError ? 'border-red-400' : 'border-black/15'
-  } rounded focus:outline-none focus:border-black transition-colors`;
+  return `w-full px-4 py-3 text-sm bg-white border ${
+    hasError ? 'border-red-400' : 'border-black/12'
+  } rounded-lg focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all duration-200`;
 }
 
 function Field({
@@ -394,7 +440,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-black/50 mb-1.5 uppercase tracking-wide">
+      <label className="block text-xs font-medium text-black/50 mb-2 uppercase tracking-wide">
         {label}
       </label>
       {children}

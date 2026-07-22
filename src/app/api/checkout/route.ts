@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     const { items, customer } = parsed.data;
 
     // random_nr'ı burada üretiyoruz: aynı değer hem DB pending siparişe
-    // kaydedilecek hem de Shopier imzasında kullanılacak (tek kaynak).
+    // kaydedilecek hem de (eski Shopier akışında) imzada kullanılacak.
     const randomNr = String(Math.floor(Math.random() * 900000) + 100000);
 
     // Fiyat, kargo ve stok burada yeniden hesaplanır. id geçici — birazdan
@@ -63,6 +63,14 @@ export async function POST(req: NextRequest) {
     if (!built.ok) {
       return NextResponse.json({ error: built.error }, { status: 400 });
     }
+
+    // PayTR gibi sağlayıcılar müşteri IP'si ister. Vercel/Next.js
+    // header'larından gerçek IP'yi almaya çalışır, bulamazsa placeholder kalır.
+    const forwarded = req.headers.get('x-forwarded-for');
+    const userIp = forwarded
+      ? (forwarded.split(',')[0]?.trim() ?? '127.0.0.1')
+      : (req.headers.get('x-real-ip') ?? '127.0.0.1');
+    built.order.userIp = userIp;
 
     // Pending siparişi DB'ye yaz; DB order_no (NJ-2026-0001) üretir.
     const pending = await createPendingOrder(built.order, randomNr);
@@ -75,7 +83,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // order_no → Shopier platform_order_id. Callback bu numarayla kaydı bulacak.
+    // order_no → PayTR merchant_oid. Callback bu numarayla kaydı bulacak.
     built.order.id = pending.orderNo;
 
     const provider = getCheckoutProvider();
@@ -84,6 +92,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result);
   } catch (err) {
     console.error('[/api/checkout]', err);
-    return NextResponse.json({ error: 'Ödeme başlatılamadı.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Ödeme başlatılamadı.' },
+      { status: 500 }
+    );
   }
 }

@@ -3,7 +3,7 @@ import { sendOrderConfirmationEmail } from '@/lib/email';
 import { markOrderFailed, markOrderPaid } from '@/lib/orders';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Shopier callback: GET veya POST olarak gelebilir
+// PayTR/Shopier callback: GET veya POST olarak gelebilir.
 export async function GET(req: NextRequest) {
   return handleCallback(req);
 }
@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
 
 async function handleCallback(req: NextRequest) {
   const siteUrl = (await import('@/lib/config')).SITE.url;
+  const providerName = process.env.CHECKOUT_PROVIDER ?? 'paytr';
 
   // Parametre toplama (query string + form body)
   const url = new URL(req.url);
@@ -34,7 +35,8 @@ async function handleCallback(req: NextRequest) {
     // body okuma opsiyonel
   }
 
-  const orderNo = params.platform_order_id ?? '';
+  // PayTR: merchant_oid; eski Shopier: platform_order_id.
+  const orderNo = params.platform_order_id ?? params.merchant_oid ?? '';
 
   // İmza doğrulama — başarısız → hata sayfası (kayda dokunma)
   const provider = getCheckoutProvider();
@@ -45,10 +47,8 @@ async function handleCallback(req: NextRequest) {
     );
   }
 
-  // Ödeme durumu. Güncel Shopier akışı 'status=success'; eski modüllerde
-  // 'payment_status=1' geliyordu — ikisini de kabul et.
-  const isPaid =
-    params.status === 'success' || params.payment_status === '1';
+  // PayTR status: success | failed; eski Shopier: status=success veya payment_status=1.
+  const isPaid = params.status === 'success' || params.payment_status === '1';
 
   let total = '';
 
@@ -77,6 +77,14 @@ async function handleCallback(req: NextRequest) {
     await markOrderFailed(orderNo);
   }
 
+  // PayTR Bildirim URL'sine (callback) dönülmesi gereken yanıt düz "OK" metnidir.
+  // Müşterinin gördüğü başarı/hata sayfası merchant_ok_url / merchant_fail_url ile
+  // ayrıca ayarlanır; o yüzden burada redirect dönmeyiz.
+  if (providerName === 'paytr') {
+    return new NextResponse('OK');
+  }
+
+  // Eski Shopier akışı: callback doğrudan müşteriyi sonuç sayfasına yönlendirir.
   const status = isPaid ? 'success' : 'error';
   return NextResponse.redirect(
     `${siteUrl}/odeme/sonuc?status=${status}&orderNo=${encodeURIComponent(
