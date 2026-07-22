@@ -39,6 +39,27 @@ export const RemotionRoot: React.FC = () => {
         }
       />
 
+      {/* ────────────────────────────────────────────────────────────
+          SİTE HERO DÖNGÜSÜ (GENİŞ) — masaüstü için 16:9.
+          Dikey sürüm mobilde kalır; masaüstünde bu geniş sürüm
+          tam genişlikte oynar.
+          Çıktı: ../public/media/video/hero-loop-wide.mp4
+          ──────────────────────────────────────────────────────────── */}
+      <Composition
+        id="Site-HeroDonguWide"
+        component={HeroDongu}
+        durationInFrames={180} // 6 sn @30fps
+        fps={30}
+        width={1600}
+        height={900}
+        defaultProps={
+          {
+            gorsel: 'media/yuzuk/yuzuk-16c.jpg',
+            gorselIkinci: 'media/yuzuk/yuzuk-17c.jpg',
+          } satisfies HeroDonguProps
+        }
+      />
+
       {/* ── Stockholm Nova Yıldız Yüzük — Reels/Story ── */}
       <Composition
         id="Reels-StockholmNova"

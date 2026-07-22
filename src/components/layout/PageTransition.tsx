@@ -1,8 +1,15 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
+/**
+ * Sayfa geçişinde yumuşak giriş animasyonu.
+ *
+ * Bilinçli olarak AnimatePresence + exit animasyonu YOK: App Router'da
+ * children exit animasyonu bitmeden değiştiği için mode="wait" sayfayı
+ * boş bırakabiliyordu (ör. sepetten /sepet'e geçişte içerik görünmüyordu).
+ */
 export default function PageTransition({
   children,
 }: {
@@ -11,16 +18,13 @@ export default function PageTransition({
   const pathname = usePathname();
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      key={pathname}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+    >
+      {children}
+    </motion.div>
   );
 }

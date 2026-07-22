@@ -115,7 +115,7 @@ export default function KvkkPage() {
           için zorunlu.
         </li>
         <li>
-          <strong>Shopier (ödeme kuruluşu):</strong> Ad, soyad, e-posta, sipariş
+          <strong>PayTR (ödeme kuruluşu):</strong> Ad, soyad, e-posta, sipariş
           tutarı — ödemenin alınması için zorunlu.
         </li>
         <li>

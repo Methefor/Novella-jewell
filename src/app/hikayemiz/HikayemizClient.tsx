@@ -81,9 +81,10 @@ export default function HikayemizClient() {
               className="font-sans font-light text-black/60 max-w-xl text-balance"
               style={{ fontSize: '17px', lineHeight: 1.75 }}
             >
-              Bir takının anlatacak bir şeyi olmalı. Biz de her parçayı, bir
-              şehirde geçen kısa bir hikaye gibi tasarlıyoruz — ve o hikayenin
-              yıllar sonra da okunabilmesi için çelikten yapıyoruz.
+              İtalyancada novella, tek oturuşta okunan kısa hikaye demek. Biz
+              her parçayı böyle tasarlıyoruz: bir şehirde geçen, birkaç satırda
+              anlatılan ama yıllarca taşınan bir hikaye. Ve o hikaye eskimesin
+              diye, onu çelikten yazıyoruz.
             </p>
           </motion.div>
         </div>
@@ -152,11 +153,45 @@ export default function HikayemizClient() {
               >
                 Bu seçim bize bir söz verdirdi: Novella&apos;dan aldığınız bir
                 parçayı <em className="italic">özel gün</em> beklemeden takın.
-                Duşta çıkarmayın, denize girerken düşünmeyin, kutuya kaldırmayın.
-                Bir takı ancak takıldığında bir hikaye biriktirir.
+                Duşta çıkarmayın, denize girerken düşünmeyin, kutuya
+                kaldırmayın.
               </p>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* ───────────────── Manifesto ───────────────── */}
+      <section className="py-16 md:py-24 bg-champagne relative overflow-hidden border-y border-gold/20">
+        <div className="absolute inset-0 texture-gold" aria-hidden="true" />
+        <div className="container-custom relative">
+          <motion.blockquote
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={fadeUp}
+            custom={0}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <span
+              className="block h-px w-14 bg-gold/50 mx-auto mb-8"
+              aria-hidden="true"
+            />
+            <p
+              className="font-serif font-light italic text-black text-balance"
+              style={{
+                fontSize: 'clamp(1.7rem, 3.4vw, 2.7rem)',
+                lineHeight: 1.25,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              “Bir takı ancak takıldığında 
+              <span className="text-gold-dark">hikaye biriktirir.</span>”
+            </p>
+            <footer className="mt-7 font-sans text-[11px] tracking-[0.22em] uppercase text-black/40">
+              Novella manifestosu
+            </footer>
+          </motion.blockquote>
         </div>
       </section>
 
@@ -193,9 +228,10 @@ export default function HikayemizClient() {
                 viewport={{ once: true, margin: '-40px' }}
                 variants={fadeUp}
                 custom={i * 0.08}
+                className="group rounded-2xl p-6 -m-2 border border-transparent transition-all duration-300 hover:border-gold/25 hover:bg-white/70 hover:shadow-[0_16px_44px_rgba(120,100,60,0.12)] hover:-translate-y-1"
               >
                 <div
-                  className="w-11 h-11 rounded-full bg-white border border-gold/30 flex items-center justify-center mb-5"
+                  className="w-11 h-11 rounded-full bg-white border border-gold/30 flex items-center justify-center mb-5 transition-colors duration-300 group-hover:border-gold/60"
                   aria-hidden="true"
                 >
                   <Icon className="w-[18px] h-[18px] text-gold-dark" strokeWidth={1.5} />

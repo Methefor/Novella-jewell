@@ -8,7 +8,7 @@ import {
 } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -73,6 +73,32 @@ const HERO_WRIST: string | null = '/media/yuzuk/yuzuk-16c.jpg';
 const HERO_VIDEO: string | null = '/media/video/hero-loop.mp4';
 const HERO_VIDEO_POSTER = '/media/video/hero-poster.jpg';
 
+/**
+ * Geniş (16:9) sürüm — masaüstünde dikey video küçük kaldığı için
+ * lg ve üzeri ekranlarda bu sürüm tam genişliğe yakın oynar.
+ * studio/ ile üretilir: Site-HeroDonguWide kompozisyonu.
+ */
+const HERO_VIDEO_WIDE: string | null = '/media/video/hero-loop-wide.mp4';
+const HERO_VIDEO_WIDE_POSTER = '/media/video/hero-poster-wide.jpg';
+
+/**
+ * lg kırılımını (1024px) izler. SSR'da false başlar; mount sonrası
+ * gerçek değere oturur — böylece hydration uyuşmazlığı olmaz.
+ */
+function useIsDesktop(): boolean {
+  const [desktop, setDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const guncelle = () => setDesktop(mq.matches);
+    guncelle();
+    mq.addEventListener('change', guncelle);
+    return () => mq.removeEventListener('change', guncelle);
+  }, []);
+
+  return desktop;
+}
+
 /** MOD 2 yedeği — HERO_WRIST null olursa devreye girer. */
 const HERO_PRODUCT = '/media/bileklik/bileklik-1.jpg';
 
@@ -104,8 +130,11 @@ export default function Hero() {
       <div className="absolute inset-0 texture-gold" aria-hidden="true" />
       <div className="absolute inset-0 texture-lines" aria-hidden="true" />
 
-      {/* Yukarıdan inen ışık huzmesi — bileği aydınlatan kaynak hissi */}
-      <div
+      {/* Yukarıdan inen ışık huzmesi — bileği aydınlatan kaynak hissi.
+          Nefes alan opaklik: yalnızca opacity anime edilir (GPU-dostu, layout tetiklemez). */}
+      <motion.div
+        animate={reduceMotion ? undefined : { opacity: [0.75, 1, 0.75] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute left-1/2 top-0 -translate-x-1/2 w-[130vw] sm:w-[80vw] h-[65vh] pointer-events-none"
         style={{
           background:
@@ -276,41 +305,60 @@ function HeroVisual({
   hasWrist: boolean;
   reduceMotion: boolean;
 }) {
+  // Masaüstünde geniş (16:9) video ve daha büyük yuva kullanılır.
+  const isDesktop = useIsDesktop();
+  const videoSrc = isDesktop && HERO_VIDEO_WIDE ? HERO_VIDEO_WIDE : HERO_VIDEO;
+  const videoPoster = isDesktop ? HERO_VIDEO_WIDE_POSTER : HERO_VIDEO_POSTER;
+
   // Kenarların arka plana karışması.
   // Sadece alt kenarı yumuşatmak yetmiyor: sol/sağ/üst sert kalınca görsel
   // zemine yapıştırılmış bir dikdörtgen gibi duruyor. Elips maske her yönden
   // eritir, böylece bilek ışığın içinden çıkıyormuş gibi görünür.
-  const feather =
-    'radial-gradient(ellipse 72% 60% at 50% 40%, #000 40%, rgba(0,0,0,0.85) 62%, transparent 88%)';
+  // Geniş videoda elips yatayda daha geniş tutulur.
+  const feather = isDesktop
+    ? 'radial-gradient(ellipse 84% 62% at 50% 45%, #000 46%, rgba(0,0,0,0.85) 66%, transparent 90%)'
+    : 'radial-gradient(ellipse 72% 60% at 50% 40%, #000 40%, rgba(0,0,0,0.85) 62%, transparent 88%)';
 
   // ── Video modu ──
   // Hareket azaltma tercihi açıksa video HİÇ yüklenmez; poster gösterilir.
-  // Bu hem erişilebilirlik hem de 674 KB'lık gereksiz indirmeyi önleme.
+  // Bu hem erişilebilirlik hem de gereksiz indirmeyi önleme.
   if (HERO_VIDEO && !reduceMotion) {
     return (
       <motion.div
         initial={{ y: '18%', scale: 1.08, opacity: 0 }}
         animate={{ y: '0%', scale: 1, opacity: 1 }}
         transition={{ duration: 1.8, delay: 0.15, ease }}
-        className="relative w-full max-w-[560px] h-[88%]"
+        className="relative w-full max-w-[560px] h-[88%] lg:max-w-[1280px] lg:w-[94%] lg:h-[94%]"
         style={{ maskImage: feather, WebkitMaskImage: feather }}
       >
-        <video
-          // autoPlay + muted + playsInline üçü birden ŞART: iOS Safari
-          // sessiz olmayan videoyu otomatik oynatmaz, playsInline olmadan da
-          // tam ekrana geçirir.
-          autoPlay
-          muted
-          loop
-          playsInline
-          // poster: video yüklenene kadar ilk kare görünür, boş kutu olmaz.
-          poster={HERO_VIDEO_POSTER}
-          preload="auto"
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+        {/* Ken Burns: çok yavaş ölçek salınımı — yalnızca transform, GPU'da çalışır. */}
+        <motion.div
+          animate={{ scale: [1, 1.045, 1] }}
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 will-change-transform"
         >
-          <source src={HERO_VIDEO} type="video/mp4" />
-        </video>
+          <video
+            // key: kaynak değişince (mobil↔masaüstü) tarayıcının videoyu
+            // yeniden yüklemesini garanti eder.
+            key={videoSrc ?? 'hero-video'}
+            // autoPlay + muted + playsInline üçü birden ŞART: iOS Safari
+            // sessiz olmayan videoyu otomatik oynatmaz, playsInline olmadan da
+            // tam ekrana geçirir.
+            autoPlay
+            muted
+            loop
+            playsInline
+            // poster: video yüklenene kadar ilk kare görünür, boş kutu olmaz.
+            poster={videoPoster}
+            preload="auto"
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          >
+            {videoSrc && <source src={videoSrc} type="video/mp4" />}
+          </video>
+        </motion.div>
+
+        <GoldSweep reduceMotion={false} />
 
         {/* Metin perdesi */}
         <div
@@ -328,11 +376,11 @@ function HeroVisual({
   if (HERO_VIDEO && reduceMotion) {
     return (
       <div
-        className="relative w-full max-w-[560px] h-[88%]"
+        className="relative w-full max-w-[560px] h-[88%] lg:max-w-[1280px] lg:w-[94%] lg:h-[94%]"
         style={{ maskImage: feather, WebkitMaskImage: feather }}
       >
         <Image
-          src={HERO_VIDEO_POSTER}
+          src={videoPoster}
           alt=""
           fill
           priority
@@ -440,13 +488,22 @@ function GoldSweep({ reduceMotion }: { reduceMotion: boolean }) {
       // x 240%'e kadar gider: 130%'te durursa yarım genişlikteki şerit
       // görselin sağ kenarında park edip görünür bir dikey çizgi bırakıyor.
       // opacity de sonda sıfırlanır ki hiçbir iz kalmasın.
+      // Uzun aralıklarla tekrar eder — metal ara ara parıldar, dikkat dağıtmaz.
       initial={{ x: '-140%', opacity: 0 }}
       animate={{ x: '240%', opacity: [0, 1, 1, 0] }}
       transition={{
         duration: 2.1,
         delay: 1.15,
         ease: 'easeInOut',
-        opacity: { duration: 2.1, delay: 1.15, times: [0, 0.15, 0.8, 1] },
+        repeat: Infinity,
+        repeatDelay: 6.5,
+        opacity: {
+          duration: 2.1,
+          delay: 1.15,
+          times: [0, 0.15, 0.8, 1],
+          repeat: Infinity,
+          repeatDelay: 6.5,
+        },
       }}
       className="absolute inset-y-0 w-1/2 pointer-events-none"
       style={{

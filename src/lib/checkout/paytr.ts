@@ -6,6 +6,25 @@ const TOKEN_ENDPOINT = 'https://www.paytr.com/odeme/api/get-token';
 const IFRAME_BASE = 'https://www.paytr.com/odeme/guvenli/';
 
 /**
+ * PayTR merchant_oid YALNIZCA harf ve rakam kabul eder (çizgi/özel karakter
+ * gönderilirse token isteği reddedilir). DB'deki insan-okur sipariş numarası
+ * (NJ-2026-0001) tireler atılarak gönderilir: NJ20260001.
+ */
+export function toPayTROid(orderNo: string): string {
+  return orderNo.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+/**
+ * Callback'te PayTR'den gelen merchant_oid'i (NJ20260001) DB'deki sipariş
+ * numarası formatına (NJ-2026-0001) geri çevirir. Format tanınmıyorsa
+ * değeri olduğu gibi döndürür (eski kayıtlar / farklı sağlayıcılar).
+ */
+export function fromPayTROid(oid: string): string {
+  const m = /^NJ(\d{4})(\d+)$/.exec(oid);
+  return m ? `NJ-${m[1]}-${m[2]}` : oid;
+}
+
+/**
  * PayTR iFrame API sağlayıcısı.
  *
  * Shopier, kendi internet sitesinde satış desteğini kaldırdığı için
@@ -45,7 +64,8 @@ export class PayTRProvider implements CheckoutProvider {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createPayment(order: Order, _randomNr: string): Promise<PaymentResult> {
     const userIp = order.userIp?.trim() || '127.0.0.1';
-    const merchantOid = order.id; // NJ-2026-XXXX formatında DB order_no
+    // DB order_no (NJ-2026-XXXX) → PayTR'nin kabul ettiği alfanumerik biçim
+    const merchantOid = toPayTROid(order.id);
     const paymentAmount = Math.round(order.total * 100); // kuruş
 
     const basketArray = order.items.map((i) => [
@@ -83,11 +103,12 @@ export class PayTRProvider implements CheckoutProvider {
       .digest('base64');
 
     const baseUrl = SITE.url;
+    // Sonuç sayfasında müşteriye insan-okur numara (NJ-2026-XXXX) gösterilir.
     const merchantOkUrl = `${baseUrl}/odeme/sonuc?status=success&orderNo=${encodeURIComponent(
-      merchantOid
+      order.id
     )}`;
     const merchantFailUrl = `${baseUrl}/odeme/sonuc?status=error&orderNo=${encodeURIComponent(
-      merchantOid
+      order.id
     )}`;
 
     const body = new URLSearchParams({
