@@ -1,4 +1,5 @@
 import { getCheckoutProvider } from '@/lib/checkout';
+import { fromPayTROid } from '@/lib/checkout/paytr';
 import { sendOrderConfirmationEmail } from '@/lib/email';
 import { markOrderFailed, markOrderPaid } from '@/lib/orders';
 import { NextRequest, NextResponse } from 'next/server';
@@ -35,8 +36,11 @@ async function handleCallback(req: NextRequest) {
     // body okuma opsiyonel
   }
 
-  // PayTR: merchant_oid; eski Shopier: platform_order_id.
-  const orderNo = params.platform_order_id ?? params.merchant_oid ?? '';
+  // PayTR: merchant_oid (alfanumerik, NJ20260001) → DB formatına geri çevrilir;
+  // eski Shopier: platform_order_id (olduğu gibi).
+  const orderNo =
+    params.platform_order_id ??
+    (params.merchant_oid ? fromPayTROid(params.merchant_oid) : '');
 
   // İmza doğrulama — başarısız → hata sayfası (kayda dokunma)
   const provider = getCheckoutProvider();
