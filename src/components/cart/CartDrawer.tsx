@@ -61,7 +61,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 text-black/40 hover:text-black transition-colors"
+                className="p-1.5 text-black/40 hover:text-black hover:bg-black/5 rounded-full transition-all"
                 aria-label="Sepeti kapat"
               >
                 <X className="w-4 h-4" />
@@ -71,10 +71,12 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
             {items.length === 0 ? (
               /* Empty state */
               <div className="flex-1 flex flex-col items-center justify-center gap-5 px-6 text-center">
-                <ShoppingBag
-                  className="w-10 h-10 text-black/15"
-                  strokeWidth={1}
-                />
+                <div className="w-14 h-14 rounded-full bg-cream-deep flex items-center justify-center">
+                  <ShoppingBag
+                    className="w-6 h-6 text-black/20"
+                    strokeWidth={1}
+                  />
+                </div>
                 <div>
                   <p className="font-serif text-xl text-black/40">
                     Sepetiniz boş
@@ -128,7 +130,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                         <Link
                           href={`/urun/${item.product.slug}`}
                           onClick={onClose}
-                          className="relative flex-shrink-0 w-16 overflow-hidden bg-[#F6F6F4]"
+                          className="relative flex-shrink-0 w-16 overflow-hidden bg-[#F6F6F4] rounded-lg"
                           style={{ aspectRatio: '1/1' }}
                         >
                           {img && (
@@ -162,7 +164,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                                 onClick={() =>
                                   updateQuantity(item.id, item.quantity - 1)
                                 }
-                                className="w-6 h-6 flex items-center justify-center border border-black/15 rounded hover:border-black/40 transition-colors"
+                                className="w-7 h-7 flex items-center justify-center border border-black/15 rounded-lg hover:border-black/40 hover:bg-black/5 transition-all"
                                 aria-label="Azalt"
                               >
                                 <Minus className="w-3 h-3" />
@@ -174,7 +176,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                                 onClick={() =>
                                   updateQuantity(item.id, item.quantity + 1)
                                 }
-                                className="w-6 h-6 flex items-center justify-center border border-black/15 rounded hover:border-black/40 transition-colors"
+                                className="w-7 h-7 flex items-center justify-center border border-black/15 rounded-lg hover:border-black/40 hover:bg-black/5 transition-all"
                                 aria-label="Artır"
                               >
                                 <Plus className="w-3 h-3" />

@@ -201,12 +201,18 @@
     font-size: 0.875rem;
     font-weight: 500;
     letter-spacing: 0;
-    transition: background-color 300ms var(--ease-smooth);
+    transition:
+      background-color 300ms var(--ease-smooth),
+      transform 200ms var(--ease-smooth);
     cursor: pointer;
   }
 
   .btn-primary:hover {
     background-color: var(--color-accent);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.97);
   }
 
   .btn-ghost {
@@ -221,12 +227,18 @@
     font-family: var(--font-body), Inter, sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: border-color 300ms var(--ease-smooth);
+    transition:
+      border-color 300ms var(--ease-smooth),
+      transform 200ms var(--ease-smooth);
     cursor: pointer;
   }
 
   .btn-ghost:hover {
     border-color: rgba(10, 10, 10, 0.55);
+  }
+
+  .btn-ghost:active {
+    transform: scale(0.97);
   }
 
   /* Section label */

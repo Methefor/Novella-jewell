@@ -55,19 +55,19 @@ export default function ProductCard({ product }: ProductCardProps) {
       className="group block"
       aria-label={`${product.name} ürün detayına git`}
     >
-      {/* Image container — 4:5 */}
+      {/* Image container — 1:1 kare, yumuşak köşe */}
       <div
-        className="relative w-full overflow-hidden img-slot"
+        className="relative w-full overflow-hidden img-slot rounded-lg"
         style={{ aspectRatio: '1/1' }}
         role="img"
         aria-label={`${product.name} ürün görseli`}
       >
-        {/* Primary image */}
+        {/* Primary image — hover'da hafif zoom */}
         <Image
           src={img1}
           alt={`${product.name} - ${categoryLabel[product.category] ?? product.category}`}
           fill
-          className={`object-cover transition-opacity duration-500 ${img2 ? 'group-hover:opacity-0' : ''}`}
+          className={`object-cover transition-all duration-700 ease-spring ${img2 ? 'group-hover:opacity-0 group-hover:scale-105' : 'group-hover:scale-105'}`}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
 
@@ -77,7 +77,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={img2}
             alt={`${product.name} - alternatif görünüm`}
             fill
-            className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            className="object-cover opacity-0 scale-105 transition-all duration-700 ease-spring group-hover:opacity-100 group-hover:scale-100"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         )}
@@ -87,12 +87,12 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Badges */}
         <div
-          className="absolute top-2 left-2 flex flex-col gap-1 z-10"
+          className="absolute top-3 left-3 flex flex-col gap-1.5 z-10"
           aria-label="Ürün etiketleri"
         >
           {product.isNew && (
             <span
-              className="bg-black text-white text-[10px] font-medium tracking-widest uppercase px-2 py-0.5"
+              className="bg-black text-white text-[10px] font-medium tracking-widest uppercase px-2.5 py-1 rounded-full"
               role="status"
               aria-label="Yeni ürün"
             >
@@ -101,7 +101,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           {hasDiscount && (
             <span
-              className="bg-gold text-white text-[10px] font-medium px-2 py-0.5"
+              className="bg-gold text-white text-[10px] font-medium px-2.5 py-1 rounded-full"
               role="status"
               aria-label={`%${discountPct} indirim`}
             >
@@ -112,12 +112,12 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Sepete Ekle bar — slides up on hover (desktop) / always visible (mobile) */}
         <motion.div
-          className="absolute inset-x-0 bottom-0 z-10 bg-black/90 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"
+          className="absolute inset-x-0 bottom-0 z-10 bg-black/90 backdrop-blur-sm md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"
           style={{ transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)' }}
         >
           <button
             onClick={handleAddToCart}
-            className="w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-medium tracking-wide hover:bg-gold transition-colors duration-200"
+            className="w-full flex items-center justify-center gap-2 py-3.5 text-white text-sm font-medium tracking-wide hover:bg-gold transition-colors duration-200"
             aria-label={`${product.name} ürününü sepete ekle`}
           >
             <ShoppingBag className="w-4 h-4" aria-hidden="true" />
@@ -127,14 +127,14 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Info below card */}
-      <div className="mt-3">
-        <p className="text-[11px] uppercase tracking-widest text-black/40 mb-0.5">
+      <div className="mt-3.5">
+        <p className="text-[11px] uppercase tracking-widest text-black/40 mb-1">
           {categoryLabel[product.category] ?? product.category}
         </p>
-        <h3 className="text-sm font-medium text-black leading-snug group-hover:text-gold transition-colors duration-200">
+        <h3 className="text-sm font-medium text-black leading-snug group-hover:text-gold transition-colors duration-200 line-clamp-2">
           {product.name}
         </h3>
-        <div className="flex items-baseline gap-2 mt-1">
+        <div className="flex items-baseline gap-2 mt-1.5">
           <span className="text-sm font-semibold text-black">
             {product.price.toLocaleString('tr-TR')} ₺
           </span>
@@ -150,7 +150,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Düşük stok — kıtlık sinyali, gerçek stokla */}
         {stokBilgi.goster && (
-          <p className="text-[11px] text-gold-dark font-medium mt-1">
+          <p className="text-[11px] text-gold-dark font-medium mt-1.5">
             Son {stokBilgi.adet} adet
           </p>
         )}

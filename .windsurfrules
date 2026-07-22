@@ -1,0 +1,41 @@
+# Çalışma Alanı Kuralları: Novella Jewell
+# Windsurf Cascade ve senkronize Devin oturumlarındaki tüm yapay zeka destekli düzenlemeler için geçerlidir.
+
+## 1. Temel Mühendislik Standartları
+- **TypeScript strict modu zorunludur.** `any` kullanılmasın. Genel API'ler ve dışa aktarılan fonksiyonlar için açık dönüş türleri tercih edilir.
+- **Temiz Kod ve DRY:** `src/lib/` altındaki yardımcıları ve `src/components/ui/` altındaki temel arayüz bileşenlerini yeniden kullan. Rotalar arasında tekrar eden iş mantığına izin verilmez.
+- **Öncelik sunucu taraflı veri erişimidir.** Veriler Sunucu Bileşenleri (Server Components) veya Rota İşleyicileri (Route Handlers) içinde getirilmelidir; İstemci Bileşenleri (Client Components) mümkün olduğunca küçük tutulur ve prop ile beslenir, doğrudan veritabanı istemcilerine erişemez.
+- **İsimlendirme:** Bileşen ve türler için PascalCase, fonksiyon ve değişkenler için camelCase, sabitler için UPPER_SNAKE_CASE, dosya adları için kebab-case kullanılır.
+
+## 2. Dil ve Dokümantasyon
+- **Türkçe satır içi açıklamalar/yorumlar:** Tüm satır içi yorumlar, JSDoc/TSDoc blokları ve TODO'lar Türkçe yazılır.
+- Yorumlar süs amaçlı değil, açıklayıcı olmalıdır. *Ne* yapıldığını değil, *neden* yapıldığını anlat.
+
+## 3. Güvenlik ve Çalışma Sınırları
+- Yok edici komutlar (`rm`, `drop table`, yıkıcı göçler, `git push --force`) açık kullanıcı onayı olmadan çalıştırılmaz.
+- Paket kurulumları veya sistem bağımlılığı değişiklikleri otomatik olarak çalıştırılmaz; tam komut önerilir ve onay beklenir.
+- `.env.local` veya `.env.*` gizli bilgileri değiştirilmez; sadece `.env.example` hassas olmayan örnek değerlerle düzenlenebilir.
+- Geçici/çalışma dosyaları depo kökünde oluşturulmaz; atıl işler için `/tmp` veya işletim sisteminin geçici dizini kullanılır.
+- Üzerine yazmadan önce dosyanın varlığı doğrulanır; mevcut kullanıcı dosyaları asla ezilmez.
+
+## 4. Git ve Commit Standartları
+- Conventional Commits kullanılır: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`.
+- Commit başlıkları İngilizce, gerektiğinde gövde kısmı ek bağlam için Türkçe yazılabilir.
+- Her commit tek bir mantıksal değişiklik içerir. İlişkisiz değişiklikler ayrı ayrı hazırlanır (stage).
+
+## 5. Teknolojiye Özel Kurallar
+- **Next.js App Router:** Varsayılan olarak Sunucu Bileşenleri kullanılır. `"use client"` yalnızca etkileşim veya hook kullanımı kesinlikle gerekli olduğunda eklenir.
+- **Tailwind:** Keyfi değerler (arbitrary values) son çare olarak kullanılır. Yeni tasarım jetonları için `tailwind.config.ts` genişletilir.
+- **Drizzle / Veritabanı:** Göçler her zaman `drizzle-kit` ile yazılır ve `drizzle/` altındaki `.sql` dosyaları depoya dahil edilir. Üretimde şema doğrudan değiştirilmez.
+- **Supabase:** Türler `supabase gen types typescript` ile oluşturulur; anlık görüntüler `.docs/` altında saklanır ve depoya işlenir.
+- **Çevre değişkenleri:** Merkezi bir şema (örn. `@t3-oss/env-nextjs` veya `zod`) ile doğrulanır; kod, log veya arayüzde asla sızdırılmaz.
+
+## 6. Bağlam ve Bilgi Tabanı
+- Büyük refactor işlemleri öncesinde `.docs/ARCHITECTURE.md` ve `.docs/API.md` okunur.
+- Şema veya API sorularında `@.docs/ARCHITECTURE.md`, `@.docs/SUPABASE_TYPES.md` veya `@.docs/API.md` referans alınır.
+- Genel türler, önemli rotalar veya veritabanı şeması değiştiğinde `.docs/` güncellenir.
+
+## 7. Test ve Kalite
+- Yeni iş mantığı için test eklenir veya mevcut testler güncellenir. Yardımcı fonksiyonlar için birim testleri, veri erişimi için entegrasyon testleri tercih edilir.
+- Commit önerisi öncesinde `npm run lint` ve `npm run typecheck` (veya eşdeğeri) çalıştırılır.
+- Pull request'ler küçük ve incelenebilir tutulur; mümkünse uzun ömürlü dallar (branch) yerine özellik bayrakları (feature flags) kullanılır.

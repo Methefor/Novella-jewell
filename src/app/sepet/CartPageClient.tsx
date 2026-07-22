@@ -23,8 +23,10 @@ export default function CartPageClient() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-[70vh] flex flex-col items-center justify-center gap-6 px-6 pt-24 pb-20 text-center">
-        <ShoppingBag className="w-12 h-12 text-black/15" strokeWidth={1} />
+      <main className="min-h-[70vh] flex flex-col items-center justify-center gap-8 px-6 pt-24 pb-20 text-center">
+        <div className="w-16 h-16 rounded-full bg-cream-deep flex items-center justify-center">
+          <ShoppingBag className="w-7 h-7 text-black/20" strokeWidth={1} />
+        </div>
         <div>
           <h1 className="font-serif text-2xl text-black/40">Sepetiniz boş</h1>
           <p className="text-sm text-black/30 mt-2">
@@ -71,7 +73,7 @@ export default function CartPageClient() {
                   {/* Image */}
                   <Link
                     href={`/urun/${item.product.slug}`}
-                    className="relative flex-shrink-0 w-24 md:w-28 overflow-hidden bg-[#F6F6F4]"
+                    className="relative flex-shrink-0 w-24 md:w-28 overflow-hidden bg-[#F6F6F4] rounded-lg"
                     style={{ aspectRatio: '1/1' }}
                   >
                     {img && (
@@ -105,10 +107,10 @@ export default function CartPageClient() {
                           onClick={() =>
                             updateQuantity(item.id, item.quantity - 1)
                           }
-                          className="w-7 h-7 flex items-center justify-center border border-black/20 rounded hover:border-black/50 transition-colors"
+                          className="w-8 h-8 flex items-center justify-center border border-black/15 rounded-lg hover:border-black/40 hover:bg-black/5 transition-all"
                           aria-label="Azalt"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
                         <span className="w-8 text-center text-sm font-medium">
                           {item.quantity}
@@ -117,10 +119,10 @@ export default function CartPageClient() {
                           onClick={() =>
                             updateQuantity(item.id, item.quantity + 1)
                           }
-                          className="w-7 h-7 flex items-center justify-center border border-black/20 rounded hover:border-black/50 transition-colors"
+                          className="w-8 h-8 flex items-center justify-center border border-black/15 rounded-lg hover:border-black/40 hover:bg-black/5 transition-all"
                           aria-label="Artır"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
 
@@ -149,7 +151,7 @@ export default function CartPageClient() {
 
           {/* Summary */}
           <div>
-            <div className="sticky top-24 bg-[#F9F9F7] p-6 border border-black/6">
+            <div className="sticky top-24 bg-[#F9F9F7] p-6 rounded-lg border border-black/8 shadow-sm">
               <h2 className="font-serif text-lg text-black mb-5">
                 Sipariş Özeti
               </h2>
@@ -215,7 +217,7 @@ export default function CartPageClient() {
               </Link>
 
               <p className="text-xs text-black/30 text-center mt-4">
-                Güvenli ödeme · Shopier altyapısı
+                Güvenli ödeme · PayTR altyapısı
               </p>
             </div>
           </div>

@@ -1,12 +1,12 @@
 'use client';
 
-import { trackAddToCart, trackViewItem } from '@/lib/analytics';
 import BedenRehberi from '@/components/product/BedenRehberi';
 import FavoriButton from '@/components/product/FavoriButton';
 import Lightbox from '@/components/product/Lightbox';
 import ProductCard from '@/components/product/ProductCard';
 import SonGoruntulenenler from '@/components/product/SonGoruntulenenler';
 import type { Collection } from '@/data/collections';
+import { trackAddToCart, trackViewItem } from '@/lib/analytics';
 import { SHIPPING } from '@/lib/config';
 import { CAYMA_SURESI_GUN } from '@/lib/legal';
 import { dusukStok, getRelatedProducts } from '@/lib/products';
@@ -122,8 +122,8 @@ export default function ProductPageClient({ product, collection }: Props) {
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-24 pb-20">
-        <div className="grid lg:grid-cols-2 gap-12 xl:gap-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-24 pb-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-20">
           {/* ── Gallery (sol) ── */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -144,7 +144,7 @@ export default function ProductPageClient({ product, collection }: Props) {
                     onClick={() => setActiveImg(i)}
                     aria-label={`${i + 1}. görseli göster`}
                     aria-current={activeImg === i}
-                    className={`relative w-16 overflow-hidden rounded-sm border transition-all duration-300 ${
+                    className={`relative w-16 overflow-hidden rounded-lg border transition-all duration-300 ${
                       activeImg === i
                         ? 'border-black opacity-100'
                         : 'border-transparent opacity-55 hover:opacity-90'
@@ -165,7 +165,7 @@ export default function ProductPageClient({ product, collection }: Props) {
 
             {/* Main image */}
             <motion.div
-              className="relative flex-1 overflow-hidden bg-[#F6F6F4] touch-pan-y cursor-zoom-in"
+              className="relative flex-1 overflow-hidden bg-[#F6F6F4] rounded-lg touch-pan-y cursor-zoom-in"
               style={{ aspectRatio: '1/1' }}
               /*
                 onTap büyüteci açar. framer-motion'un onTap'i, bir sürükleme
@@ -219,7 +219,10 @@ export default function ProductPageClient({ product, collection }: Props) {
                     Böylece yeni görsel eskisinin ÜSTÜNE belirir, zemin hiç
                     devreye girmez.
                   */
-                  exit={{ opacity: 0, transition: { duration: 0.01, delay: 0.5 } }}
+                  exit={{
+                    opacity: 0,
+                    transition: { duration: 0.01, delay: 0.5 },
+                  }}
                   transition={{
                     opacity: { duration: 0.5, ease: 'easeInOut' },
                     // Yakınlaşma sönümlemeden uzun sürer: görsel yerine
@@ -244,12 +247,12 @@ export default function ProductPageClient({ product, collection }: Props) {
               {/* Badges */}
               <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
                 {product.isNew && (
-                  <span className="bg-black text-white text-[10px] font-medium tracking-widest uppercase px-2 py-0.5">
+                  <span className="bg-black text-white text-[10px] font-medium tracking-widest uppercase px-2.5 py-1 rounded-full">
                     Yeni
                   </span>
                 )}
                 {hasDiscount && (
-                  <span className="bg-gold text-white text-[10px] font-medium px-2 py-0.5">
+                  <span className="bg-gold text-white text-[10px] font-medium px-2.5 py-1 rounded-full">
                     İndirimli
                   </span>
                 )}

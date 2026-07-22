@@ -1,8 +1,8 @@
 'use client';
 
 import ProductCard from '@/components/product/ProductCard';
-import Hero from '@/sections/Hero';
 import { getAllProducts } from '@/data/products';
+import Hero from '@/sections/Hero';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -88,7 +88,7 @@ export default function HomeClient() {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {newArrivals.map((product, i) => (
               <motion.div
                 key={product.id}
@@ -143,7 +143,7 @@ export default function HomeClient() {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {bestSellers.map((product, i) => (
               <motion.div
                 key={product.id}
@@ -190,8 +190,8 @@ export default function HomeClient() {
                 letterSpacing: '-0.03em',
               }}
             >
-              Novella, <span className="italic text-gold-dark">kısa hikaye</span>{' '}
-              demek.
+              Novella,{' '}
+              <span className="italic text-gold-dark">kısa hikaye</span> demek.
             </h2>
 
             <p
@@ -216,9 +216,9 @@ export default function HomeClient() {
       </section>
 
       {/* Values strip */}
-      <section className="py-10 bg-cream-deep border-y border-border">
+      <section className="py-12 md:py-14 bg-cream-deep border-y border-border">
         <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             {[
               {
                 title: '316L Paslanmaz Çelik',

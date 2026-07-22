@@ -17,13 +17,7 @@ interface SearchModalProps {
   onClose: () => void;
 }
 
-const popularSearches = [
-  'Bilezik',
-  'Küpe',
-  'Yüzük',
-  'Altın',
-  'Rose Gold',
-];
+const popularSearches = ['Bilezik', 'Küpe', 'Yüzük', 'Altın', 'Rose Gold'];
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const {
@@ -82,7 +76,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
           />
 
           {/* Modal */}
@@ -92,31 +86,31 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-20 px-4"
           >
-            <div className="bg-gray-900 border border-white/10 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[80vh] overflow-hidden">
+            <div className="bg-white border border-black/8 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[80vh] overflow-hidden">
               {/* Search Input */}
-              <div className="flex items-center gap-4 p-6 border-b border-white/10">
-                <Search className="w-6 h-6 text-gold flex-shrink-0" />
+              <div className="flex items-center gap-4 p-6 border-b border-black/8">
+                <Search className="w-6 h-6 text-black/40 flex-shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
                   placeholder="Ürün, kategori veya özellik ara..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="flex-1 bg-transparent text-lg text-white placeholder-white/40 outline-none"
+                  className="flex-1 bg-transparent text-lg text-black placeholder-black/30 outline-none"
                 />
                 {query && (
                   <button
                     onClick={() => setQuery('')}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    className="p-2 hover:bg-black/5 rounded-lg transition-colors"
                   >
-                    <X className="w-5 h-5 text-white/60" />
+                    <X className="w-5 h-5 text-black/40" />
                   </button>
                 )}
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 hover:bg-black/5 rounded-lg transition-colors"
                 >
-                  <X className="w-5 h-5 text-white/60" />
+                  <X className="w-5 h-5 text-black/40" />
                 </button>
               </div>
 
@@ -129,14 +123,14 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <div>
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-white/60" />
-                            <h3 className="text-sm font-medium text-white/80">
+                            <Clock className="w-4 h-4 text-black/40" />
+                            <h3 className="text-sm font-medium text-black/70">
                               Son Aramalar
                             </h3>
                           </div>
                           <button
                             onClick={clearRecentSearches}
-                            className="text-xs text-white/40 hover:text-white/60 transition-colors"
+                            className="text-xs text-black/30 hover:text-black/60 transition-colors"
                           >
                             Temizle
                           </button>
@@ -146,7 +140,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             <button
                               key={index}
                               onClick={() => handleSearchClick(search)}
-                              className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-sm text-white/80 rounded-full transition-colors"
+                              className="px-3 py-1.5 bg-black/5 hover:bg-black/10 border border-black/8 text-sm text-black/70 rounded-full transition-colors"
                             >
                               {search}
                             </button>
@@ -159,7 +153,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <div>
                       <div className="flex items-center gap-2 mb-3">
                         <TrendingUp className="w-4 h-4 text-gold" />
-                        <h3 className="text-sm font-medium text-white/80">
+                        <h3 className="text-sm font-medium text-black/70">
                           Popüler Aramalar
                         </h3>
                       </div>
@@ -168,7 +162,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           <button
                             key={search}
                             onClick={() => handleSearchClick(search)}
-                            className="px-3 py-1.5 bg-gold/10 hover:bg-gold/20 border border-gold/30 text-sm text-gold rounded-full transition-colors"
+                            className="px-3 py-1.5 bg-gold/10 hover:bg-gold/20 border border-gold/30 text-sm text-gold-dark rounded-full transition-colors"
                           >
                             {search}
                           </button>
@@ -178,7 +172,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                     {/* Quick Links */}
                     <div>
-                      <h3 className="text-sm font-medium text-white/80 mb-3">
+                      <h3 className="text-sm font-medium text-black/70 mb-3">
                         Kategoriler
                       </h3>
                       <div className="grid grid-cols-2 gap-3">
@@ -191,12 +185,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             key={category.name}
                             href={category.href}
                             onClick={onClose}
-                            className="flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group"
+                            className="flex items-center justify-between p-3 bg-[#F9F9F7] hover:bg-black/5 border border-black/8 rounded-lg transition-colors group"
                           >
-                            <span className="text-sm text-white/80">
+                            <span className="text-sm text-black/70">
                               {category.name}
                             </span>
-                            <ArrowRight className="w-4 h-4 text-white/40 group-hover:text-gold transition-colors" />
+                            <ArrowRight className="w-4 h-4 text-black/30 group-hover:text-gold transition-colors" />
                           </Link>
                         ))}
                       </div>
@@ -214,7 +208,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     {/* Results */}
                     {!isSearching && results.length > 0 && (
                       <div>
-                        <p className="text-sm text-white/60 mb-4">
+                        <p className="text-sm text-black/50 mb-4">
                           {results.length} sonuç bulundu
                         </p>
                         <div className="space-y-3">
@@ -223,10 +217,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                               key={product.id}
                               href={`/urun/${product.slug}`}
                               onClick={handleProductClick}
-                              className="flex items-center gap-4 p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors group"
+                              className="flex items-center gap-4 p-3 bg-[#F9F9F7] hover:bg-black/5 border border-black/8 rounded-lg transition-colors group"
                             >
                               {/* Image */}
-                              <div className="relative w-16 h-16 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
+                              <div className="relative w-16 h-16 bg-[#F6F6F4] rounded-lg overflow-hidden flex-shrink-0">
                                 <Image
                                   src={product.variants[0].images[0]}
                                   alt={product.name}
@@ -238,22 +232,25 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                               {/* Info */}
                               <div className="flex-1 min-w-0">
-                                <h4 className="text-sm font-medium text-white mb-1 truncate group-hover:text-gold transition-colors">
+                                <h4 className="text-sm font-medium text-black mb-1 truncate group-hover:text-gold transition-colors">
                                   {product.name}
                                 </h4>
-                                <p className="text-xs text-white/60 uppercase">
+                                <p className="text-xs text-black/40 uppercase">
                                   {product.category}
                                 </p>
                               </div>
 
                               {/* Price */}
                               <div className="text-right flex-shrink-0">
-                                <p className="text-sm font-semibold text-gold">
-                                  {product.price}₺
+                                <p className="text-sm font-semibold text-black">
+                                  {product.price.toLocaleString('tr-TR')} ₺
                                 </p>
                                 {product.compareAtPrice && (
-                                  <p className="text-xs text-white/40 line-through">
-                                    {product.compareAtPrice}₺
+                                  <p className="text-xs text-black/30 line-through">
+                                    {product.compareAtPrice.toLocaleString(
+                                      'tr-TR'
+                                    )}{' '}
+                                    ₺
                                   </p>
                                 )}
                               </div>
@@ -266,7 +263,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 query
                               )}`}
                               onClick={handleProductClick}
-                              className="block text-center py-3 text-sm text-gold hover:text-gold-light transition-colors"
+                              className="block text-center py-3 text-sm text-gold-dark hover:text-gold transition-colors"
                             >
                               Tüm {results.length} sonucu gör →
                             </Link>
@@ -278,11 +275,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     {/* No Results */}
                     {!isSearching && results.length === 0 && (
                       <div className="text-center py-12">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-                          <Search className="w-8 h-8 text-white/40" />
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-black/5 flex items-center justify-center">
+                          <Search className="w-8 h-8 text-black/30" />
                         </div>
-                        <p className="text-white/60 mb-2">Sonuç bulunamadı</p>
-                        <p className="text-sm text-white/40">
+                        <p className="text-black/60 mb-2">Sonuç bulunamadı</p>
+                        <p className="text-sm text-black/30">
                           &quot;{query}&quot; için sonuç bulunamadı
                         </p>
                       </div>
