@@ -104,8 +104,11 @@ export default function Hero() {
       <div className="absolute inset-0 texture-gold" aria-hidden="true" />
       <div className="absolute inset-0 texture-lines" aria-hidden="true" />
 
-      {/* Yukarıdan inen ışık huzmesi — bileği aydınlatan kaynak hissi */}
-      <div
+      {/* Yukarıdan inen ışık huzmesi — bileği aydınlatan kaynak hissi.
+          Nefes alan opaklik: yalnızca opacity anime edilir (GPU-dostu, layout tetiklemez). */}
+      <motion.div
+        animate={reduceMotion ? undefined : { opacity: [0.75, 1, 0.75] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute left-1/2 top-0 -translate-x-1/2 w-[130vw] sm:w-[80vw] h-[65vh] pointer-events-none"
         style={{
           background:
@@ -295,22 +298,31 @@ function HeroVisual({
         className="relative w-full max-w-[560px] h-[88%]"
         style={{ maskImage: feather, WebkitMaskImage: feather }}
       >
-        <video
-          // autoPlay + muted + playsInline üçü birden ŞART: iOS Safari
-          // sessiz olmayan videoyu otomatik oynatmaz, playsInline olmadan da
-          // tam ekrana geçirir.
-          autoPlay
-          muted
-          loop
-          playsInline
-          // poster: video yüklenene kadar ilk kare görünür, boş kutu olmaz.
-          poster={HERO_VIDEO_POSTER}
-          preload="auto"
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+        {/* Ken Burns: çok yavaş ölçek salınımı — yalnızca transform, GPU'da çalışır. */}
+        <motion.div
+          animate={{ scale: [1, 1.045, 1] }}
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 will-change-transform"
         >
-          <source src={HERO_VIDEO} type="video/mp4" />
-        </video>
+          <video
+            // autoPlay + muted + playsInline üçü birden ŞART: iOS Safari
+            // sessiz olmayan videoyu otomatik oynatmaz, playsInline olmadan da
+            // tam ekrana geçirir.
+            autoPlay
+            muted
+            loop
+            playsInline
+            // poster: video yüklenene kadar ilk kare görünür, boş kutu olmaz.
+            poster={HERO_VIDEO_POSTER}
+            preload="auto"
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          >
+            <source src={HERO_VIDEO} type="video/mp4" />
+          </video>
+        </motion.div>
+
+        <GoldSweep reduceMotion={false} />
 
         {/* Metin perdesi */}
         <div
@@ -440,13 +452,22 @@ function GoldSweep({ reduceMotion }: { reduceMotion: boolean }) {
       // x 240%'e kadar gider: 130%'te durursa yarım genişlikteki şerit
       // görselin sağ kenarında park edip görünür bir dikey çizgi bırakıyor.
       // opacity de sonda sıfırlanır ki hiçbir iz kalmasın.
+      // Uzun aralıklarla tekrar eder — metal ara ara parıldar, dikkat dağıtmaz.
       initial={{ x: '-140%', opacity: 0 }}
       animate={{ x: '240%', opacity: [0, 1, 1, 0] }}
       transition={{
         duration: 2.1,
         delay: 1.15,
         ease: 'easeInOut',
-        opacity: { duration: 2.1, delay: 1.15, times: [0, 0.15, 0.8, 1] },
+        repeat: Infinity,
+        repeatDelay: 6.5,
+        opacity: {
+          duration: 2.1,
+          delay: 1.15,
+          times: [0, 0.15, 0.8, 1],
+          repeat: Infinity,
+          repeatDelay: 6.5,
+        },
       }}
       className="absolute inset-y-0 w-1/2 pointer-events-none"
       style={{
