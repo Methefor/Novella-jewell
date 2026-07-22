@@ -57,8 +57,8 @@ export default function CerezPolitikasiPage() {
 
       <h2>Üçüncü taraf çerezleri</h2>
       <p>
-        Ödeme sırasında Shopier&apos;e yönlendirildiğinizde, Shopier kendi
-        çerezlerini kullanabilir. Bu çerezler Shopier&apos;in gizlilik
+        Ödeme sırasında PayTR&apos;nin güvenli ödeme ekranı açıldığında, PayTR
+        kendi çerezlerini kullanabilir. Bu çerezler PayTR&apos;nin gizlilik
         politikasına tabidir ve bizim kontrolümüzde değildir.
       </p>
 

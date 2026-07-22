@@ -3,6 +3,7 @@
 import { trackBeginCheckout } from '@/lib/analytics';
 import { SHIPPING } from '@/lib/config';
 import { ILLER } from '@/lib/turkiye';
+import { useCartHydrated } from '@/hooks/useCartHydrated';
 import { useCartStore } from '@/store/cartStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Lock } from 'lucide-react';
@@ -38,6 +39,7 @@ type FormData = z.infer<typeof schema>;
 export default function OdemeClient() {
   const router = useRouter();
   const { items, subtotal, shippingCost, total } = useCartStore();
+  const hydrated = useCartHydrated();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
@@ -48,20 +50,23 @@ export default function OdemeClient() {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  // Boş sepette /sepet'e yönlendir — ama YALNIZCA rehydrate bitince.
+  // Hydrate tamamlanmadan items hep boş görünür; erken karar verilirse
+  // sepeti dolu müşteri sayfayı yenilediğinde /sepet'e geri atılıyordu.
   useEffect(() => {
-    if (items.length === 0) router.replace('/sepet');
-  }, [items.length, router]);
+    if (hydrated && items.length === 0) router.replace('/sepet');
+  }, [hydrated, items.length, router]);
 
   // GA4 begin_checkout — ödeme sayfası açıldığında bir kez (sepette ürün varsa).
   const izlendiRef = useRef(false);
   useEffect(() => {
-    if (izlendiRef.current || items.length === 0) return;
+    if (!hydrated || izlendiRef.current || items.length === 0) return;
     izlendiRef.current = true;
     trackBeginCheckout(
       total,
       items.map((i) => i.product)
     );
-  }, [items, total]);
+  }, [hydrated, items, total]);
 
   // PayTR iframe açıldığında formu gizle; iframeResizer script'ini yükle.
   useEffect(() => {
@@ -81,7 +86,7 @@ export default function OdemeClient() {
     document.body.appendChild(script);
   }, [iframeUrl]);
 
-  if (items.length === 0) return null;
+  if (!hydrated || items.length === 0) return null;
 
   if (iframeUrl) {
     return (
