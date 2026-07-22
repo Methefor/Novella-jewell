@@ -284,6 +284,22 @@ export const useCartStore = create<CartStore>()(
         // sepette ürün görünür ama toplam 0 ₺ kalır.
         onRehydrateStorage: () => (state) => {
           if (!state) return;
+
+          // Eski sepet verilerinde görsel yolları /products/ olarak kayıtlıydı.
+          // Gerçek dosyalar /media/ altında olduğu için Next.js Image optimizer
+          // 400 dönüyordu. Rehydrate sırasında yolları düzelt.
+          state.items = state.items.map((item) => ({
+            ...item,
+            variant: {
+              ...item.variant,
+              images: item.variant.images.map((img) =>
+                img.startsWith('/products/')
+                  ? img.replace('/products/', '/media/')
+                  : img
+              ),
+            },
+          }));
+
           const t = turetilenler(state.items, state.discount);
           state.subtotal = t.subtotal;
           state.shippingCost = t.shippingCost;
