@@ -1,4 +1,5 @@
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
+import SepetHatirlatici from '@/components/cart/SepetHatirlatici';
 import StoreHydration from '@/components/common/StoreHydration';
 import ToastContainer from '@/components/common/Toast';
 import CookieBanner from '@/components/legal/CookieBanner';
@@ -166,6 +167,8 @@ export default function RootLayout({
         </div>
         <Footer />
         <ToastContainer />
+        {/* Terk edilmiş sepet hatırlatıcısı — saatler sonra dönen ziyaretçiye */}
+        <SepetHatirlatici />
         {/* KVKK çerez onayı — GA yalnızca burada "Kabul et" seçilirse yüklenir. */}
         <CookieBanner />
         <GoogleAnalytics />

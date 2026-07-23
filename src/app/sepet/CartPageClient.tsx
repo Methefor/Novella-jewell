@@ -1,5 +1,6 @@
 'use client';
 
+import KargoTamamlayici from '@/components/cart/KargoTamamlayici';
 import OneriSeridi from '@/components/product/OneriSeridi';
 import { SHIPPING } from '@/lib/config';
 import { useCartStore } from '@/store/cartStore';
@@ -223,6 +224,9 @@ export default function CartPageClient() {
             </div>
           </div>
         </div>
+
+        {/* Kargo eşiğini tamamlayacak öneriler */}
+        <KargoTamamlayici varyant="sayfa" />
       </div>
     </main>
   );

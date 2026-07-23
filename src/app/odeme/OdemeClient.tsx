@@ -24,6 +24,10 @@ const schema = z.object({
   district: z.string().min(2, 'İlçe girin'),
   address: z.string().min(10, 'Adres en az 10 karakter olmalı'),
   note: z.string().optional(),
+  // Hediye modu — not ve fiyatsız belge tercihi sipariş notuna işlenir.
+  hediye: z.boolean().optional(),
+  hediyeNotu: z.string().max(200, 'Hediye notu en fazla 200 karakter').optional(),
+  fiyatsizFatura: z.boolean().optional(),
   // Mesafeli Sözleşmeler Yönetmeliği m.6 — ön bilgilendirmenin teyidi zorunlu.
   // Onay alınmazsa sözleşme kurulmamış sayılır. Sunucu da bunu ayrıca şart koşar.
   sozlesme: z.literal(true, {
@@ -47,8 +51,12 @@ export default function OdemeClient() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  // Hediye kutusu işaretlenince not ve fiyatsız belge alanları açılır.
+  const hediyeSecili = watch('hediye');
 
   // Boş sepette /sepet'e yönlendir — ama YALNIZCA rehydrate bitince.
   // Hydrate tamamlanmadan items hep boş görünür; erken karar verilirse
@@ -110,6 +118,18 @@ export default function OdemeClient() {
     setLoading(true);
     setError(null);
 
+    // Hediye tercihleri sipariş notuna işlenir — ayrı DB alanı/migration
+    // gerektirmeden depo ve faturalandırma tarafına ulaşır.
+    const notParcalari: string[] = [];
+    if (data.hediye) {
+      notParcalari.push('[HEDİYE PAKETİ]');
+      if (data.fiyatsizFatura) notParcalari.push('[FİYATSIZ BELGE]');
+      if (data.hediyeNotu?.trim())
+        notParcalari.push(`Hediye notu: "${data.hediyeNotu.trim()}"`);
+    }
+    if (data.note?.trim()) notParcalari.push(data.note.trim());
+    const birlesikNot = notParcalari.join(' • ') || undefined;
+
     // Sunucuya YALNIZCA ne istediğimizi gönderiyoruz.
     // Fiyat/kargo/toplam sunucuda PRODUCTS'tan yeniden hesaplanır —
     // buradan fiyat göndermek güvenlik açığıydı, bkz. lib/checkout/buildOrder.ts
@@ -128,7 +148,7 @@ export default function OdemeClient() {
         address: data.address,
         city: data.city,
         district: data.district,
-        note: data.note,
+        note: birlesikNot,
       },
       consent: { sozlesme: data.sozlesme, kvkk: data.kvkk },
     };
@@ -264,6 +284,53 @@ export default function OdemeClient() {
               </div>
             </section>
 
+            {/* Hediye modu */}
+            <section className="rounded-xl border border-gold/25 bg-champagne/40 p-5">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register('hediye')}
+                  className="mt-0.5 w-4 h-4 accent-black"
+                />
+                <span className="text-sm text-black/80">
+                  <span className="font-medium">Bu bir hediye</span>
+                  <span className="block text-xs text-black/50 mt-0.5">
+                    Özel kutusunda, isteğe bağlı el yazısı notuyla hazırlanır.
+                  </span>
+                </span>
+              </label>
+
+              {hediyeSecili && (
+                <div className="mt-4 space-y-4">
+                  <Field
+                    label="Hediye Notu (karta yazılır)"
+                    error={errors.hediyeNotu?.message}
+                  >
+                    <textarea
+                      {...register('hediyeNotu')}
+                      rows={2}
+                      placeholder="İyi ki doğdun…"
+                      className={`${inputCls(!!errors.hediyeNotu)} resize-none`}
+                    />
+                  </Field>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      {...register('fiyatsizFatura')}
+                      className="mt-0.5 w-4 h-4 accent-black"
+                    />
+                    <span className="text-sm text-black/70">
+                      Pakete fiyat bilgisi konulmasın
+                      <span className="block text-xs text-black/45 mt-0.5">
+                        Fatura size e-posta ile gönderilir, kutuya fiyatlı belge
+                        eklenmez.
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              )}
+            </section>
+
             {/* Sipariş notu */}
             <section>
               <Field
@@ -273,7 +340,7 @@ export default function OdemeClient() {
                 <textarea
                   {...register('note')}
                   rows={2}
-                  placeholder="Hediye paketi, özel not…"
+                  placeholder="Teslimat için özel not…"
                   className={`${inputCls(false)} resize-none`}
                 />
               </Field>

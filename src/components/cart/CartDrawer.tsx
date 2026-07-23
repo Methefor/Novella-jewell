@@ -1,5 +1,6 @@
 'use client';
 
+import KargoTamamlayici from '@/components/cart/KargoTamamlayici';
 import { SHIPPING } from '@/lib/config';
 import { useCartStore } from '@/store/cartStore';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -203,6 +204,9 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
                     );
                   })}
                 </div>
+
+                {/* Kargo eşiğini tamamlayacak öneriler */}
+                <KargoTamamlayici varyant="drawer" />
 
                 {/* Footer */}
                 <div className="border-t border-black/8 p-5 space-y-3">

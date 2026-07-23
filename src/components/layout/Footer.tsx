@@ -5,10 +5,12 @@ const quickLinks = [
   { label: 'Koleksiyonlar', href: '/koleksiyonlar' },
   { label: 'Yeni Gelenler', href: '/collections/yeni-gelenler' },
   { label: 'Hikayemiz', href: '/hikayemiz' },
+  { label: 'Takı Rehberi', href: '/rehber' },
   { label: 'Favorilerim', href: '/favoriler' },
 ];
 
 const helpLinks = [
+  { label: 'Sipariş Takip', href: '/siparis-takip' },
   { label: 'Sık Sorulan Sorular', href: '/sss' },
   { label: 'Kargo & Teslimat', href: '/kargo' },
   { label: 'İade & Cayma Hakkı', href: '/iade' },

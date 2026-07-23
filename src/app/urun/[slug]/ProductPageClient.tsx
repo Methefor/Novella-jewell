@@ -5,6 +5,7 @@ import FavoriButton from '@/components/product/FavoriButton';
 import Lightbox from '@/components/product/Lightbox';
 import ProductCard from '@/components/product/ProductCard';
 import SonGoruntulenenler from '@/components/product/SonGoruntulenenler';
+import Yorumlar from '@/components/product/Yorumlar';
 import type { Collection } from '@/data/collections';
 import { trackAddToCart, trackViewItem } from '@/lib/analytics';
 import { SHIPPING } from '@/lib/config';
@@ -494,6 +495,9 @@ export default function ProductPageClient({ product, collection }: Props) {
             </div>
           </section>
         )}
+
+        {/* Müşteri değerlendirmeleri — sosyal kanıt */}
+        <Yorumlar productId={product.id} urunAdi={product.name} />
 
         {/* Son görüntülenenler — bu ürünü geçmişe ekler + öncekileri gösterir */}
         <SonGoruntulenenler currentId={product.id} />
