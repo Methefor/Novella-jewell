@@ -61,6 +61,10 @@ export default function IadePage() {
       </p>
 
       <h2>İade nasıl yapılır?</h2>
+      <p>
+        En hızlı yol: <a href="/iade/talep">iade talep formunu</a> doldurun,
+        talebiniz anında bize ulaşsın.
+      </p>
       <ol>
         <li>
           <a
