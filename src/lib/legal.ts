@@ -17,29 +17,29 @@
  */
 
 export const COMPANY = {
-  /** Ticaret unvanı — örn. "Novella Takı Ticaret Limited Şirketi" veya şahıs şirketiyse tam adın */
-  unvan: '',
+  /** Ticaret unvanı — şahıs şirketi olarak tam adın */
+  unvan: 'Metehan Arslan',
 
   /** Vitrin adı (müşterinin gördüğü) */
   markaAdi: 'NOVELLA',
 
   /** Açık adres — mahalle, cadde, no, ilçe/il */
-  adres: '',
+  adres: 'Hürriyet Mahallesi Reşat Nuri Güntekin Caddesi No:7 Mavi Manzara Sitesi, Süleymanpaşa/Tekirdağ',
 
-  /** Vergi dairesi — örn. "Kadıköy" */
-  vergiDairesi: '',
+  /** Vergi dairesi — örn. "Süleymanpaşa" */
+  vergiDairesi: 'Süleymanpaşa',
 
   /** Vergi kimlik no veya TC kimlik no (şahıs şirketi) */
-  vergiNo: '',
+  vergiNo: '31460457134',
 
   /** MERSİS numarası — şahıs şirketiyse boş bırakılabilir */
   mersisNo: '',
 
   /** Müşteri hizmetleri e-postası */
-  email: '',
+  email: 'novella.jewellery.tr@gmail.com',
 
   /** Telefon — WhatsApp numarası SITE.whatsapp'tan gelir, bu ayrı olabilir */
-  telefon: '',
+  telefon: '0545 112 50 59',
 
   /** Esnaf/tacir ayrımı — cayma hakkı metinlerinde kullanılır */
   ticariUnvanTipi: 'sahis' as 'sahis' | 'limited' | 'anonim',
@@ -54,7 +54,7 @@ export function alan(value: string, etiket: string): string {
 }
 
 /** Yasal sayfaların son güncellenme tarihi — metinleri değiştirirsen güncelle. */
-export const YASAL_GUNCELLEME = '16 Temmuz 2026';
+export const YASAL_GUNCELLEME = '24 Temmuz 2026';
 
 /** Cayma hakkı süresi (gün) — Mesafeli Sözleşmeler Yönetmeliği m.9: en az 14 gün. */
 export const CAYMA_SURESI_GUN = 14;
