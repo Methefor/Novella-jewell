@@ -24,5 +24,6 @@ Bu klasör, Novella Jewell projesine dair mimari kararları, API dokümantasyonu
 
 ## İlgili Kurallar
 
-- `.windsurfrules` dosyasındaki bağlam ve bilgi tabanı kuralları geçerlidir.
+- Proje kararlarında önce bu klasördeki mimari, API ve çalışma akışı belgeleri
+  kaynak alınır.
 - Commit önerisi öncesi `npm run lint` ve `npm run type-check` çalıştırılır.

@@ -30,7 +30,9 @@ npm run type-check   # TypeScript kontrolü
 | Durum yönetimi | Zustand (sepet, favoriler) |
 | İkonlar | Lucide React |
 | Yazı tipleri | Cormorant Garamond (başlık) + Inter (metin) |
-| Ödeme | Shopier (Faz 1) |
+| Ödeme | PayTR iFrame API |
+| Veritabanı | PostgreSQL + Drizzle ORM |
+| E-posta | Resend |
 | Deploy | Vercel |
 
 ---
@@ -202,13 +204,15 @@ src/
 │   ├── collections/[category]/ Kategori/vitrin sayfaları
 │   ├── urun/[slug]/            Ürün detayı (+ dinamik OG görseli)
 │   ├── sepet/ odeme/ favoriler/
-│   ├── api/checkout/           Shopier ödeme başlatma
+│   ├── api/checkout/           PayTR ödeme başlatma
+│   ├── api/odeme/callback/     PayTR bildirim/callback işleyicisi
+│   ├── api/siparis-durum/      Sipariş takip sorgusu
 │   ├── sitemap.ts robots.ts    SEO
 │   └── error.tsx               Hata sınırı
 ├── sections/Hero.tsx           Hero (HERO_IMAGE anahtarı burada)
 ├── components/                 layout, product, cart, collections, filters, common
 ├── data/
-│   ├── products.ts             80 ürün — tek kaynak
+│   ├── products.ts             Ürün kataloğu — tek kaynak
 │   ├── collections.ts          4 koleksiyon + hikayeleri
 │   └── reviews.ts
 ├── store/                      Zustand (sepet, favoriler)
@@ -220,7 +224,7 @@ src/
 
 ## Veri Modeli
 
-`src/data/products.ts` tek kaynaktır — 80 ürün, 4 kategori, 4 koleksiyon.
+`src/data/products.ts` ürün kataloğunun tek kaynağıdır.
 
 ```ts
 {
@@ -250,8 +254,8 @@ src/
 - `sitemap.ts` yalnızca **200 dönen** sayfaları listeler — yönlendirilen veya
   var olmayan adresler Search Console'da hata ürettiği için eklenmez.
 
-**Domain alınca:** yalnızca `NEXT_PUBLIC_SITE_URL` ortam değişkenini ayarla.
-Canonical, OG, sitemap ve JSON-LD hepsi `SITE.url` üzerinden okuyor.
+Üretim domaini `novellajewell.com` olarak yapılandırılmıştır. Canonical, OG,
+sitemap ve JSON-LD adresleri `SITE.url` üzerinden aynı kaynağı kullanır.
 
 ---
 
@@ -259,9 +263,19 @@ Canonical, OG, sitemap ve JSON-LD hepsi `SITE.url` üzerinden okuyor.
 
 ```bash
 NEXT_PUBLIC_SITE_URL=https://novellajewell.com
-SHOPIER_API_KEY=…
-SHOPIER_API_SECRET=…
+DATABASE_URL=…
+CHECKOUT_PROVIDER=paytr
+PAYTR_MERCHANT_ID=…
+PAYTR_MERCHANT_KEY=…
+PAYTR_MERCHANT_SALT=…
+PAYTR_TEST_MODE=0
+RESEND_API_KEY=…
+RESEND_FROM_EMAIL="NOVELLA <siparis@novellajewell.com>"
+RESEND_REPLY_TO=novella.jewellery.tr@gmail.com
 ```
+
+Gerçek değerler yalnızca yerel `.env.local` ve Vercel ortam değişkenlerinde
+tutulur; repoya anahtar veya bağlantı bilgisi eklenmez.
 
 ---
 
@@ -286,15 +300,12 @@ Türkiye'de online satış için zorunlu 8 sayfa hazır:
 | Kargo & Teslimat | `/kargo` |
 | İletişim + künye | `/iletisim` |
 
-### 🔴 Satıştan önce: `src/lib/legal.ts` doldurulmalı
+### Şirket bilgileri
 
 Şirket bilgileri **tek yerden** okunur: [`src/lib/legal.ts`](src/lib/legal.ts).
-Ticaret unvanı, adres, vergi dairesi/no ve e-postayı oraya yaz — 8 sayfa
-birden güncellenir.
-
-Doldurulmayan alanlar sitede **`[DOLDURULACAK: ...]`** şeklinde görünür.
-Bu bilinçli: sessizce boş kalıp yanlışlıkla yayına çıkmasındansa göze
-batması daha güvenli.
+Ticaret unvanı, adres, vergi dairesi/no ve iletişim bilgileri burada
+doldurulmuştur. Değişiklik gerektiğinde bu tek kaynak güncellenir ve 8 yasal
+sayfaya otomatik yansır.
 
 ### Sözleşme onayı
 
@@ -326,38 +337,40 @@ içinde `PRODUCTS`'tan **sunucuda** yeniden hesaplanır.
 ### `NEXT_PUBLIC_` öneki ve secret
 
 `NEXT_PUBLIC_` ile başlayan her değişken client bundle'ına gömülür ve
-**herkese açık** olur. Shopier anahtarları bu yüzden öneksizdir
-(`SHOPIER_API_KEY`). Anahtarlara `NEXT_PUBLIC_` ekleme.
+**herkese açık** olur. PayTR anahtarları bu yüzden öneksizdir
+(`PAYTR_MERCHANT_KEY`, `PAYTR_MERCHANT_SALT`). Anahtarlara `NEXT_PUBLIC_`
+ekleme.
 
 `.env.local` git'te takip **edilmez**. Gerçek anahtarlar yalnızca
 Vercel > Settings > Environment Variables içine girilir.
 
 ---
 
-## Yapılacaklar
+## Satışa Hazırlık Durumu
 
-### 🔴 Satış açılmadan önce (zorunlu)
+### Tamamlananlar
 
-- [ ] **`src/lib/legal.ts`** — ticaret unvanı, adres, vergi no, e-posta
-- [ ] **Shopier anahtarları** — Vercel env'e `SHOPIER_API_KEY`, `SHOPIER_API_SECRET`
-      (production'da anahtar yoksa kod bilerek hata fırlatır, sessiz kalmaz)
-- [ ] **Shopier callback imza formülü** — `src/lib/checkout/shopier.ts:verifyCallback`
-      resmî dokümanla karşılaştırılıp sandbox'ta uçtan uca test edilmeli.
-      Mevcut sıralama (`order_id + status + random_nr`) doğrulanmadı.
-- [ ] **Sipariş kaydı (Supabase)** — `src/lib/orders.ts` şu an sadece
-      `console.log`. Ödeme başarılı olsa bile sipariş **hiçbir yere yazılmıyor**,
-      Vercel logları geçici. Kargo gönderebilmek için kalıcı kayıt şart.
-- [ ] **Sipariş onay e-postası** — Yönetmelik m.7 gereği kalıcı veri
-      saklayıcısıyla gönderim zorunlu. Şu an mail servisi yok.
-- [ ] **Sunucu tarafı stok düşümü** — `buildOrder.ts` stok kontrolü yapıyor
-      ama stok statik veride sabit, satış sonrası azalmıyor.
+- [x] Şirket ve yasal sayfa bilgileri
+- [x] `novellajewell.com` domaini, canonical/OG/sitemap yapılandırması
+- [x] PayTR canlı mod ortam değişkenleri ve ödeme iframe akışı
+- [x] Siparişin ödeme öncesi PostgreSQL veritabanına `pending` kaydedilmesi
+- [x] PayTR callback imza doğrulaması ve siparişin `paid`/`failed` güncellenmesi
+- [x] Resend API yapılandırması ve `novellajewell.com` gönderici domain doğrulaması
+- [x] Mobil ve masaüstü checkout çift gönderim hatasının düzeltilmesi
 
-### 🟡 Sonrası
+### Satış açılmadan önce doğrulanacaklar
+
+- [ ] Gerçek kartla 49 TL uçtan uca PayTR testi
+- [ ] Testte `pending → paid` sipariş kaydı ve callback sonucunun doğrulanması
+- [ ] Gerçek müşteri adresine sipariş onay e-postasının ulaştığının doğrulanması
+- [ ] Başarılı callback sonrasında sunucu tarafında atomik stok düşümü
+- [ ] Mobil cihazlarda son ödeme ve sipariş takip testi
+- [ ] Hazırlanıyor, kargoya verildi, teslim edildi, iptal ve iade durumlarını yöneten admin ekranı
+
+### Ürün ve büyüme çalışmaları
 
 - [ ] `public/media/kolye/` görsellerini ekle (4 ürün bekliyor)
-- [ ] Hero görselini ekle (`Hero.tsx` → `HERO_IMAGE`)
-- [ ] Google Search Console doğrulama kodu (`layout.tsx` → `verification`)
-- [ ] `NEXT_PUBLIC_GA_ID` (gerçek GA ID; boşken GA yüklenmez)
-- [ ] SSS sayfası (footer'daki link kaldırıldı, `/#sss` anchor'ı yoktu)
-- [ ] Gerçek yorum sistemi — kurulunca `urun/[slug]/page.tsx`'e
-      `aggregateRating` GERÇEK verilerden hesaplanarak geri eklenebilir
+- [ ] Ürün fotoğrafı, ad, fiyat ve açıklama girişini toplu iş akışına dönüştür
+- [ ] Premium UI/motion tasarım geçişi
+- [ ] Google Search Console doğrulaması ve ölçümleme ayarları
+- [ ] Gerçek müşteri yorum sistemi

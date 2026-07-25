@@ -91,19 +91,22 @@ npm run db:push
 `studio/` klasörü ayrı bir Remotion projesidir. Video üretimi için:
 
 ```powershell
-cd studio
-npm install
-npm run dev
+npm run studio
 ```
 
 `tsconfig.json` içinde `studio/` dışlanmıştır; ana proje build'ine karışmaz.
+Render işlemleri kökten `npm run studio:render -- ...` ve
+`npm run studio:still -- ...` komutlarıyla da çalıştırılabilir.
 
 ## Kontrol Listesi (Yayına Alma Öncesi)
 
-- [ ] `src/lib/legal.ts` şirket bilgileri doldurulmuş.
-- [ ] `SHOPIER_API_KEY` ve `SHOPIER_API_SECRET` Vercel ortam değişkenlerine girilmiş.
-- [ ] `DATABASE_URL` tanımlı ve son migration çalıştırılmış.
-- [ ] `NEXT_PUBLIC_SITE_URL` gerçek domain olarak ayarlanmış.
-- [ ] `RESEND_API_KEY` girilmişse gönderici/domain doğrulaması yapılmış.
+- [x] `src/lib/legal.ts` şirket bilgileri doldurulmuş.
+- [x] PayTR canlı mod ortam değişkenleri Vercel'e girilmiş.
+- [x] `DATABASE_URL` tanımlı ve sipariş kayıt altyapısı hazır.
+- [x] `NEXT_PUBLIC_SITE_URL` `https://novellajewell.com` olarak ayarlanmış.
+- [x] Resend API anahtarı ve gönderici domain doğrulaması tamamlanmış.
+- [ ] Gerçek kartla PayTR ödeme, callback ve müşteri e-postası doğrulanmış.
+- [ ] Başarılı ödeme sonrasında atomik stok düşümü uygulanmış ve doğrulanmış.
+- [ ] Mobil ödeme ve sipariş takip akışı son kez test edilmiş.
 - [ ] `NEXT_PUBLIC_GA_ID` opsiyonel; girildiyse çerez onayı akışı test edilmiş.
 - [ ] `npm run lint` ve `npm run type-check` başarılı.

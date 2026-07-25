@@ -6,9 +6,9 @@ Bu dosya, Novella Jewell projesinin üçüncü taraf hizmet maliyetlerini, yenil
 | ---------------------------------- | --------------------------------------------- | -------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | **Vercel**                         | Next.js uygulamasının barındırılması ve CI/CD | Hobby (0₺) / Pro (aylık)               | —        | Şu an Hobby plan; trafik arttığında Pro'ya geçilebilir.                                                                        |
 | **Neon Postgres (Vercel Storage)** | Siparişlerin kalıcı veritabanı                | Vercel Storage fiyatlandırması (aylık) | —        | `DATABASE_URL` üzerinden Vercel tarafından otomatik sağlanır.                                                                  |
-| **Resend**                         | Sipariş onay e-postası                        | **0₺ — free tier** (günde 100 e-posta) | —        | Domain doğrulaması yapılınca gönderici adresi `lib/config.ts` > `EMAIL.from` tek satırda değişir.                              |
+| **Resend**                         | Sipariş onay e-postası                        | **0₺ — free tier** (kota plana bağlıdır) | —        | `novellajewell.com` gönderici domaini doğrulandı; gönderici ortam değişkeninden yönetilir.                                    |
 | **PayTR**                          | Ödeme altyapısı                               | Komisyon başına (mağaza anlaşmalı)     | —        | `PAYTR_MERCHANT_ID`, `PAYTR_MERCHANT_KEY`, `PAYTR_MERCHANT_SALT` Vercel env'de tutulur. `NEXT_PUBLIC_` öneki asla kullanılmaz. |
-| **Domain (Namecheap / registrar)** | Marka domaini                                 | ~$11.25 / yıl                          | Yıllık   | Domain alındığında `NEXT_PUBLIC_SITE_URL` Vercel'de gerçek adrese güncellenir.                                                 |
+| **Domain (Vercel)**                | `novellajewell.com`                           | $11.25 / yıl                           | 25 Temmuz | Vercel üzerinden satın alındı, projeye bağlandı ve otomatik yenileme açık.                                                     |
 
 ## Güvenlik notları
 

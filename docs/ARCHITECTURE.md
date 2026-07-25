@@ -31,7 +31,7 @@ c:\Projects\Novella-Jewell
 │   ├── app/                  # Next.js App Router rotaları ve layout
 │   │   ├── api/              # Route handlers
 │   │   │   ├── checkout/     # Ödeme başlatma
-│   │   │   └── odeme/callback/  # Shopier ödeme geri dönüşü
+│   │   │   └── odeme/callback/  # PayTR bildirim/callback işleyicisi
 │   │   ├── (sayfalar)/       # Hikaye, koleksiyon, ürün, sepet, ödeme vb.
 │   │   ├── layout.tsx        # Kök layout: fontlar, SEO, JSON-LD, GA, çerez banner
 │   │   ├── page.tsx          # Anasayfa
@@ -48,7 +48,7 @@ c:\Projects\Novella-Jewell
 │   │   └── search/           # Arama bileşeni
 │   ├── data/
 │   │   ├── collections.ts    # 4 şehir koleksiyonu ve hikayeleri
-│   │   ├── products.ts       # ~80 ürün, tek ürün kataloğu kaynağı
+│   │   ├── products.ts       # Tek ürün kataloğu kaynağı
 │   │   └── sss.ts            # Sık sorulan sorular
 │   ├── db/
 │   │   ├── index.ts          # Neon/Drizzle bağlantısı (DATABASE_URL)
