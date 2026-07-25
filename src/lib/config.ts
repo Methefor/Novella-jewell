@@ -17,7 +17,7 @@ export const LOW_STOCK_THRESHOLD = 8;
 
 export const SITE = {
   // Domain alınınca SADECE bu satır değişir — canonical, OG, sitemap, JSON-LD hepsi buradan okur
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://novella-jewell.vercel.app',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://novellajewell.com',
   name: 'NOVELLA',
   tagline: 'Kararmayan Çelik, Eskimeyen Zarafet',
   whatsapp: '905451125059',
@@ -34,5 +34,8 @@ export const SITE = {
  * değiştirmene gerek yok.
  */
 export const EMAIL = {
-  from: 'NOVELLA <onboarding@resend.dev>',
+  from:
+    process.env.RESEND_FROM_EMAIL ?? 'NOVELLA <onboarding@resend.dev>',
+  replyTo:
+    process.env.RESEND_REPLY_TO ?? 'novella.jewellery.tr@gmail.com',
 } as const;

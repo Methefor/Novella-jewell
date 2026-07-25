@@ -471,7 +471,6 @@ export default function OdemeClient() {
                 type="submit"
                 form="odeme-form"
                 disabled={loading}
-                onClick={handleSubmit(onSubmit)}
                 className="btn-primary w-full flex items-center justify-center gap-2 mt-5 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading ? (

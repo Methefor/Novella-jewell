@@ -23,7 +23,7 @@ Bu belge, Novella Jewell e-ticaret uygulamasının yüksek düzeyli yapısını,
 
 ```
 c:\Projects\Novella-Jewell
-├── .docs/                    # Proje bilgi tabanı (bu klasör)
+├── docs/                     # Proje bilgi tabanı (bu klasör)
 ├── drizzle/                  # Drizzle migration dosyaları (.sql + meta/)
 ├── public/
 │   └── media/                # Ürün ve site görselleri (kategori alt klasörleri)
@@ -119,7 +119,7 @@ c:\Projects\Novella-Jewell
 
 ## Ortam Değişkenleri (Adları)
 
-Açıklamalar ve değer örnekleri için `.env.example` dosyasına bak. Gerçek değerler yalnızca Vercel ve `.env.local` içinde tutulur, `.docs/` içine yazılmaz.
+Açıklamalar ve değer örnekleri için `.env.example` dosyasına bak. Gerçek değerler yalnızca Vercel ve `.env.local` içinde tutulur, `docs/` içine yazılmaz.
 
 - `NEXT_PUBLIC_SITE_URL`
 - `PAYTR_MERCHANT_ID`

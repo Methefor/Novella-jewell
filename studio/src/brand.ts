@@ -62,7 +62,7 @@ export const EASE_SPRING = [0.16, 1, 0.3, 1] as const;
 export const MARKA = {
   ad: 'NOVELLA',
   slogan: 'Kararmayan Çelik, Eskimeyen Zarafet',
-  site: 'novella-jewell.vercel.app',
+  site: 'novellajewell.com',
   instagram: '@jewelry.novella',
 } as const;
 

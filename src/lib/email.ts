@@ -188,6 +188,7 @@ export async function sendOrderConfirmationEmail(
 
   await resend.emails.send({
     from: EMAIL.from,
+    replyTo: EMAIL.replyTo,
     to: c.email,
     subject: `Siparişiniz alındı — ${order.orderNo}`,
     html,

@@ -18,6 +18,14 @@ npm run studio          # görsel editör açılır (tarayıcıda, canlı önizl
 npm run render Reels-StockholmNova out/video.mp4
 ```
 
+Proje kökünden çalıştırmak için:
+
+```bash
+npm run studio
+npm run studio:render -- Reels-StockholmNova out/video.mp4
+npm run studio:still -- <CompositionId> out/gorsel.png
+```
+
 Videoyu `npm run studio` ile açıp zaman çizelgesinde oynatabilir, kodu
 kaydettiğinde anında değişimi görürsün.
 

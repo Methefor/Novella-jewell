@@ -10,10 +10,10 @@ Supabase proje kimliği (`<project-ref>`) ve bağlantı bilgileri bilindiğinde:
 
 ```bash
 # Yerel Supabase projesi için
-npx supabase gen types typescript --local > .docs/SUPABASE_TYPES.md
+npx supabase gen types typescript --local > docs/SUPABASE_TYPES.md
 
 # Bağlı uzak proje için
-npx supabase gen types typescript --project-id <project-ref> --schema public > .docs/SUPABASE_TYPES.md
+npx supabase gen types typescript --project-id <project-ref> --schema public > docs/SUPABASE_TYPES.md
 ```
 
 ## Yer Tutucu

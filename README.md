@@ -3,7 +3,7 @@
 316L cerrahi çelikten üretilen takılar satan Türkçe e-ticaret sitesi.
 Next.js 16 (App Router), TypeScript, Tailwind CSS ve Framer Motion ile geliştirildi.
 
-- **Canlı site:** https://novella-jewell.vercel.app
+- **Canlı site:** https://novellajewell.com
 - **Instagram:** [@jewelry.novella](https://www.instagram.com/jewelry.novella/)
 
 ---
@@ -258,7 +258,7 @@ Canonical, OG, sitemap ve JSON-LD hepsi `SITE.url` üzerinden okuyor.
 ## Ortam Değişkenleri
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://novella-jewell.vercel.app
+NEXT_PUBLIC_SITE_URL=https://novellajewell.com
 SHOPIER_API_KEY=…
 SHOPIER_API_SECRET=…
 ```
