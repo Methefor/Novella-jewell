@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   integer,
   jsonb,
   numeric,
@@ -9,6 +10,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
+import type { Product } from '@/types/product';
 
 /** Sipariş kalemi — kalıcı kayıt için sadeleştirilmiş. */
 export interface OrderItemRow {
@@ -86,6 +88,20 @@ export const inventory = pgTable(
   },
   (table) => [primaryKey({ columns: [table.productId, table.variantId] })]
 );
+
+type StoredProduct = Omit<Product, 'createdAt' | 'updatedAt'> & {
+  createdAt: string;
+  updatedAt: string;
+};
+
+export const catalogProducts = pgTable('catalog_products', {
+  id: text('id').primaryKey(),
+  slug: text('slug').notNull().unique(),
+  data: jsonb('data').$type<StoredProduct>().notNull(),
+  published: boolean('published').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
 
 export type OrderRow = typeof orders.$inferSelect;
 export type NewOrderRow = typeof orders.$inferInsert;

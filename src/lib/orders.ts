@@ -41,16 +41,17 @@ export async function createPendingOrder(
     for (const item of order.items) {
       const product = PRODUCTS.find((p) => p.id === item.productId);
       const variant = product?.variants.find((v) => v.id === item.variantId);
-      if (!variant) throw new Error(`Stok kaynağı bulunamadı: ${item.productId}`);
 
-      await tx
-        .insert(inventory)
-        .values({
-          productId: item.productId,
-          variantId: item.variantId,
-          stock: variant.stock,
-        })
-        .onConflictDoNothing();
+      if (variant) {
+        await tx
+          .insert(inventory)
+          .values({
+            productId: item.productId,
+            variantId: item.variantId,
+            stock: variant.stock,
+          })
+          .onConflictDoNothing();
+      }
 
       const [available] = await tx
         .select({ stock: inventory.stock })

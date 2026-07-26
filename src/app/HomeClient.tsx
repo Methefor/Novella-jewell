@@ -1,7 +1,7 @@
 'use client';
 
 import ProductCard from '@/components/product/ProductCard';
-import { getAllProducts } from '@/data/products';
+import type { Product } from '@/types/product';
 import Hero from '@/sections/Hero';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
@@ -18,8 +18,7 @@ const fadeUp = {
   }),
 };
 
-export default function HomeClient() {
-  const products = getAllProducts();
+export default function HomeClient({ products }: { products: Product[] }) {
 
   /**
    * Yeni Gelenler — GERÇEKTEN yeni olanlar.

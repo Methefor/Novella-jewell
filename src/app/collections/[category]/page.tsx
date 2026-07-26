@@ -2,6 +2,7 @@ import { SITE } from '@/lib/config';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import CategoryClient from './CategoryClient';
+import { getCatalogProducts } from '@/lib/catalog';
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
@@ -48,6 +49,8 @@ const CATEGORIES: Record<string, { title: string; description: string }> = {
   },
 };
 
+export const revalidate = 60;
+
 export function generateStaticParams() {
   return Object.keys(CATEGORIES).map((category) => ({ category }));
 }
@@ -83,5 +86,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   // Tanımsız kategori artık boş sayfa yerine 404 döner.
   if (!CATEGORIES[category]) notFound();
 
-  return <CategoryClient category={category} />;
+  const products = await getCatalogProducts();
+  return <CategoryClient category={category} products={products} />;
 }

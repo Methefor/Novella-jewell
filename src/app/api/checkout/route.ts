@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
 
     // Fiyat, kargo ve stok burada yeniden hesaplanır. id geçici — birazdan
     // DB'nin ürettiği order_no ile değiştirilecek.
-    const built = buildOrder(items, customer, '');
+    const built = await buildOrder(items, customer, '');
     if (!built.ok) {
       return NextResponse.json({ error: built.error }, { status: 400 });
     }

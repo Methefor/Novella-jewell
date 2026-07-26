@@ -1,6 +1,7 @@
 import { SITE } from '@/lib/config';
 import type { Metadata } from 'next';
 import HomeClient from './HomeClient';
+import { getCatalogProducts } from '@/lib/catalog';
 
 /**
  * Ana sayfanın canonical'ı BURADA tanımlanır.
@@ -15,6 +16,9 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE.url },
 };
 
-export default function HomePage() {
-  return <HomeClient />;
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const products = await getCatalogProducts();
+  return <HomeClient products={products} />;
 }

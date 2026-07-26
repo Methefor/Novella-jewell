@@ -1,5 +1,5 @@
 import { SHIPPING } from '@/lib/config';
-import { PRODUCTS } from '@/data/products';
+import { getCatalogProductById } from '@/lib/catalog';
 import type { Order, OrderCustomer, OrderItem } from './types';
 
 /**
@@ -29,11 +29,11 @@ export type BuildOrderResult =
 
 const MAX_QUANTITY_PER_ITEM = 20;
 
-export function buildOrder(
+export async function buildOrder(
   rawItems: unknown,
   customer: OrderCustomer,
   orderId: string
-): BuildOrderResult {
+): Promise<BuildOrderResult> {
   if (!Array.isArray(rawItems) || rawItems.length === 0) {
     return { ok: false, error: 'Sepetiniz boş.' };
   }
@@ -58,7 +58,7 @@ export function buildOrder(
     }
 
     // Ürünü client'tan değil, kendi verimizden buluyoruz.
-    const product = PRODUCTS.find((p) => p.id === req.productId);
+    const product = await getCatalogProductById(req.productId);
     if (!product) {
       return { ok: false, error: 'Ürün bulunamadı.' };
     }

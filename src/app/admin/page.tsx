@@ -5,6 +5,7 @@ import { getAdminAuth } from '@/lib/admin-auth';
 import { desc } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { refundOrder, updateOrderStatus } from './actions';
+import Link from 'next/link';
 
 const statusLabels = {
   new: 'Sipariş alındı',
@@ -45,7 +46,10 @@ export default async function AdminPage() {
             <p className="text-xs uppercase tracking-[0.25em] text-[#9e8e63]">Novella</p>
             <h1 className="mt-2 font-heading text-4xl">Sipariş Yönetimi</h1>
           </div>
-          <UserButton />
+          <div className="flex items-center gap-4">
+            <Link href="/admin/urunler" className="rounded-xl bg-black px-4 py-2 text-sm font-medium text-white">Ürünler</Link>
+            <UserButton />
+          </div>
         </header>
 
         <div className="grid gap-5">

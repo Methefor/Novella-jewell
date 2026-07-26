@@ -2,7 +2,7 @@
 
 import AdvancedFilterSidebar from '@/components/filters/AdvancedFilterSidebar';
 import ProductCard from '@/components/product/ProductCard';
-import { getAllProducts } from '@/data/products';
+import type { Product } from '@/types/product';
 import { useProductFilters } from '@/hooks/useProductFilters';
 import { Grid3x3, LayoutGrid, SlidersHorizontal, X } from 'lucide-react';
 import { notFound } from 'next/navigation';
@@ -10,6 +10,7 @@ import { useState } from 'react';
 
 interface CategoryClientProps {
   category: string;
+  products: Product[];
 }
 
 const categoryNames: Record<string, string> = {
@@ -21,7 +22,7 @@ const categoryNames: Record<string, string> = {
   yuzuk: 'Yüzükler',
 };
 
-export default function CategoryClient({ category }: CategoryClientProps) {
+export default function CategoryClient({ category, products }: CategoryClientProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid-3' | 'grid-4'>('grid-4');
 
@@ -30,7 +31,7 @@ export default function CategoryClient({ category }: CategoryClientProps) {
     notFound();
   }
 
-  const allProducts = getAllProducts();
+  const allProducts = products;
 
   let categoryProducts = allProducts;
   if (category === 'yeni-gelenler') {
@@ -49,7 +50,7 @@ export default function CategoryClient({ category }: CategoryClientProps) {
     };
     const cat = categoryMap[category];
     if (cat) {
-      categoryProducts = allProducts.filter((p) => p.category === cat);
+      categoryProducts = allProducts.filter((p) => p.category === cat.toLocaleLowerCase('tr-TR'));
     }
   }
 

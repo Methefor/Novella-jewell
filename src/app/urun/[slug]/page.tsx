@@ -1,6 +1,7 @@
 import { getCollectionBySlug } from '@/data/collections';
 import { SITE } from '@/lib/config';
-import { getAllProducts, getProductBySlug } from '@/lib/products';
+import { getAllProducts } from '@/lib/products';
+import { getCatalogProductBySlug } from '@/lib/catalog';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProductPageClient from './ProductPageClient';
@@ -15,7 +16,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getCatalogProductBySlug(slug);
   if (!product) return {};
   const title = `${product.name} — NOVELLA`;
   const description = product.metaDescription ?? product.description;
@@ -49,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function UrunPage({ params }: Props) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getCatalogProductBySlug(slug);
   if (!product) notFound();
 
   const collection = getCollectionBySlug(product.collection);
