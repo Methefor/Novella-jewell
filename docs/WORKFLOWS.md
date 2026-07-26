@@ -105,7 +105,7 @@ Render işlemleri kökten `npm run studio:render -- ...` ve
 - [x] `DATABASE_URL` tanımlı ve sipariş kayıt altyapısı hazır.
 - [x] `NEXT_PUBLIC_SITE_URL` `https://novellajewell.com` olarak ayarlanmış.
 - [x] Resend API anahtarı ve gönderici domain doğrulaması tamamlanmış.
-- [ ] Gerçek kartla PayTR ödeme, callback ve müşteri e-postası doğrulanmış.
+- [x] Gerçek kartla PayTR ödeme, callback ve müşteri e-postası doğrulanmış.
 - [ ] Başarılı ödeme sonrasında atomik stok düşümü uygulanmış ve doğrulanmış.
 - [ ] Mobil ödeme ve sipariş takip akışı son kez test edilmiş.
 - [ ] `NEXT_PUBLIC_GA_ID` opsiyonel; girildiyse çerez onayı akışı test edilmiş.

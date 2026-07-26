@@ -1310,35 +1310,6 @@ export const PRODUCTS: Product[] = [
     isNew: true, isBestSeller: false, isCustomizable: false,
     createdAt: new Date('2026-07-17'), updatedAt: new Date('2026-07-17'),
   },
-  {
-    id: 'paytr-test-1',
-    name: 'Ödeme Sistemi Test Ürünü',
-    slug: 'odeme-sistemi-test-urunu',
-    description:
-      'PayTR canlı ödeme, sipariş kaydı, callback ve e-posta akışını doğrulamak için kullanılan gizli test ürünü.',
-    collection: 'klasikler',
-    story: 'Yalnızca ödeme sistemi doğrulaması içindir.',
-    category: 'yuzuk',
-    price: 49,
-    variants: [
-      {
-        id: 'v1',
-        color: 'altin',
-        material: 'celik',
-        stock: 5,
-        images: ['/media/yuzuk/yuzuk-1.jpg'],
-      },
-    ],
-    defaultVariant: 'v1',
-    features: ['Gizli test ürünü', 'Fiziksel gönderim yapılmaz'],
-    material: 'celik',
-    isNew: false,
-    isBestSeller: false,
-    isCustomizable: false,
-    hidden: true,
-    createdAt: new Date('2026-07-25'),
-    updatedAt: new Date('2026-07-25'),
-  },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -1347,7 +1318,7 @@ export const PRODUCTS: Product[] = [
 
 // getAllProducts gizli ürünleri ELER — tüm listeler, arama ve sitemap bunu
 // kullandığı için gizli ürün hiçbir yerde görünmez. getProductBySlug ise tam
-// listede arar, böylece gizli ürün doğrudan URL'den (test için) açılabilir.
+// listede arar; gerektiğinde doğrudan URL ile erişilen özel ürünler tanımlanabilir.
 export const getAllProducts = (): Product[] => PRODUCTS.filter((p) => !p.hidden);
 
 export const getProductBySlug = (slug: string): Product | undefined =>

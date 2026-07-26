@@ -357,12 +357,13 @@ Vercel > Settings > Environment Variables içine girilir.
 - [x] PayTR callback imza doğrulaması ve siparişin `paid`/`failed` güncellenmesi
 - [x] Resend API yapılandırması ve `novellajewell.com` gönderici domain doğrulaması
 - [x] Mobil ve masaüstü checkout çift gönderim hatasının düzeltilmesi
+- [x] Gerçek kartla uçtan uca PayTR testi (`NJ-2026-0001`, 98,90 TL)
+- [x] Testte `pending → paid` sipariş kaydı ve callback sonucunun doğrulanması
+- [x] Gerçek müşteri adresine sipariş onay e-postasının ulaştığının doğrulanması
+- [x] PayTR Bildirim URL’sinin kalıcı domaine taşınması
 
 ### Satış açılmadan önce doğrulanacaklar
 
-- [ ] Gerçek kartla 49 TL uçtan uca PayTR testi
-- [ ] Testte `pending → paid` sipariş kaydı ve callback sonucunun doğrulanması
-- [ ] Gerçek müşteri adresine sipariş onay e-postasının ulaştığının doğrulanması
 - [ ] Başarılı callback sonrasında sunucu tarafında atomik stok düşümü
 - [ ] Mobil cihazlarda son ödeme ve sipariş takip testi
 - [ ] Hazırlanıyor, kargoya verildi, teslim edildi, iptal ve iade durumlarını yöneten admin ekranı

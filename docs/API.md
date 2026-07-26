@@ -72,6 +72,10 @@ Sipariş oluşturur, veritabanına `pending` kaydeder ve PayTR iFrame ödeme for
 
 PayTR, ödeme sonucunu bu adrese (Bildirim URL) `POST` olarak bildirir. İmza doğrulanır; başarılıysa sipariş `paid` yapılır, onay e-postası gönderilir ve PayTR'e `OK` yanıtı döner. Müşterinin gördüğü başarı/hata sayfası ayrı olarak `merchant_ok_url` / `merchant_fail_url` ile ayarlanır.
 
+Üretim Bildirim URL’si:
+`https://novellajewell.com/api/odeme/callback`. Deployment’a özel
+`*.vercel.app` adresleri kalıcı olmadığı için PayTR paneline yazılmaz.
+
 **Parametreler (`application/x-www-form-urlencoded` body):**
 
 - `merchant_oid`: Sipariş numarası (`order_no`).
