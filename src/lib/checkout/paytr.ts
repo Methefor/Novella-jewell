@@ -103,10 +103,12 @@ export class PayTRProvider implements CheckoutProvider {
       .digest('base64');
 
     const baseUrl = SITE.url;
-    // Sonuç sayfasında müşteriye insan-okur numara (NJ-2026-XXXX) gösterilir.
+    // Sonuç sayfasında müşteriye insan-okur numara (NJ-2026-XXXX) ve sunucuda
+    // hesaplanan gerçek toplam gösterilir. PayTR merchant_ok_url'i ayrı açtığı
+    // için callback'te hesaplanan toplam bu yönlendirmeye eklenemez.
     const merchantOkUrl = `${baseUrl}/odeme/sonuc?status=success&orderNo=${encodeURIComponent(
       order.id
-    )}`;
+    )}&total=${encodeURIComponent(order.total.toFixed(2))}`;
     const merchantFailUrl = `${baseUrl}/odeme/sonuc?status=error&orderNo=${encodeURIComponent(
       order.id
     )}`;
