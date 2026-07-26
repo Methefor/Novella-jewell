@@ -15,6 +15,13 @@
       "when": 1785030000000,
       "tag": "0001_inventory",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785110400000,
+      "tag": "0002_order_management",
+      "breakpoints": true
     }
   ]
 }

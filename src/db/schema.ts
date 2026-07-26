@@ -48,6 +48,10 @@ export const orders = pgTable('orders', {
 
   // pending | paid | failed
   status: text('status').notNull().default('pending'),
+  // new | preparing | shipped | delivered | cancelled | returned
+  fulfillmentStatus: text('fulfillment_status').notNull().default('new'),
+  carrier: text('carrier'),
+  trackingNumber: text('tracking_number'),
 
   items: jsonb('items').$type<OrderItemRow[]>().notNull(),
   total: numeric('total', { precision: 10, scale: 2 }).notNull(),
@@ -60,6 +64,12 @@ export const orders = pgTable('orders', {
     .notNull()
     .defaultNow(),
   paidAt: timestamp('paid_at', { withTimezone: true }),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
+  refundedAt: timestamp('refunded_at', { withTimezone: true }),
+  refundAmount: numeric('refund_amount', { precision: 10, scale: 2 }),
 });
 
 export const inventory = pgTable(
