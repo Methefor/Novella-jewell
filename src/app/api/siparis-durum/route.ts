@@ -32,6 +32,30 @@ const DURUMLAR: Record<string, { etiket: string; aciklama: string }> = {
   },
 };
 
+const TESLIMAT_DURUMLARI: Record<
+  string,
+  { etiket: string; aciklama: string }
+> = {
+  new: DURUMLAR.paid,
+  preparing: DURUMLAR.paid,
+  shipped: {
+    etiket: 'Kargoya verildi',
+    aciklama: 'Siparişiniz yola çıktı. Kargo takip bilgileri e-posta adresinize gönderildi.',
+  },
+  delivered: {
+    etiket: 'Teslim edildi',
+    aciklama: 'Siparişiniz teslim edildi. Güzel günlerde kullanmanızı dileriz.',
+  },
+  cancelled: {
+    etiket: 'İptal edildi',
+    aciklama: 'Siparişiniz iptal edildi. Ayrıntılar için bizimle iletişime geçebilirsiniz.',
+  },
+  returned: {
+    etiket: 'İade işlemi',
+    aciklama: 'İade işleminiz kaydedildi. Süreç hakkında e-posta ile bilgilendirileceksiniz.',
+  },
+};
+
 export async function POST(req: Request) {
   if (dbYok) {
     return NextResponse.json(
@@ -64,6 +88,7 @@ export async function POST(req: Request) {
     .select({
       orderNo: orders.orderNo,
       status: orders.status,
+      fulfillmentStatus: orders.fulfillmentStatus,
       items: orders.items,
       total: orders.total,
       customer: orders.customer,
@@ -84,7 +109,10 @@ export async function POST(req: Request) {
     );
   }
 
-  const durum = DURUMLAR[row.status] ?? DURUMLAR.pending;
+  const durum =
+    row.status === 'paid'
+      ? (TESLIMAT_DURUMLARI[row.fulfillmentStatus] ?? DURUMLAR.paid)
+      : (DURUMLAR[row.status] ?? DURUMLAR.pending);
 
   return NextResponse.json({
     orderNo: row.orderNo,

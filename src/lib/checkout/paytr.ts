@@ -4,6 +4,7 @@ import type { CheckoutProvider, Order, PaymentResult } from './types';
 
 const TOKEN_ENDPOINT = 'https://www.paytr.com/odeme/api/get-token';
 const IFRAME_BASE = 'https://www.paytr.com/odeme/guvenli/';
+const REFUND_ENDPOINT = 'https://www.paytr.com/odeme/iade';
 
 /**
  * PayTR merchant_oid YALNIZCA harf ve rakam kabul eder (çizgi/özel karakter
@@ -22,6 +23,45 @@ export function toPayTROid(orderNo: string): string {
 export function fromPayTROid(oid: string): string {
   const m = /^NJ(\d{4})(\d+)$/.exec(oid);
   return m ? `NJ-${m[1]}-${m[2]}` : oid;
+}
+
+export async function refundPayTRPayment(
+  orderNo: string,
+  amount: string,
+  referenceNo: string
+): Promise<{ isTest: boolean }> {
+  const merchantId = process.env.PAYTR_MERCHANT_ID ?? '';
+  const merchantKey = process.env.PAYTR_MERCHANT_KEY ?? '';
+  const merchantSalt = process.env.PAYTR_MERCHANT_SALT ?? '';
+  if (!merchantId || !merchantKey || !merchantSalt) {
+    throw new Error('PayTR iade anahtarları eksik.');
+  }
+
+  const merchantOid = toPayTROid(orderNo);
+  const token = crypto
+    .createHmac('sha256', merchantKey)
+    .update(merchantId + merchantOid + amount + merchantSalt)
+    .digest('base64');
+  const response = await fetch(REFUND_ENDPOINT, {
+    method: 'POST',
+    body: new URLSearchParams({
+      merchant_id: merchantId,
+      merchant_oid: merchantOid,
+      return_amount: amount,
+      paytr_token: token,
+      reference_no: referenceNo,
+    }),
+    signal: AbortSignal.timeout(90_000),
+  });
+  const result = (await response.json()) as {
+    status?: string;
+    is_test?: string | number;
+    err_msg?: string;
+  };
+  if (!response.ok || result.status !== 'success') {
+    throw new Error(result.err_msg || `PayTR iade hatası: HTTP ${response.status}`);
+  }
+  return { isTest: String(result.is_test) === '1' };
 }
 
 /**

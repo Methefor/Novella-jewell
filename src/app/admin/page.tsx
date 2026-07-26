@@ -4,7 +4,7 @@ import { orders } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { desc } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { updateOrderStatus } from './actions';
+import { refundOrder, updateOrderStatus } from './actions';
 
 const statusLabels = {
   new: 'Sipariş alındı',
@@ -75,13 +75,31 @@ export default async function AdminPage() {
 
               <form action={updateOrderStatus} className="mt-5 grid gap-3 border-t border-[#eee7dc] pt-5 md:grid-cols-[1fr_1fr_1fr_auto]">
                 <input type="hidden" name="orderNo" value={order.orderNo} />
-                <select name="fulfillmentStatus" defaultValue={order.fulfillmentStatus} className="rounded-lg border-[#d8cdbb] text-sm">
+                <select name="fulfillmentStatus" defaultValue={order.fulfillmentStatus} disabled={order.status !== 'paid'} className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50">
                   {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                 </select>
-                <input name="carrier" defaultValue={order.carrier ?? ''} placeholder="Kargo firması" className="rounded-lg border-[#d8cdbb] text-sm" />
-                <input name="trackingNumber" defaultValue={order.trackingNumber ?? ''} placeholder="Takip numarası" className="rounded-lg border-[#d8cdbb] text-sm" />
-                <button className="rounded-lg bg-black px-5 py-2 text-sm font-medium text-white">Kaydet</button>
+                <input name="carrier" defaultValue={order.carrier ?? ''} disabled={order.status !== 'paid'} placeholder="Kargo firması" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
+                <input name="trackingNumber" defaultValue={order.trackingNumber ?? ''} disabled={order.status !== 'paid'} placeholder="Takip numarası" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
+                <button disabled={order.status !== 'paid'} className="rounded-lg bg-black px-5 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40">Kaydet</button>
               </form>
+              {order.status === 'paid' && order.refundStatus !== 'success' && (
+                <details className="mt-4 border-t border-[#eee7dc] pt-4">
+                  <summary className="cursor-pointer text-sm text-red-700">Tam iade işlemi</summary>
+                  <form action={refundOrder} className="mt-3 flex flex-wrap items-center gap-3">
+                    <input type="hidden" name="orderNo" value={order.orderNo} />
+                    <p className="w-full text-xs text-neutral-500">
+                      Bu işlem PayTR üzerinden {Number(order.total).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })} iade eder ve stoğu geri ekler. Onay için sipariş numarasını yazın.
+                    </p>
+                    <input name="confirmation" placeholder={order.orderNo} autoComplete="off" className="rounded-lg border-red-200 text-sm" />
+                    <button className="rounded-lg bg-red-700 px-5 py-2 text-sm font-medium text-white">İadeyi gerçekleştir</button>
+                  </form>
+                </details>
+              )}
+              {order.refundStatus === 'success' && (
+                <p className="mt-4 border-t border-[#eee7dc] pt-4 text-sm font-medium text-emerald-700">
+                  İade tamamlandı: {Number(order.refundAmount).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                </p>
+              )}
             </article>
           ))}
           {!rows.length && <p className="rounded-2xl bg-white p-8 text-center text-neutral-500">Henüz sipariş bulunmuyor.</p>}

@@ -70,6 +70,8 @@ export const orders = pgTable('orders', {
   cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
   refundedAt: timestamp('refunded_at', { withTimezone: true }),
   refundAmount: numeric('refund_amount', { precision: 10, scale: 2 }),
+  refundStatus: text('refund_status'),
+  refundReference: text('refund_reference'),
 });
 
 export const inventory = pgTable(

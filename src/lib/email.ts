@@ -195,6 +195,71 @@ export async function sendOrderConfirmationEmail(
   });
 }
 
+const STATUS_EMAILS: Record<
+  string,
+  { title: string; message: string; subject: string }
+> = {
+  preparing: {
+    title: 'Siparişiniz hazırlanıyor',
+    message: 'Siparişinizi özenle hazırlamaya başladık.',
+    subject: 'Siparişiniz hazırlanıyor',
+  },
+  shipped: {
+    title: 'Siparişiniz kargoya verildi',
+    message: 'Paketiniz yola çıktı. Kargo takip bilgilerinizi aşağıda bulabilirsiniz.',
+    subject: 'Siparişiniz kargoya verildi',
+  },
+  delivered: {
+    title: 'Siparişiniz teslim edildi',
+    message: 'Güzel günlerde kullanmanızı dileriz. NOVELLA’yı tercih ettiğiniz için teşekkür ederiz.',
+    subject: 'Siparişiniz teslim edildi',
+  },
+  cancelled: {
+    title: 'Siparişiniz iptal edildi',
+    message: 'Siparişiniz iptal edildi. Ödeme iadesi gerekiyorsa ayrıca bilgilendirileceksiniz.',
+    subject: 'Sipariş iptal bildirimi',
+  },
+  returned: {
+    title: 'İade işleminiz kaydedildi',
+    message: 'İade talebiniz işleme alındı. Ödeme iadesi tamamlandığında ayrıca bilgilendirileceksiniz.',
+    subject: 'İade işleminiz kaydedildi',
+  },
+};
+
+export async function sendOrderStatusEmail(order: OrderRow): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const content = STATUS_EMAILS[order.fulfillmentStatus];
+  if (!apiKey || !content) return;
+
+  const tracking =
+    order.fulfillmentStatus === 'shipped' && order.trackingNumber
+      ? `<div style="margin-top:20px;padding:16px;border:1px solid #E7DFD0;border-radius:10px;background:#fff">
+          <div style="font-size:12px;color:#9A907D;text-transform:uppercase;letter-spacing:.08em">Kargo bilgisi</div>
+          <div style="margin-top:8px"><strong>${escapeHtml(order.carrier || 'Kargo')}</strong></div>
+          <div style="margin-top:4px">${escapeHtml(order.trackingNumber)}</div>
+        </div>`
+      : '';
+
+  const resend = new Resend(apiKey);
+  await resend.emails.send({
+    from: EMAIL.from,
+    replyTo: EMAIL.replyTo,
+    to: order.customer.email,
+    subject: `${content.subject} — ${order.orderNo}`,
+    html: `<!doctype html><html lang="tr"><body style="margin:0;background:#FAF8F5;font-family:Inter,-apple-system,Segoe UI,sans-serif;color:#1A1712">
+      <div style="max-width:600px;margin:0 auto;padding:40px 20px">
+        <div style="font-family:Georgia,serif;font-size:18px;letter-spacing:8px;color:#9E8E63">NOVELLA</div>
+        <div style="margin-top:24px;padding:24px;background:#fff;border:1px solid #E7DFD0;border-radius:14px">
+          <div style="font-size:12px;color:#9A907D">${escapeHtml(order.orderNo)}</div>
+          <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:400;margin:12px 0">${content.title}</h1>
+          <p style="color:#6B6252;line-height:1.7;margin:0">${content.message}</p>
+          ${tracking}
+        </div>
+      </div>
+    </body></html>`,
+  });
+}
+
 function buildItemRow(item: {
   slug: string;
   ad: string;
