@@ -1,13 +1,13 @@
-import { SignIn } from '@clerk/nextjs';
+import { SignUp } from '@clerk/nextjs';
 
-export default function AdminSignInPage() {
+export default function AdminSignUpPage() {
   return (
     <main className="flex min-h-[70vh] items-center justify-center bg-[#faf8f5] px-4 py-16">
-      <SignIn
+      <SignUp
         routing="path"
-        path="/admin/giris"
+        path="/admin/kayit"
         forceRedirectUrl="/admin"
-        signUpUrl="/admin/kayit"
+        signInUrl="/admin/giris"
       />
     </main>
   );
