@@ -1,6 +1,7 @@
 import { db, dbYok } from '@/db';
-import { orders, type OrderItemRow } from '@/db/schema';
-import { and, eq } from 'drizzle-orm';
+import { inventory, orders, type OrderItemRow } from '@/db/schema';
+import { PRODUCTS } from '@/data/products';
+import { and, eq, sql } from 'drizzle-orm';
 import type { Order } from './checkout/types';
 
 /**
@@ -28,15 +29,45 @@ export async function createPendingOrder(
   }
 
   const items: OrderItemRow[] = order.items.map((i) => ({
+    productId: i.productId,
+    variantId: i.variantId,
     slug: i.slug,
     ad: i.name,
     adet: i.quantity,
     birimFiyat: i.price,
   }));
 
-  const [row] = await db
-    .insert(orders)
-    .values({
+  const row = await db.transaction(async (tx) => {
+    for (const item of order.items) {
+      const product = PRODUCTS.find((p) => p.id === item.productId);
+      const variant = product?.variants.find((v) => v.id === item.variantId);
+      if (!variant) throw new Error(`Stok kaynağı bulunamadı: ${item.productId}`);
+
+      await tx
+        .insert(inventory)
+        .values({
+          productId: item.productId,
+          variantId: item.variantId,
+          stock: variant.stock,
+        })
+        .onConflictDoNothing();
+
+      const [available] = await tx
+        .select({ stock: inventory.stock })
+        .from(inventory)
+        .where(
+          and(
+            eq(inventory.productId, item.productId),
+            eq(inventory.variantId, item.variantId)
+          )
+        )
+        .limit(1);
+      if (!available || available.stock < item.quantity) {
+        throw new Error(`${item.name} için yeterli stok yok.`);
+      }
+    }
+
+    const [created] = await tx.insert(orders).values({
       status: 'pending',
       items,
       total: order.total.toFixed(2),
@@ -51,8 +82,9 @@ export async function createPendingOrder(
       },
       randomNr,
       // orderNo, id, createdAt → DB default
-    })
-    .returning({ orderNo: orders.orderNo, id: orders.id });
+    }).returning({ orderNo: orders.orderNo, id: orders.id });
+    return created;
+  });
 
   return row ?? null;
 }
@@ -75,17 +107,44 @@ export async function markOrderPaid(
     return { ok: false };
   }
 
-  // Yalnızca status='pending' iken paid'e çek (atomik idempotency).
-  // Zaten paid ise UPDATE 0 satır etkiler; ikinci callback no-op olur.
-  const [updated] = await db
-    .update(orders)
-    .set({
-      status: 'paid',
-      shopierPaymentId: shopierPaymentId ?? null,
-      paidAt: new Date(),
-    })
-    .where(and(eq(orders.orderNo, orderNo), eq(orders.status, 'pending')))
-    .returning();
+  const updated = await db.transaction(async (tx) => {
+    const locked = await tx.execute(
+      sql`select * from orders where order_no = ${orderNo} for update`
+    );
+    const current = locked.rows[0] as typeof orders.$inferSelect | undefined;
+    if (!current || current.status !== 'pending') return null;
+
+    for (const item of current.items) {
+      const [stockRow] = await tx
+        .update(inventory)
+        .set({
+          stock: sql`${inventory.stock} - ${item.adet}`,
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(inventory.productId, item.productId),
+            eq(inventory.variantId, item.variantId),
+            sql`${inventory.stock} >= ${item.adet}`
+          )
+        )
+        .returning({ stock: inventory.stock });
+      if (!stockRow) {
+        throw new Error(`Yetersiz stok: ${item.productId}/${item.variantId}`);
+      }
+    }
+
+    const [paid] = await tx
+      .update(orders)
+      .set({
+        status: 'paid',
+        shopierPaymentId: shopierPaymentId ?? null,
+        paidAt: new Date(),
+      })
+      .where(and(eq(orders.orderNo, orderNo), eq(orders.status, 'pending')))
+      .returning();
+    return paid ?? null;
+  });
 
   if (updated) {
     // Bu çağrı pending → paid geçişini yaptı (ilk kez).

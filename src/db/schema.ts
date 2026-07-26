@@ -1,7 +1,9 @@
 import { sql } from 'drizzle-orm';
 import {
+  integer,
   jsonb,
   numeric,
+  primaryKey,
   pgTable,
   text,
   timestamp,
@@ -10,6 +12,8 @@ import {
 
 /** Sipariş kalemi — kalıcı kayıt için sadeleştirilmiş. */
 export interface OrderItemRow {
+  productId: string;
+  variantId: string;
   slug: string;
   ad: string;
   adet: number;
@@ -57,6 +61,19 @@ export const orders = pgTable('orders', {
     .defaultNow(),
   paidAt: timestamp('paid_at', { withTimezone: true }),
 });
+
+export const inventory = pgTable(
+  'inventory',
+  {
+    productId: text('product_id').notNull(),
+    variantId: text('variant_id').notNull(),
+    stock: integer('stock').notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [primaryKey({ columns: [table.productId, table.variantId] })]
+);
 
 export type OrderRow = typeof orders.$inferSelect;
 export type NewOrderRow = typeof orders.$inferInsert;
