@@ -20,19 +20,11 @@ const fadeUp = {
 
 export default function HomeClient({ products }: { products: Product[] }) {
 
-  /**
-   * Yeni Gelenler — GERÇEKTEN yeni olanlar.
-   *
-   * Eskiden burada "ilk 3 bileklik + ilk 2 küpe + ilk 1 yüzük" alınıyordu;
-   * isNew ve createdAt'e hiç bakmadığı için kaç yeni ürün eklenirse eklensin
-   * hep aynı 6 eski ürün görünüyordu. Artık isNew işaretli ürünler eklenme
-   * tarihine göre yeniden eskiye sıralanıyor — yeni ürün ekleyince ana sayfaya
-   * kendiliğinden düşer, burayı elle güncellemek gerekmez.
-   */
-  const newArrivals = products
-    .filter((p) => p.isNew)
+  // Ana vitrinde en yeni beş yüzük otomatik olarak editoryal sıraya girer.
+  const featuredRings = products
+    .filter((p) => p.isNew && p.category === 'yuzuk')
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(0, 6);
+    .slice(0, 5);
 
   /**
    * Çok Satanlar — isBestSeller işaretine göre.
@@ -51,7 +43,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
       {/* Hero */}
       <Hero />
 
-      {/* New Arrivals */}
+      {/* Yeni yüzük vitrini */}
       <section className="py-16 md:py-24 bg-cream">
         <div className="container-custom">
           <motion.div
@@ -63,7 +55,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
             className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 md:mb-14"
           >
             <div>
-              <p className="section-label mb-3">Koleksiyon</p>
+              <p className="section-label mb-3">Yeni Sezon</p>
               <h2
                 className="font-serif font-light text-black"
                 style={{
@@ -72,23 +64,24 @@ export default function HomeClient({ products }: { products: Product[] }) {
                   letterSpacing: '-0.025em',
                 }}
               >
-                {/* "En Yeni Koleksiyon" DEĞİL: burada gösterilenler koleksiyon
-                    değil, yeni eklenen ürünler. Koleksiyon = Barcelona,
-                    Stockholm, Paris, Klasikler — onlar /koleksiyonlar'da. */}
-                Yeni Sezon
+                Yeni Yüzükler
               </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-black/50 md:text-base">
+                Yeni eklenen beş tasarım, güçlü parçadan zarif tektaşa uzanan
+                editoryal bir seçkide.
+              </p>
             </div>
             <Link
-              href="/collections/yeni-gelenler"
+              href="/collections/yuzuk"
               className="inline-flex items-center gap-2 text-sm font-sans font-medium text-black/50 hover:text-black transition-colors duration-200 group flex-shrink-0"
             >
-              Tümünü Gör
+              Tüm Yüzükleri Gör
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {newArrivals.map((product, i) => (
+          <div className="grid grid-cols-2 gap-x-4 gap-y-9 sm:gap-x-6 lg:grid-cols-6">
+            {featuredRings.map((product, i) => (
               <motion.div
                 key={product.id}
                 initial="hidden"
@@ -96,6 +89,13 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 viewport={{ once: true, margin: '-40px' }}
                 variants={fadeUp}
                 custom={i * 0.07}
+                className={
+                  i < 2
+                    ? 'lg:col-span-3'
+                    : i === featuredRings.length - 1
+                      ? 'col-span-2 lg:col-span-2'
+                      : 'lg:col-span-2'
+                }
               >
                 <ProductCard product={product} />
               </motion.div>
