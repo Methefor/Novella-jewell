@@ -21,7 +21,7 @@ export const SITE = {
   name: 'NOVELLA',
   tagline: 'Kararmayan Çelik, Eskimeyen Zarafet',
   whatsapp: '905451125059',
-  instagram: 'https://www.instagram.com/jewelry.novella/',
+  instagram: 'https://www.instagram.com/novellajewellofficial/',
 } as const;
 
 /**

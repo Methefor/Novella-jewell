@@ -164,7 +164,7 @@ export async function sendOrderConfirmationEmail(
               <p style="margin:0 0 14px;color:#6B6252;font-size:14px">Siparişiniz hakkında güncelleme almak veya bilgi için:</p>
               <a href="${waLink}" style="display:inline-block;background:#0A0A0A;color:#fff;text-decoration:none;padding:13px 26px;border-radius:999px;font-size:14px;font-weight:500;margin-bottom:10px">WhatsApp&apos;tan yazın</a>
               ${supportEmail ? `<p style="margin:10px 0 0;font-size:13px"><a href="mailto:${supportEmail}" style="color:#9E8E63;text-decoration:none">${supportEmail}</a></p>` : ''}
-              <p style="margin:8px 0 0;font-size:13px"><a href="${instagramLink}" style="color:#9E8E63;text-decoration:none">Instagram: @jewelry.novella</a></p>
+              <p style="margin:8px 0 0;font-size:13px"><a href="${instagramLink}" style="color:#9E8E63;text-decoration:none">Instagram: @novellajewellofficial</a></p>
             </td>
           </tr>
 

@@ -1,4 +1,5 @@
 import { Instagram, MessageCircle } from 'lucide-react';
+import { SITE } from '@/lib/config';
 import Link from 'next/link';
 
 const quickLinks = [
@@ -50,7 +51,7 @@ export default function Footer() {
             {/* Social icons */}
             <div className="flex items-center gap-2.5">
               <a
-                href="https://www.instagram.com/jewelry.novella/"
+                href={SITE.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"

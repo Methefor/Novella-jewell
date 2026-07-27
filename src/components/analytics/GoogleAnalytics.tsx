@@ -6,7 +6,37 @@ import {
   type ConsentValue,
 } from '@/lib/cookies';
 import Script from 'next/script';
-import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+
+function RouteChangeTracker() {
+  const pathname = usePathname();
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    // İlk sayfa görüntülemesini gtag('config') gönderir. Burada yalnızca
+    // Next.js istemci yönlendirmelerini izleyerek çift sayımı önlüyoruz.
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    const w = window as typeof window & {
+      gtag?: (
+        command: string,
+        eventName: string,
+        params?: Record<string, unknown>
+      ) => void;
+    };
+    w.gtag?.('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: `${pathname}${window.location.search}`,
+    });
+  }, [pathname]);
+
+  return null;
+}
 
 /**
  * Google Analytics — YALNIZCA çerez onayı verildiyse yüklenir.
@@ -32,11 +62,12 @@ export default function GoogleAnalytics() {
     return () => window.removeEventListener(COOKIE_CONSENT_EVENT, onChange);
   }, []);
 
-  if (!GA_ID) return null;
+  if (!GA_ID || !/^G-[A-Z0-9]+$/i.test(GA_ID)) return null;
   if (consent !== 'accepted') return null;
 
   return (
     <>
+      <RouteChangeTracker />
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
         strategy="afterInteractive"

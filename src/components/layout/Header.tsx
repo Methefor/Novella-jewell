@@ -2,6 +2,7 @@
 
 import CartDrawer from '@/components/cart/CartDrawer';
 import SearchModal from '@/components/search/SearchModal';
+import { SITE } from '@/lib/config';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import {
@@ -185,7 +186,7 @@ export default function Header() {
               </span>
               <div className="flex items-center gap-5 text-[11px] font-sans text-black/35">
                 <a
-                  href="https://www.instagram.com/jewelry.novella/"
+                  href={SITE.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-black transition-colors"
