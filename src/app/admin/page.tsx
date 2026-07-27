@@ -93,6 +93,9 @@ export default async function AdminPage() {
             <Link href="/admin/guvenlik" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
               Güvenlik
             </Link>
+            <Link href="/admin/analitik" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
+              Analitik
+            </Link>
             <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
               Reklam Hazırlığı
             </Link>

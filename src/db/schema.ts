@@ -139,6 +139,33 @@ export const adminAuditLogs = pgTable('admin_audit_logs', {
     .defaultNow(),
 });
 
+export type AnalyticsEventName =
+  | 'page_view'
+  | 'view_item'
+  | 'add_to_cart'
+  | 'begin_checkout';
+
+export const analyticsEvents = pgTable('analytics_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  sessionId: text('session_id').notNull(),
+  eventName: text('event_name').$type<AnalyticsEventName>().notNull(),
+  productId: text('product_id'),
+  value: numeric('value', { precision: 10, scale: 2 }),
+  path: text('path').notNull(),
+  source: text('source').notNull().default('direct'),
+  medium: text('medium').notNull().default('none'),
+  campaign: text('campaign'),
+  referrerHost: text('referrer_host'),
+  metadata: jsonb('metadata')
+    .$type<Record<string, string | number | boolean | null>>()
+    .notNull()
+    .default({}),
+  occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 type StoredProduct = Omit<Product, 'createdAt' | 'updatedAt'> & {
   createdAt: string;
   updatedAt: string;
@@ -218,5 +245,6 @@ export type NewOrderRow = typeof orders.$inferInsert;
 export type OrderEventRow = typeof orderEvents.$inferSelect;
 export type StockMovementRow = typeof stockMovements.$inferSelect;
 export type AdminAuditLogRow = typeof adminAuditLogs.$inferSelect;
+export type AnalyticsEventRow = typeof analyticsEvents.$inferSelect;
 export type ContentCampaignRow = typeof contentCampaigns.$inferSelect;
 export type CampaignItemRow = typeof campaignItems.$inferSelect;

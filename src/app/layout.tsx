@@ -1,4 +1,5 @@
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
+import FirstPartyAnalytics from '@/components/analytics/FirstPartyAnalytics';
 import SepetHatirlatici from '@/components/cart/SepetHatirlatici';
 import StoreHydration from '@/components/common/StoreHydration';
 import ToastContainer from '@/components/common/Toast';
@@ -174,6 +175,7 @@ export default function RootLayout({
         {/* KVKK çerez onayı — GA yalnızca burada "Kabul et" seçilirse yüklenir. */}
         <CookieBanner />
         <GoogleAnalytics />
+        <FirstPartyAnalytics />
       </body>
     </html>
     </ClerkProvider>
