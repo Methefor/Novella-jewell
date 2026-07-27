@@ -9,6 +9,7 @@ import {
   stockMovements,
 } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
+import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { refundPayTRPayment } from '@/lib/checkout/paytr';
 import { sendOrderStatusEmail } from '@/lib/email';
 import { and, eq, sql } from 'drizzle-orm';
@@ -86,6 +87,21 @@ export async function updateOrderStatus(formData: FormData) {
     }
   }
 
+  if (updated) {
+    await writeAdminAuditLog({
+      actorId: admin.userId,
+      actorEmail: admin.email,
+      action: 'order.status_update',
+      entityType: 'order',
+      entityId: updated.orderNo,
+      summary: `Sipariş durumu ${current.fulfillmentStatus} → ${updated.fulfillmentStatus}.`,
+      metadata: {
+        carrier: updated.carrier,
+        trackingNumber: updated.trackingNumber,
+      },
+    });
+  }
+
   revalidatePath('/admin');
   revalidatePath('/admin/siparisler');
 }
@@ -125,6 +141,15 @@ export async function updateOrderNote(formData: FormData) {
       note: 'Operasyon notu güncellendi.',
       createdBy: admin.email,
     });
+  });
+
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'order.note_update',
+    entityType: 'order',
+    entityId: parsed.orderNo,
+    summary: 'Sipariş operasyon notu güncellendi.',
   });
 
   revalidatePath('/admin/siparisler');
@@ -252,6 +277,15 @@ export async function refundOrder(formData: FormData) {
       } catch (error) {
         console.error('[admin] iade e-postası gönderilemedi', { orderNo: order.orderNo, error });
       }
+      await writeAdminAuditLog({
+        actorId: admin.userId,
+        actorEmail: admin.email,
+        action: 'order.refund',
+        entityType: 'order',
+        entityId: order.orderNo,
+        summary: `${Number(order.total).toFixed(2)} TRY tam iade tamamlandı.`,
+        metadata: { refundReference: reference },
+      });
     }
   } catch (error) {
     await db

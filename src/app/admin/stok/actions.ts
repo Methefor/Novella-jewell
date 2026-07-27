@@ -4,6 +4,7 @@ import { db, dbYok } from '@/db';
 import { PRODUCTS } from '@/data/products';
 import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
+import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -120,6 +121,21 @@ export async function adjustStock(formData: FormData) {
         createdBy: admin.email,
       });
     }
+  });
+
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'stock.adjust',
+    entityType: 'inventory',
+    entityId: `${input.productId}:${input.variantId}`,
+    summary: `Stok ${input.currentStock} → ${input.newStock} olarak güncellendi.`,
+    metadata: {
+      previousStock: input.currentStock,
+      newStock: input.newStock,
+      threshold: input.lowStockThreshold,
+      reason: input.reason,
+    },
   });
 
   revalidatePath('/admin');

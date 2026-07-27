@@ -10,6 +10,7 @@ import {
   type CampaignContentDraft,
 } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
+import { writeAdminAuditLog } from '@/lib/admin-audit';
 import type { Product } from '@/types/product';
 import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
@@ -44,10 +45,11 @@ async function requireAdmin() {
   const admin = await getAdminAuth();
   if (admin.state !== 'admin') throw new Error('Yetkisiz işlem.');
   if (dbYok) throw new Error('Veritabanı bağlantısı yok.');
+  return admin;
 }
 
 export async function createCampaign(formData: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const input = z
     .object({
       name: z.string().trim().min(3).max(100),
@@ -69,11 +71,20 @@ export async function createCampaign(formData: FormData) {
     })
     .returning({ id: contentCampaigns.id });
 
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.create',
+    entityType: 'campaign',
+    entityId: campaign.id,
+    summary: `${input.name} kampanyası oluşturuldu.`,
+  });
+
   redirect(`/admin/kampanyalar?campaign=${campaign.id}`);
 }
 
 export async function addCampaignProduct(formData: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const input = z
     .object({
       campaignId: z.string().uuid(),
@@ -101,11 +112,20 @@ export async function addCampaignProduct(formData: FormData) {
       },
     });
 
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.product_add',
+    entityType: 'campaign',
+    entityId: input.campaignId,
+    summary: `${input.productId} kampanyaya eklendi.`,
+  });
+
   revalidatePath('/admin/kampanyalar');
 }
 
 export async function updateCampaignItem(formData: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const input = z
     .object({
       campaignId: z.string().uuid(),
@@ -146,11 +166,21 @@ export async function updateCampaignItem(formData: FormData) {
       )
     );
 
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.item_update',
+    entityType: 'campaign',
+    entityId: input.campaignId,
+    summary: `${input.productId} içerik kaydı güncellendi.`,
+    metadata: { stage: input.stage },
+  });
+
   revalidatePath('/admin/kampanyalar');
 }
 
 export async function generateCampaignItemDraft(formData: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const input = z
     .object({
       campaignId: z.string().uuid(),
@@ -190,6 +220,15 @@ export async function generateCampaignItemDraft(formData: FormData) {
       )
     );
 
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.draft_generate',
+    entityType: 'campaign',
+    entityId: input.campaignId,
+    summary: `${input.productId} için kanal taslakları oluşturuldu.`,
+  });
+
   revalidatePath('/admin/kampanyalar');
 }
 
@@ -223,7 +262,7 @@ function buildContentDraft(product: Product): CampaignContentDraft {
 }
 
 export async function updateCampaignStatus(formData: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const input = z
     .object({
       campaignId: z.string().uuid(),
@@ -238,6 +277,15 @@ export async function updateCampaignStatus(formData: FormData) {
     .update(contentCampaigns)
     .set({ status: input.status, updatedAt: new Date() })
     .where(eq(contentCampaigns.id, input.campaignId));
+
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.status_update',
+    entityType: 'campaign',
+    entityId: input.campaignId,
+    summary: `Kampanya durumu ${input.status} olarak güncellendi.`,
+  });
 
   revalidatePath('/admin/kampanyalar');
 }

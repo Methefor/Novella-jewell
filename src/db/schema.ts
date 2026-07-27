@@ -122,6 +122,23 @@ export const stockMovements = pgTable('stock_movements', {
     .defaultNow(),
 });
 
+export const adminAuditLogs = pgTable('admin_audit_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  actorId: text('actor_id').notNull(),
+  actorEmail: text('actor_email').notNull(),
+  action: text('action').notNull(),
+  entityType: text('entity_type').notNull(),
+  entityId: text('entity_id').notNull(),
+  summary: text('summary').notNull(),
+  metadata: jsonb('metadata')
+    .$type<Record<string, string | number | boolean | null>>()
+    .notNull()
+    .default({}),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 type StoredProduct = Omit<Product, 'createdAt' | 'updatedAt'> & {
   createdAt: string;
   updatedAt: string;
@@ -200,5 +217,6 @@ export type OrderRow = typeof orders.$inferSelect;
 export type NewOrderRow = typeof orders.$inferInsert;
 export type OrderEventRow = typeof orderEvents.$inferSelect;
 export type StockMovementRow = typeof stockMovements.$inferSelect;
+export type AdminAuditLogRow = typeof adminAuditLogs.$inferSelect;
 export type ContentCampaignRow = typeof contentCampaigns.$inferSelect;
 export type CampaignItemRow = typeof campaignItems.$inferSelect;

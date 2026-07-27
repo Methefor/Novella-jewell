@@ -1,6 +1,7 @@
 import { db, dbYok } from '@/db';
 import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
+import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { productSchema } from '../route';
@@ -118,6 +119,16 @@ export async function PATCH(
       { status: 409 }
     );
   }
+
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'product.update',
+    entityType: 'product',
+    entityId: id,
+    summary: `${input.name} ürünü güncellendi.`,
+    metadata: { stock: input.stock, price: input.price, published: input.published },
+  });
 
   return NextResponse.json({ ok: true, id, slug: input.slug });
 }

@@ -4,6 +4,7 @@ import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
+import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -46,6 +47,15 @@ export async function setProductPublished(formData: FormData) {
       },
     });
   }
+
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: published ? 'product.publish' : 'product.unpublish',
+    entityType: 'product',
+    entityId: input.id,
+    summary: published ? 'Ürün yayına alındı.' : 'Ürün yayından kaldırıldı.',
+  });
 
   revalidatePath('/admin');
   revalidatePath('/admin/urunler');

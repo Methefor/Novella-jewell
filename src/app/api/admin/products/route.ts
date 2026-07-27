@@ -1,6 +1,7 @@
 import { db, dbYok } from '@/db';
 import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
+import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -117,6 +118,16 @@ export async function POST(request: Request) {
       { status: 409 }
     );
   }
+
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'product.create',
+    entityType: 'product',
+    entityId: id,
+    summary: `${input.name} ürünü oluşturuldu.`,
+    metadata: { stock: input.stock, price: input.price, published: input.published },
+  });
 
   return NextResponse.json({ ok: true, id, slug: input.slug }, { status: 201 });
 }
