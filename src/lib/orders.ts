@@ -1,5 +1,11 @@
 import { db, dbYok } from '@/db';
-import { inventory, orders, type OrderItemRow } from '@/db/schema';
+import {
+  inventory,
+  catalogProducts,
+  orders,
+  stockMovements,
+  type OrderItemRow,
+} from '@/db/schema';
 import { PRODUCTS } from '@/data/products';
 import { and, eq, sql } from 'drizzle-orm';
 import type { Order } from './checkout/types';
@@ -129,9 +135,66 @@ export async function markOrderPaid(
             sql`${inventory.stock} >= ${item.adet}`
           )
         )
-        .returning({ stock: inventory.stock });
+        .returning({
+          stock: inventory.stock,
+        });
       if (!stockRow) {
         throw new Error(`Yetersiz stok: ${item.productId}/${item.variantId}`);
+      }
+      await tx.insert(stockMovements).values({
+        productId: item.productId,
+        variantId: item.variantId,
+        delta: -item.adet,
+        previousStock: stockRow.stock + item.adet,
+        newStock: stockRow.stock,
+        source: 'sale',
+        reason: 'Ödeme onaylandı',
+        reference: orderNo,
+        createdBy: 'system:payment-callback',
+      });
+      const [catalogRow] = await tx
+        .select()
+        .from(catalogProducts)
+        .where(eq(catalogProducts.id, item.productId))
+        .limit(1);
+      const now = new Date();
+      if (catalogRow) {
+        await tx
+          .update(catalogProducts)
+          .set({
+            data: {
+              ...catalogRow.data,
+              variants: catalogRow.data.variants.map((variant) =>
+                variant.id === item.variantId
+                  ? { ...variant, stock: stockRow.stock }
+                  : variant
+              ),
+              updatedAt: now.toISOString(),
+            },
+            updatedAt: now,
+          })
+          .where(eq(catalogProducts.id, item.productId));
+      } else {
+        const staticProduct = PRODUCTS.find(
+          (product) => product.id === item.productId
+        );
+        if (staticProduct) {
+          await tx.insert(catalogProducts).values({
+            id: staticProduct.id,
+            slug: staticProduct.slug,
+            published: !staticProduct.hidden,
+            data: {
+              ...staticProduct,
+              variants: staticProduct.variants.map((variant) =>
+                variant.id === item.variantId
+                  ? { ...variant, stock: stockRow.stock }
+                  : variant
+              ),
+              createdAt: staticProduct.createdAt.toISOString(),
+              updatedAt: now.toISOString(),
+            },
+          });
+        }
       }
     }
 

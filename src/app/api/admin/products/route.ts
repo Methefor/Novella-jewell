@@ -1,5 +1,5 @@
 import { db, dbYok } from '@/db';
-import { catalogProducts, inventory } from '@/db/schema';
+import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -98,6 +98,16 @@ export async function POST(request: Request) {
         productId: id,
         variantId: 'v1',
         stock: input.stock,
+      });
+      await tx.insert(stockMovements).values({
+        productId: id,
+        variantId: 'v1',
+        delta: input.stock,
+        previousStock: 0,
+        newStock: input.stock,
+        source: 'product_create',
+        reason: 'Ürün oluşturulurken başlangıç stoğu',
+        createdBy: admin.email,
       });
     });
   } catch (error) {

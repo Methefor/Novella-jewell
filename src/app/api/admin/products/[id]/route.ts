@@ -1,5 +1,5 @@
 import { db, dbYok } from '@/db';
-import { catalogProducts, inventory } from '@/db/schema';
+import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
@@ -68,6 +68,11 @@ export async function PATCH(
 
   try {
     await db.transaction(async (tx) => {
+      const [currentStock] = await tx
+        .select({ stock: inventory.stock })
+        .from(inventory)
+        .where(eq(inventory.productId, id))
+        .limit(1);
       await tx
         .insert(catalogProducts)
         .values({
@@ -92,6 +97,19 @@ export async function PATCH(
           target: [inventory.productId, inventory.variantId],
           set: { stock: input.stock, updatedAt: new Date() },
         });
+      const previousStock = currentStock?.stock ?? 0;
+      if (previousStock !== input.stock) {
+        await tx.insert(stockMovements).values({
+          productId: id,
+          variantId: 'v1',
+          delta: input.stock - previousStock,
+          previousStock,
+          newStock: input.stock,
+          source: 'product_edit',
+          reason: 'Ürün formundan stok güncellendi',
+          createdBy: admin.email,
+        });
+      }
     });
   } catch (error) {
     console.error('[admin/products/:id]', error);

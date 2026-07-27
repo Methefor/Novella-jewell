@@ -98,12 +98,29 @@ export const inventory = pgTable(
     productId: text('product_id').notNull(),
     variantId: text('variant_id').notNull(),
     stock: integer('stock').notNull(),
+    lowStockThreshold: integer('low_stock_threshold').notNull().default(3),
     updatedAt: timestamp('updated_at', { withTimezone: true })
       .notNull()
       .defaultNow(),
   },
   (table) => [primaryKey({ columns: [table.productId, table.variantId] })]
 );
+
+export const stockMovements = pgTable('stock_movements', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  productId: text('product_id').notNull(),
+  variantId: text('variant_id').notNull(),
+  delta: integer('delta').notNull(),
+  previousStock: integer('previous_stock').notNull(),
+  newStock: integer('new_stock').notNull(),
+  source: text('source').notNull(),
+  reason: text('reason').notNull(),
+  reference: text('reference'),
+  createdBy: text('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
 
 type StoredProduct = Omit<Product, 'createdAt' | 'updatedAt'> & {
   createdAt: string;
@@ -182,5 +199,6 @@ export const campaignItems = pgTable(
 export type OrderRow = typeof orders.$inferSelect;
 export type NewOrderRow = typeof orders.$inferInsert;
 export type OrderEventRow = typeof orderEvents.$inferSelect;
+export type StockMovementRow = typeof stockMovements.$inferSelect;
 export type ContentCampaignRow = typeof contentCampaigns.$inferSelect;
 export type CampaignItemRow = typeof campaignItems.$inferSelect;

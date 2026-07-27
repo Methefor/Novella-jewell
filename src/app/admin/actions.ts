@@ -1,7 +1,13 @@
 'use server';
 
 import { db, dbYok } from '@/db';
-import { inventory, orderEvents, orders } from '@/db/schema';
+import {
+  inventory,
+  catalogProducts,
+  orderEvents,
+  orders,
+  stockMovements,
+} from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { refundPayTRPayment } from '@/lib/checkout/paytr';
 import { sendOrderStatusEmail } from '@/lib/email';
@@ -169,7 +175,7 @@ export async function refundOrder(formData: FormData) {
     await refundPayTRPayment(order.orderNo, Number(order.total).toFixed(2), reference);
     const refunded = await db.transaction(async (tx) => {
       for (const item of order.items) {
-        await tx
+        const [stockRow] = await tx
           .update(inventory)
           .set({
             stock: sql`${inventory.stock} + ${item.adet}`,
@@ -180,7 +186,44 @@ export async function refundOrder(formData: FormData) {
               eq(inventory.productId, item.productId),
               eq(inventory.variantId, item.variantId)
             )
-          );
+          )
+          .returning({ stock: inventory.stock });
+        if (stockRow) {
+          await tx.insert(stockMovements).values({
+            productId: item.productId,
+            variantId: item.variantId,
+            delta: item.adet,
+            previousStock: stockRow.stock - item.adet,
+            newStock: stockRow.stock,
+            source: 'refund',
+            reason: 'Tam iade ile stok geri eklendi',
+            reference: order.orderNo,
+            createdBy: admin.email,
+          });
+          const [catalogRow] = await tx
+            .select()
+            .from(catalogProducts)
+            .where(eq(catalogProducts.id, item.productId))
+            .limit(1);
+          if (catalogRow) {
+            const now = new Date();
+            await tx
+              .update(catalogProducts)
+              .set({
+                data: {
+                  ...catalogRow.data,
+                  variants: catalogRow.data.variants.map((variant) =>
+                    variant.id === item.variantId
+                      ? { ...variant, stock: stockRow.stock }
+                      : variant
+                  ),
+                  updatedAt: now.toISOString(),
+                },
+                updatedAt: now,
+              })
+              .where(eq(catalogProducts.id, item.productId));
+          }
+        }
       }
       const [row] = await tx
         .update(orders)
