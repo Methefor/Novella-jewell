@@ -59,6 +59,12 @@ export interface Product {
   isNew?: boolean;
   isBestSeller?: boolean;
   isCustomizable?: boolean;
+  adChecklist?: {
+    visualMatchApproved: boolean;
+    copyApproved: boolean;
+    priceStockApproved: boolean;
+    landingPageApproved: boolean;
+  };
 
   /**
    * true ise ürün hiçbir listede/aramada/sitemap'te GÖRÜNMEZ, ama doğrudan

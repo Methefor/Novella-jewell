@@ -20,6 +20,22 @@ export function getProductReadiness(product: Product): ProductReadiness {
     { ok: product.features.length >= 3, label: 'En az 3 ürün özelliği' },
     { ok: product.price > 0, label: 'Geçerli fiyat' },
     { ok: stock > 0, label: 'Satılabilir stok' },
+    {
+      ok: product.adChecklist?.visualMatchApproved === true,
+      label: 'Görsel gerçek ürünle eşleşiyor',
+    },
+    {
+      ok: product.adChecklist?.copyApproved === true,
+      label: 'Reklam metni ve ürün bilgileri onaylandı',
+    },
+    {
+      ok: product.adChecklist?.priceStockApproved === true,
+      label: 'Fiyat ve stok doğrulandı',
+    },
+    {
+      ok: product.adChecklist?.landingPageApproved === true,
+      label: 'Ürün sayfası mobilde kontrol edildi',
+    },
   ];
   const passed = checks.filter((check) => check.ok).length;
 

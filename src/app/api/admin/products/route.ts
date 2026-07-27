@@ -16,11 +16,25 @@ export const productSchema = z.object({
   price: z.number().positive().max(100000),
   compareAtPrice: z.number().positive().max(100000).nullable(),
   stock: z.number().int().min(0).max(100000),
-  images: z.array(z.string().url()).min(1).max(8),
+  images: z
+    .array(
+      z.string().refine(
+        (value) => value.startsWith('/') || URL.canParse(value),
+        'Geçersiz görsel adresi'
+      )
+    )
+    .min(1)
+    .max(8),
   features: z.array(z.string().trim().min(1).max(80)).max(12),
   isNew: z.boolean(),
   isBestSeller: z.boolean(),
   published: z.boolean().default(true),
+  adChecklist: z.object({
+    visualMatchApproved: z.boolean(),
+    copyApproved: z.boolean(),
+    priceStockApproved: z.boolean(),
+    landingPageApproved: z.boolean(),
+  }),
 });
 
 export async function POST(request: Request) {
@@ -67,6 +81,7 @@ export async function POST(request: Request) {
     isNew: input.isNew,
     isBestSeller: input.isBestSeller,
     isCustomizable: false,
+    adChecklist: input.adChecklist,
     createdAt: now,
     updatedAt: now,
   };

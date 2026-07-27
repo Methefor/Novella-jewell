@@ -61,6 +61,7 @@ export async function PATCH(
     isNew: input.isNew,
     isBestSeller: input.isBestSeller,
     isCustomizable: false,
+    adChecklist: input.adChecklist,
     createdAt: existing?.data.createdAt ?? body.createdAt ?? now,
     updatedAt: now,
   };

@@ -46,6 +46,12 @@ export default async function EditProductPage({
     isNew: Boolean(data.isNew),
     isBestSeller: Boolean(data.isBestSeller),
     published: row?.published ?? !staticProduct?.hidden,
+    adChecklist: data.adChecklist ?? {
+      visualMatchApproved: false,
+      copyApproved: false,
+      priceStockApproved: false,
+      landingPageApproved: false,
+    },
     createdAt: new Date(data.createdAt).toISOString(),
   };
 
