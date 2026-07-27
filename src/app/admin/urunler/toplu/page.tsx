@@ -27,6 +27,9 @@ export default async function BulkProductsPage() {
               malzeme ve özellik şablonu tüm satırlara güvenli biçimde uygulanır.
             </p>
           </div>
+          <Link href="/admin/urunler/toplu/onay" className="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white">
+            Toplu kontrol ve onay
+          </Link>
         </div>
         <BulkProductForm
           initialTemplate={DEFAULT_PRODUCT_TEMPLATE}
@@ -36,4 +39,3 @@ export default async function BulkProductsPage() {
     </main>
   );
 }
-

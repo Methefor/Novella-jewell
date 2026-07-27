@@ -6,7 +6,8 @@ import type {
   ProductColor,
   ProductMaterial,
 } from '@/types/product';
-import { CheckCircle2, Copy, Plus, Trash2 } from 'lucide-react';
+import { buildProductCopy } from '@/lib/product-copy';
+import { CheckCircle2, Copy, Plus, Sparkles, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -15,6 +16,7 @@ type Row = {
   name: string;
   slug: string;
   description: string;
+  detail: string;
   price: string;
   stock: string;
   color: ProductColor;
@@ -33,6 +35,7 @@ function newRow(): Row {
     name: '',
     slug: '',
     description: '',
+    detail: '',
     price: '',
     stock: '1',
     color: 'altin',
@@ -87,6 +90,26 @@ export default function BulkProductForm({
       ...current,
       ...Array.from({ length: Math.min(count, 50 - current.length) }, newRow),
     ]);
+  }
+
+  function generateCopy() {
+    setRows((current) =>
+      current.map((row) => {
+        if (!row.detail.trim()) return row;
+        const copy = buildProductCopy({
+          detail: row.detail,
+          category: template.category,
+          collection: template.collection,
+          color: row.color,
+        });
+        return {
+          ...row,
+          name: copy.name,
+          slug: slugify(copy.name),
+          description: copy.description,
+        };
+      })
+    );
   }
 
   async function save() {
@@ -222,6 +245,9 @@ export default function BulkProductForm({
             </p>
           </div>
           <div className="flex gap-2">
+            <button type="button" onClick={generateCopy} className="inline-flex items-center gap-2 rounded-xl border border-[#b69b5e] bg-[#fffaf0] px-4 py-2 text-sm font-medium text-[#6f5b2f]">
+              <Sparkles className="h-4 w-4" /> Akıllı metin üret
+            </button>
             <button type="button" onClick={() => addRows(5)} className="rounded-xl border border-[#d8cdbb] px-4 py-2 text-sm">
               +5 satır
             </button>
@@ -236,6 +262,7 @@ export default function BulkProductForm({
               <tr>
                 <th className="px-4 py-3">#</th>
                 <th className="px-3 py-3">Ürün adı</th>
+                <th className="px-3 py-3">Tasarım ipucu</th>
                 <th className="px-3 py-3">Bağlantı</th>
                 <th className="px-3 py-3">Müşteri açıklaması</th>
                 <th className="px-3 py-3">Renk</th>
@@ -256,6 +283,14 @@ export default function BulkProductForm({
                         updateRow(row.id, { name, slug: slugify(name) });
                       }}
                       placeholder="Ürün adı"
+                      className={input}
+                    />
+                  </td>
+                  <td className="w-52 px-3 py-3">
+                    <input
+                      value={row.detail}
+                      onChange={(event) => updateRow(row.id, { detail: event.target.value })}
+                      placeholder="Örn. yıldız uçlu, ayarlanabilir"
                       className={input}
                     />
                   </td>
@@ -349,4 +384,3 @@ export default function BulkProductForm({
     </div>
   );
 }
-
