@@ -78,6 +78,13 @@
       "when": 1785801600000,
       "tag": "0010_first_party_analytics",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1785888000000,
+      "tag": "0011_product_media_assets",
+      "breakpoints": true
     }
   ]
 }
