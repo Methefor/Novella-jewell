@@ -42,7 +42,7 @@ function RouteChangeTracker({ enabled }: { enabled: boolean }) {
  * onay öncesinde analitik depolama ve sayfa görüntüleme çalışmaz.
  */
 export default function GoogleAnalytics() {
-  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+  const GA_ID = process.env.NEXT_PUBLIC_GA_ID?.trim();
   const [consent, setConsentState] = useState<ConsentValue>(null);
   const configured = useRef(false);
   const validId = Boolean(GA_ID && /^G-[A-Z0-9]+$/i.test(GA_ID));
