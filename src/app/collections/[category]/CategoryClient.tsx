@@ -5,6 +5,7 @@ import ProductCard from '@/components/product/ProductCard';
 import type { Product } from '@/types/product';
 import { useProductFilters } from '@/hooks/useProductFilters';
 import { Grid3x3, LayoutGrid, SlidersHorizontal, X } from 'lucide-react';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useState } from 'react';
 
@@ -22,6 +23,18 @@ const categoryNames: Record<string, string> = {
   kupe: 'Küpeler',
   yuzuk: 'Yüzükler',
 };
+
+const categoryShortcuts = [
+  { label: 'Tüm Ürünler', href: '/urunler', category: 'tum-urunler' },
+  {
+    label: 'Yeni Gelenler',
+    href: '/collections/yeni-gelenler',
+    category: 'yeni-gelenler',
+  },
+  { label: 'Yüzük', href: '/collections/yuzuk', category: 'yuzuk' },
+  { label: 'Küpe', href: '/collections/kupe', category: 'kupe' },
+  { label: 'Bileklik', href: '/collections/bilezik', category: 'bilezik' },
+];
 
 export default function CategoryClient({ category, products }: CategoryClientProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -83,6 +96,29 @@ export default function CategoryClient({ category, products }: CategoryClientPro
                   ? 'Koleksiyona en son eklenen tasarımları keşfedin.'
                   : `${categoryProducts.length} ürün bulundu`}
             </p>
+            <nav
+              aria-label="Ürün kategorileri"
+              className="mt-8 flex flex-wrap gap-2"
+            >
+              {categoryShortcuts.map((shortcut) => {
+                const isActive = shortcut.category === category;
+
+                return (
+                  <Link
+                    key={shortcut.category}
+                    href={shortcut.href}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`inline-flex min-h-11 items-center rounded-full border px-5 text-sm transition-colors ${
+                      isActive
+                        ? 'border-black bg-black text-white'
+                        : 'border-black/10 bg-white/70 text-black/60 hover:border-gold hover:text-black'
+                    }`}
+                  >
+                    {shortcut.label}
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
         </div>
       </section>
