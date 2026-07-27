@@ -110,18 +110,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Sepete Ekle bar — slides up on hover (desktop) / always visible (mobile) */}
+        {/* Sepete ekle: mobilde kompakt ikon, masaüstünde hover barı */}
         <motion.div
-          className="absolute inset-x-0 bottom-0 z-10 bg-black/90 backdrop-blur-sm md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"
+          className="absolute bottom-3 right-3 z-10 overflow-hidden rounded-full bg-black/90 shadow-lg backdrop-blur-sm md:inset-x-0 md:bottom-0 md:right-auto md:rounded-none md:shadow-none md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"
           style={{ transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)' }}
         >
           <button
             onClick={handleAddToCart}
-            className="w-full flex items-center justify-center gap-2 py-3.5 text-white text-sm font-medium tracking-wide hover:bg-gold transition-colors duration-200"
+            className="flex h-11 w-11 items-center justify-center gap-2 text-white text-sm font-medium tracking-wide transition-colors duration-200 hover:bg-gold md:h-auto md:w-full md:py-3.5"
             aria-label={`${product.name} ürününü sepete ekle`}
           >
             <ShoppingBag className="w-4 h-4" aria-hidden="true" />
-            Sepete Ekle
+            <span className="sr-only md:not-sr-only">Sepete Ekle</span>
           </button>
         </motion.div>
       </div>
