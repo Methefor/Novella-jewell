@@ -103,5 +103,49 @@ export const catalogProducts = pgTable('catalog_products', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+export type CampaignChannel =
+  | 'instagram-reels'
+  | 'instagram-carousel'
+  | 'instagram-story'
+  | 'threads';
+
+export const contentCampaigns = pgTable('content_campaigns', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  objective: text('objective').notNull().default(''),
+  status: text('status').notNull().default('draft'),
+  startsAt: timestamp('starts_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const campaignItems = pgTable(
+  'campaign_items',
+  {
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => contentCampaigns.id, { onDelete: 'cascade' }),
+    productId: text('product_id').notNull(),
+    channels: jsonb('channels').$type<CampaignChannel[]>().notNull(),
+    stage: text('stage').notNull().default('planned'),
+    notes: text('notes').notNull().default(''),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.campaignId, table.productId] }),
+  ]
+);
+
 export type OrderRow = typeof orders.$inferSelect;
 export type NewOrderRow = typeof orders.$inferInsert;
+export type ContentCampaignRow = typeof contentCampaigns.$inferSelect;
+export type CampaignItemRow = typeof campaignItems.$inferSelect;

@@ -87,6 +87,9 @@ export default async function AdminPage() {
             <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
               Reklam Hazırlığı
             </Link>
+            <Link href="/admin/kampanyalar" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
+              Kampanyalar
+            </Link>
             <UserButton />
           </nav>
         </header>

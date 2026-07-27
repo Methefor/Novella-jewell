@@ -110,15 +110,23 @@ export default async function AdReadinessPage({
               kalite onaylarını tek iş kuyruğunda tamamlayın.
             </p>
           </div>
-          {nextProduct && (
+          <div className="flex flex-wrap gap-2">
             <Link
-              href={`/admin/urunler/${encodeURIComponent(nextProduct.product.id)}`}
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#8d7c55]"
+              href="/admin/kampanyalar"
+              className="inline-flex min-h-12 items-center rounded-xl border border-[#d8cdbb] bg-white px-5 py-3 text-sm font-semibold"
             >
-              Sıradaki ürünü tamamla
-              <ArrowRight className="h-4 w-4" />
+              Kampanya panosu
             </Link>
-          )}
+            {nextProduct && (
+              <Link
+                href={`/admin/urunler/${encodeURIComponent(nextProduct.product.id)}`}
+                className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#8d7c55]"
+              >
+                Sıradaki ürünü tamamla
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
+          </div>
         </header>
 
         <section className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
