@@ -114,9 +114,14 @@ export default async function ProductsAdminPage({
               {products.length} ürün · {publishedCount} yayında · {readyCount} reklama hazır
             </p>
           </div>
-          <Link href="/admin/urunler/yeni" className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white">
-            Yeni ürün ekle
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d8cdbb] bg-white px-5 py-3 text-sm font-medium">
+              Reklam hazırlığı
+            </Link>
+            <Link href="/admin/urunler/yeni" className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white">
+              Yeni ürün ekle
+            </Link>
+          </div>
         </header>
 
         <div className="mb-5 grid gap-3 sm:grid-cols-3">

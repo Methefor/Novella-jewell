@@ -156,10 +156,10 @@ export default function AdminDashboard({
             </p>
           </div>
           <Link
-            href="/admin/urunler"
+            href="/admin/reklam-hazirlik"
             className="rounded-xl bg-black px-4 py-2 text-sm font-medium text-white"
           >
-            Ürünleri yönet
+            Hazırlık merkezini aç
           </Link>
         </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-4">
