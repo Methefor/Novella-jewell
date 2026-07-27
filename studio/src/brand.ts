@@ -63,7 +63,7 @@ export const MARKA = {
   ad: 'NOVELLA',
   slogan: 'Kararmayan Çelik, Eskimeyen Zarafet',
   site: 'novellajewell.com',
-  instagram: '@jewelry.novella',
+  instagram: '@novellajewellofficial',
 } as const;
 
 /** Instagram/TikTok dikey, Reels ve Story için. */

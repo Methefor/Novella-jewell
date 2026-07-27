@@ -100,6 +100,46 @@ export const RemotionRoot: React.FC = () => {
         }
       />
 
+      {/* Taslak — ürün görselleri ve fiyat son kontrolden sonra render edilecek. */}
+      <Composition
+        id="Draft-Reels-ParisAmour"
+        component={UrunReklami}
+        durationInFrames={240}
+        fps={FORMAT_DIKEY.fps}
+        width={FORMAT_DIKEY.width}
+        height={FORMAT_DIKEY.height}
+        defaultProps={
+          {
+            gorsel: 'media/yuzuk/yuzuk-18.jpg',
+            gorselModel: 'media/yuzuk/yuzuk-18b.jpg',
+            urunAdi: 'Paris Amour Zincir Yüzük',
+            fiyat: 519,
+            hikaye: 'Zincir bağlar, kalp kalır.',
+            koleksiyon: 'Paris',
+          } satisfies UrunReklamiProps
+        }
+      />
+
+      {/* Taslak — ürün görselleri ve fiyat son kontrolden sonra render edilecek. */}
+      <Composition
+        id="Draft-Reels-ParisGrace"
+        component={UrunReklami}
+        durationInFrames={240}
+        fps={FORMAT_DIKEY.fps}
+        width={FORMAT_DIKEY.width}
+        height={FORMAT_DIKEY.height}
+        defaultProps={
+          {
+            gorsel: 'media/yuzuk/yuzuk-19.jpg',
+            gorselModel: 'media/yuzuk/yuzuk-19b.jpg',
+            urunAdi: 'Paris Grace Tektaş Yüzük',
+            fiyat: 519,
+            hikaye: 'Tek taş, tek cümle.',
+            koleksiyon: 'Paris',
+          } satisfies UrunReklamiProps
+        }
+      />
+
       {/* ── Feed gönderisi (kare) ── */}
       <Composition
         id="Feed-StockholmNova"
