@@ -11,9 +11,30 @@ import { setProductPublished } from './actions';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ProductsAdminPage() {
+type ProductFilter =
+  | 'all'
+  | 'missing-visuals'
+  | 'draft'
+  | 'out-of-stock'
+  | 'ready';
+
+export default async function ProductsAdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; filter?: string }>;
+}) {
   const admin = await getAdminAuth();
   if (admin.state !== 'admin') redirect('/admin/giris');
+  const params = await searchParams;
+  const query = (params.q ?? '').trim().toLocaleLowerCase('tr-TR');
+  const filter: ProductFilter = [
+    'missing-visuals',
+    'draft',
+    'out-of-stock',
+    'ready',
+  ].includes(params.filter ?? '')
+    ? (params.filter as ProductFilter)
+    : 'all';
   const rows = dbYok
     ? []
     : await db
@@ -35,6 +56,52 @@ export default async function ProductsAdminPage() {
     const row = rowById.get(product.id);
     return row ? row.published : !product.hidden;
   }).length;
+  const productStates = products.map((product) => {
+    const row = rowById.get(product.id);
+    const published = row ? row.published : !product.hidden;
+    const readiness = getProductReadiness(product);
+    const stock = product.variants.reduce(
+      (sum, variant) => sum + variant.stock,
+      0
+    );
+    return { product, published, readiness, stock };
+  });
+  const filterCounts: Record<ProductFilter, number> = {
+    all: productStates.length,
+    'missing-visuals': productStates.filter(
+      ({ readiness }) => readiness.imageCount < 3
+    ).length,
+    draft: productStates.filter(({ published }) => !published).length,
+    'out-of-stock': productStates.filter(({ stock }) => stock === 0).length,
+    ready: productStates.filter(({ readiness }) => readiness.ready).length,
+  };
+  const visibleProducts = productStates.filter(
+    ({ product, published, readiness, stock }) => {
+      const matchesQuery =
+        !query ||
+        [product.name, product.slug, product.collection, product.category]
+          .join(' ')
+          .toLocaleLowerCase('tr-TR')
+          .includes(query);
+      const matchesFilter =
+        filter === 'all' ||
+        (filter === 'missing-visuals' && readiness.imageCount < 3) ||
+        (filter === 'draft' && !published) ||
+        (filter === 'out-of-stock' && stock === 0) ||
+        (filter === 'ready' && readiness.ready);
+      return matchesQuery && matchesFilter;
+    }
+  );
+  const filters: Array<{
+    value: ProductFilter;
+    label: string;
+  }> = [
+    { value: 'all', label: 'Tümü' },
+    { value: 'missing-visuals', label: 'Eksik görselli' },
+    { value: 'draft', label: 'Taslak' },
+    { value: 'out-of-stock', label: 'Stokta yok' },
+    { value: 'ready', label: 'Reklama hazır' },
+  ];
 
   return (
     <main className="min-h-screen bg-[#f6f2eb] px-4 py-10 sm:px-8">
@@ -58,12 +125,59 @@ export default async function ProductsAdminPage() {
           <Summary label="Reklama hazır" value={readyCount} accent />
         </div>
 
+        <section className="mb-5 rounded-2xl border border-[#e3d9c8] bg-white p-4 shadow-[0_8px_30px_rgba(77,61,35,0.04)]">
+          <form method="get" className="flex flex-col gap-3 sm:flex-row">
+            <input type="hidden" name="filter" value={filter} />
+            <label className="sr-only" htmlFor="product-search">
+              Ürün ara
+            </label>
+            <input
+              id="product-search"
+              name="q"
+              defaultValue={params.q}
+              placeholder="Ürün adı, bağlantı, koleksiyon veya kategori ara…"
+              className="min-w-0 flex-1 rounded-xl border border-[#d8cdbb] px-4 py-3 text-sm"
+            />
+            <button className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white">
+              Ara
+            </button>
+            {(query || filter !== 'all') && (
+              <Link
+                href="/admin/urunler"
+                className="rounded-xl border border-[#d8cdbb] px-5 py-3 text-center text-sm font-medium"
+              >
+                Temizle
+              </Link>
+            )}
+          </form>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {filters.map((item) => (
+              <Link
+                key={item.value}
+                href={{
+                  pathname: '/admin/urunler',
+                  query: {
+                    ...(params.q ? { q: params.q } : {}),
+                    ...(item.value !== 'all' ? { filter: item.value } : {}),
+                  },
+                }}
+                className={`rounded-full px-3 py-2 text-xs font-medium transition-colors ${
+                  filter === item.value
+                    ? 'bg-black text-white'
+                    : 'bg-[#f5f1e9] text-neutral-600 hover:bg-[#e9dfca]'
+                }`}
+              >
+                {item.label} · {filterCounts[item.value]}
+              </Link>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-neutral-500">
+            {visibleProducts.length} ürün gösteriliyor
+          </p>
+        </section>
+
         <div className="grid gap-4">
-          {products.map((product) => {
-            const row = rowById.get(product.id);
-            const published = row ? row.published : !product.hidden;
-            const readiness = getProductReadiness(product);
-            const stock = product.variants.reduce((sum, variant) => sum + variant.stock, 0);
+          {visibleProducts.map(({ product, published, readiness, stock }) => {
             return (
               <article key={product.id} className="rounded-2xl border border-[#e3d9c8] bg-white p-5 shadow-[0_8px_30px_rgba(77,61,35,0.04)]">
                 <div className="flex flex-wrap items-start justify-between gap-5">
@@ -108,9 +222,9 @@ export default async function ProductsAdminPage() {
               </article>
             );
           })}
-          {!products.length && (
+          {!visibleProducts.length && (
             <p className="rounded-2xl bg-white p-8 text-center text-neutral-500">
-              Henüz ürün bulunmuyor.
+              Bu arama ve filtreyle eşleşen ürün bulunamadı.
             </p>
           )}
         </div>
