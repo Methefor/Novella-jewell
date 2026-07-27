@@ -118,6 +118,9 @@ export default async function ProductsAdminPage({
             <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d8cdbb] bg-white px-5 py-3 text-sm font-medium">
               Reklam hazırlığı
             </Link>
+            <Link href="/admin/urunler/toplu" className="rounded-xl border border-black bg-white px-5 py-3 text-sm font-medium">
+              Toplu ürün ekle
+            </Link>
             <Link href="/admin/urunler/yeni" className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white">
               Yeni ürün ekle
             </Link>
