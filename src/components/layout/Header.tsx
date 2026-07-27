@@ -18,8 +18,9 @@ import { useState } from 'react';
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const navLinks = [
-  { label: 'Koleksiyonlar', href: '/collections' },
+  { label: 'Ürünler', href: '/urunler' },
   { label: 'Yeni Gelenler', href: '/collections/yeni-gelenler' },
+  { label: 'Koleksiyonlar', href: '/koleksiyonlar' },
   { label: 'Hikayemiz', href: '/hikayemiz' },
   { label: 'İletişim', href: '/#iletisim' },
 ];

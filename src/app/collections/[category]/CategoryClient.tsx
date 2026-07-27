@@ -14,6 +14,7 @@ interface CategoryClientProps {
 }
 
 const categoryNames: Record<string, string> = {
+  'tum-urunler': 'Tüm Ürünler',
   'yeni-gelenler': 'Yeni Gelenler',
   'cok-satanlar': 'Çok Satanlar',
   indirimler: 'İndirimli Ürünler',
@@ -55,7 +56,7 @@ export default function CategoryClient({ category, products }: CategoryClientPro
   }
 
   const { filteredProducts, filters, updateFilters, resetFilters } =
-    useProductFilters(categoryProducts);
+    useProductFilters(categoryProducts, { sortBy: 'newest' });
 
   const activeFiltersCount =
     (filters.categories?.length || 0) +
@@ -76,7 +77,11 @@ export default function CategoryClient({ category, products }: CategoryClientPro
               {categoryName}
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              {categoryProducts.length} ürün bulundu
+              {category === 'tum-urunler'
+                ? 'Yüzük, küpe ve bileklik koleksiyonlarımızı tek yerde keşfedin.'
+                : category === 'yeni-gelenler'
+                  ? 'Koleksiyona en son eklenen tasarımları keşfedin.'
+                  : `${categoryProducts.length} ürün bulundu`}
             </p>
           </div>
         </div>
@@ -119,7 +124,29 @@ export default function CategoryClient({ category, products }: CategoryClientPro
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                <label className="sr-only" htmlFor="product-sort">
+                  Ürünleri sırala
+                </label>
+                <select
+                  id="product-sort"
+                  value={filters.sortBy || 'newest'}
+                  onChange={(event) =>
+                    updateFilters({
+                      sortBy: event.target.value as
+                        | 'newest'
+                        | 'price-asc'
+                        | 'price-desc'
+                        | 'name',
+                    })
+                  }
+                  className="min-h-10 rounded-full border border-black/10 bg-white px-4 text-sm text-gray-700 outline-none transition-colors focus:border-gold"
+                >
+                  <option value="newest">En yeni</option>
+                  <option value="price-asc">Fiyat: düşükten yükseğe</option>
+                  <option value="price-desc">Fiyat: yüksekten düşüğe</option>
+                  <option value="name">İsme göre</option>
+                </select>
                 <button
                   onClick={() => setViewMode('grid-3')}
                   className={`p-2 rounded-lg transition-all ${

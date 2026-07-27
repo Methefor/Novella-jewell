@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Google Search Console'da hata üretir.
   const staticPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: now, changeFrequency: 'daily', priority: 1 },
+    { url: `${base}/urunler`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${base}/koleksiyonlar`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${base}/hikayemiz`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/sss`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },

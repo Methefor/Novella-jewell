@@ -201,8 +201,8 @@ export default function Hero() {
             maxWidth: '32rem',
           }}
         >
-          Ömür boyu parlaklığını koruyan 316L paslanmaz çelikle üretilmiş, az
-          bulunur parçalardan oluşan bir koleksiyon.
+          316L paslanmaz çelik yüzük, küpe ve bileklikler. Suya dayanıklı,
+          kararmaya dirençli ve her gün kullanmak için tasarlandı.
         </motion.p>
 
         {/* Pills */}
@@ -233,16 +233,16 @@ export default function Hero() {
           className="flex flex-wrap items-center justify-center gap-3"
         >
           <Link
-            href="/koleksiyonlar"
+            href="/urunler"
             className="inline-flex items-center justify-center min-h-[46px] px-7 bg-black text-white rounded-full hover:bg-gold transition-colors duration-300 text-sm font-medium tracking-wide"
           >
-            Koleksiyonu Keşfet
+            Tüm Ürünleri Keşfet
           </Link>
           <Link
-            href="/hikayemiz"
+            href="/collections/yeni-gelenler"
             className="inline-flex items-center justify-center min-h-[46px] px-7 text-black border border-gold/45 rounded-full hover:border-gold hover:bg-white/50 transition-colors duration-300 text-sm font-medium"
           >
-            Hikayemiz
+            Yeni Gelenler
           </Link>
         </motion.div>
       </motion.div>

@@ -10,8 +10,11 @@ export interface ProductFilters {
   sortBy?: 'price-asc' | 'price-desc' | 'name' | 'newest';
 }
 
-export function useProductFilters(products: Product[]) {
-  const [filters, setFilters] = useState<ProductFilters>({});
+export function useProductFilters(
+  products: Product[],
+  initialFilters: ProductFilters = {}
+) {
+  const [filters, setFilters] = useState<ProductFilters>(initialFilters);
 
   // Update single filter
   const updateFilter = <K extends keyof ProductFilters>(
@@ -83,9 +86,9 @@ export function useProductFilters(products: Product[]) {
           break;
         case 'newest':
           result.sort((a, b) => {
-            if (a.isNew && !b.isNew) return -1;
-            if (!a.isNew && b.isNew) return 1;
-            return b.id.localeCompare(a.id);
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
           });
           break;
       }

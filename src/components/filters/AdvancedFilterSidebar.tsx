@@ -12,9 +12,25 @@ interface AdvancedFilterSidebarProps {
   productCount: number;
 }
 
-const categories = ['Bilezik', 'Küpe', 'Yüzük'];
-const materials = ['Çelik', 'Gümüş', 'Altın Kaplama', 'Rose Gold'];
-const colors = ['Altın', 'Gümüş', 'Rose Gold', 'Siyah'];
+const categories = [
+  { value: 'bilezik', label: 'Bileklik' },
+  { value: 'kupe', label: 'Küpe' },
+  { value: 'yuzuk', label: 'Yüzük' },
+];
+const materials = [
+  { value: 'celik', label: '316L Çelik' },
+  { value: 'gumus-kaplama', label: 'Gümüş Kaplama' },
+  { value: 'altin-kaplama', label: 'Altın Kaplama' },
+  { value: 'rose-gold-kaplama', label: 'Rose Gold Kaplama' },
+];
+const colors = [
+  { value: 'altin', label: 'Altın' },
+  { value: 'gumus', label: 'Gümüş' },
+  { value: 'rose-gold', label: 'Rose Gold' },
+  { value: 'siyah', label: 'Siyah' },
+  { value: 'beyaz', label: 'Beyaz' },
+  { value: 'cok-renkli', label: 'Çok Renkli' },
+];
 
 export default function AdvancedFilterSidebar({
   filters,
@@ -116,17 +132,17 @@ export default function AdvancedFilterSidebar({
           <div className="space-y-2">
             {categories.map((category) => (
               <label
-                key={category}
+                key={category.value}
                 className="flex items-center gap-3 cursor-pointer group"
               >
                 <input
                   type="checkbox"
-                  checked={filters.categories?.includes(category) || false}
-                  onChange={() => onCategoryToggle(category)}
+                  checked={filters.categories?.includes(category.value) || false}
+                  onChange={() => onCategoryToggle(category.value)}
                   className="checkbox"
                 />
                 <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                  {category}
+                  {category.label}
                 </span>
               </label>
             ))}
@@ -137,17 +153,17 @@ export default function AdvancedFilterSidebar({
           <div className="space-y-2">
             {materials.map((material) => (
               <label
-                key={material}
+                key={material.value}
                 className="flex items-center gap-3 cursor-pointer group"
               >
                 <input
                   type="checkbox"
-                  checked={filters.materials?.includes(material) || false}
-                  onChange={() => onMaterialToggle(material)}
+                  checked={filters.materials?.includes(material.value) || false}
+                  onChange={() => onMaterialToggle(material.value)}
                   className="checkbox"
                 />
                 <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                  {material}
+                  {material.label}
                 </span>
               </label>
             ))}
@@ -167,17 +183,17 @@ export default function AdvancedFilterSidebar({
           <div className="space-y-2">
             {colors.map((color) => (
               <label
-                key={color}
+                key={color.value}
                 className="flex items-center gap-3 cursor-pointer group"
               >
                 <input
                   type="checkbox"
-                  checked={filters.colors?.includes(color) || false}
-                  onChange={() => onColorToggle(color)}
+                  checked={filters.colors?.includes(color.value) || false}
+                  onChange={() => onColorToggle(color.value)}
                   className="checkbox"
                 />
                 <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                  {color}
+                  {color.label}
                 </span>
               </label>
             ))}
