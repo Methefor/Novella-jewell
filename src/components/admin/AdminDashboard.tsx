@@ -1,4 +1,7 @@
 import type { OrderRow } from '@/db/schema';
+import type { Product } from '@/types/product';
+import { getProductReadiness } from '@/lib/product-readiness';
+import Link from 'next/link';
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -41,7 +44,15 @@ function ChangeBadge({ value }: { value: number }) {
   );
 }
 
-export default function AdminDashboard({ orders }: { orders: OrderRow[] }) {
+export default function AdminDashboard({
+  orders,
+  products,
+  draftProductIds,
+}: {
+  orders: OrderRow[];
+  products: Product[];
+  draftProductIds: string[];
+}) {
   const now = new Date();
   const today = startOfDay(now);
   const sevenDaysAgo = new Date(today.getTime() - 6 * DAY_MS);
@@ -98,6 +109,13 @@ export default function AdminDashboard({ orders }: { orders: OrderRow[] }) {
     { label: 'Ortalama sepet', value: formatTRY(averageOrder), note: 'Sipariş başına gelir', icon: PackageCheck },
     { label: 'Operasyon bekleyen', value: pendingOperations.toLocaleString('tr-TR'), note: 'Hazırlama veya kargo', icon: Clock3 },
   ];
+  const readiness = products.map((product) => ({
+    product,
+    status: getProductReadiness(product),
+  }));
+  const readyProducts = readiness.filter(({ status }) => status.ready);
+  const missingVisuals = readiness.filter(({ status }) => status.imageCount < 3);
+  const draftIds = new Set(draftProductIds);
 
   return (
     <section className="space-y-6" aria-labelledby="dashboard-heading">
@@ -125,6 +143,55 @@ export default function AdminDashboard({ orders }: { orders: OrderRow[] }) {
           );
         })}
       </div>
+
+      <article className="rounded-2xl border border-[#e3d9c8] bg-white p-5 shadow-[0_8px_30px_rgba(77,61,35,0.05)] sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-[#9e8e63]">
+              Reklam hazırlığı
+            </p>
+            <h3 className="mt-2 font-heading text-3xl">Ürün içerik durumu</h3>
+            <p className="mt-2 text-sm text-neutral-500">
+              Ürün görseli, açıklama, özellik, fiyat ve stok kontrolleri
+            </p>
+          </div>
+          <Link
+            href="/admin/urunler"
+            className="rounded-xl bg-black px-4 py-2 text-sm font-medium text-white"
+          >
+            Ürünleri yönet
+          </Link>
+        </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-4">
+          {[
+            ['Toplam ürün', products.length],
+            ['Reklama hazır', readyProducts.length],
+            ['Eksik görselli', missingVisuals.length],
+            ['Mağaza taslağı', draftIds.size],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-xl bg-[#f8f5ef] p-4">
+              <p className="text-xs text-neutral-500">{label}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
+            </div>
+          ))}
+        </div>
+        {missingVisuals.length > 0 && (
+          <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
+              Öncelikli görsel işleri
+            </p>
+            <p className="mt-2 text-sm text-amber-900">
+              {missingVisuals
+                .slice(0, 5)
+                .map(({ product, status }) => `${product.name} (${status.imageCount}/3)`)
+                .join(' · ')}
+              {missingVisuals.length > 5
+                ? ` · +${missingVisuals.length - 5} ürün`
+                : ''}
+            </p>
+          </div>
+        )}
+      </article>
 
       <div className="grid gap-5 xl:grid-cols-[1.55fr_0.85fr]">
         <article className="rounded-2xl border border-[#e3d9c8] bg-white p-5 shadow-[0_8px_30px_rgba(77,61,35,0.05)] sm:p-6">

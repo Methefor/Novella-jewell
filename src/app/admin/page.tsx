@@ -1,6 +1,7 @@
 import AdminDashboard from '@/components/admin/AdminDashboard';
+import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
-import { orders } from '@/db/schema';
+import { catalogProducts, orders } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { UserButton } from '@clerk/nextjs';
 import { desc } from 'drizzle-orm';
@@ -42,9 +43,27 @@ export default async function AdminPage() {
     );
   }
 
-  const allOrders = dbYok
-    ? []
-    : await db.select().from(orders).orderBy(desc(orders.createdAt));
+  const [allOrders, catalogRows] = dbYok
+    ? [[], []]
+    : await Promise.all([
+        db.select().from(orders).orderBy(desc(orders.createdAt)),
+        db.select().from(catalogProducts),
+      ]);
+  const catalogById = new Map(catalogRows.map((row) => [row.id, row]));
+  const adminProducts = [
+    ...catalogRows.map((row) => ({
+      ...row.data,
+      createdAt: new Date(row.data.createdAt),
+      updatedAt: new Date(row.data.updatedAt),
+    })),
+    ...PRODUCTS.filter((product) => !catalogById.has(product.id)),
+  ];
+  const draftProductIds = adminProducts
+    .filter((product) => {
+      const row = catalogById.get(product.id);
+      return row ? !row.published : Boolean(product.hidden);
+    })
+    .map((product) => product.id);
   const recentOrders = allOrders.slice(0, 100);
 
   return (
@@ -69,7 +88,11 @@ export default async function AdminPage() {
           </nav>
         </header>
 
-        <AdminDashboard orders={allOrders} />
+        <AdminDashboard
+          orders={allOrders}
+          products={adminProducts}
+          draftProductIds={draftProductIds}
+        />
 
         <section className="mt-10" aria-labelledby="orders-heading">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">

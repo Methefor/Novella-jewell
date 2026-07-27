@@ -4,7 +4,7 @@ import { getAdminAuth } from '@/lib/admin-auth';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-const productSchema = z.object({
+export const productSchema = z.object({
   name: z.string().trim().min(3).max(120),
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(140),
   description: z.string().trim().min(10).max(2000),
@@ -20,6 +20,7 @@ const productSchema = z.object({
   features: z.array(z.string().trim().min(1).max(80)).max(12),
   isNew: z.boolean(),
   isBestSeller: z.boolean(),
+  published: z.boolean().default(true),
 });
 
 export async function POST(request: Request) {
@@ -76,6 +77,7 @@ export async function POST(request: Request) {
         id,
         slug: input.slug,
         data: product,
+        published: input.published,
       });
       await tx.insert(inventory).values({
         productId: id,

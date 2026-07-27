@@ -24,11 +24,17 @@ export async function getCatalogProducts(options?: {
   if (dbYok) return staticProducts;
 
   const rows = await db
-    .select({ data: catalogProducts.data })
-    .from(catalogProducts)
-    .where(eq(catalogProducts.published, true));
-  const dynamicProducts = rows.map(({ data }) => hydrate(data));
-  const dynamicIds = new Set(dynamicProducts.map((product) => product.id));
+    .select({
+      data: catalogProducts.data,
+      published: catalogProducts.published,
+    })
+    .from(catalogProducts);
+  const dynamicProducts = rows
+    .filter(({ published }) => published)
+    .map(({ data }) => hydrate(data));
+  // Taslak kaydı statik ürünü de bastırır; aksi halde "yayından kaldırılan"
+  // statik ürün PRODUCTS listesinden tekrar görünürdü.
+  const dynamicIds = new Set(rows.map(({ data }) => data.id));
 
   return [
     ...dynamicProducts,
@@ -41,11 +47,14 @@ export async function getCatalogProductBySlug(
 ): Promise<Product | undefined> {
   if (!dbYok) {
     const [row] = await db
-      .select({ data: catalogProducts.data })
+      .select({
+        data: catalogProducts.data,
+        published: catalogProducts.published,
+      })
       .from(catalogProducts)
       .where(eq(catalogProducts.slug, slug))
       .limit(1);
-    if (row) return hydrate(row.data);
+    if (row) return row.published ? hydrate(row.data) : undefined;
   }
   return PRODUCTS.find((product) => product.slug === slug);
 }
@@ -55,11 +64,14 @@ export async function getCatalogProductById(
 ): Promise<Product | undefined> {
   if (!dbYok) {
     const [row] = await db
-      .select({ data: catalogProducts.data })
+      .select({
+        data: catalogProducts.data,
+        published: catalogProducts.published,
+      })
       .from(catalogProducts)
       .where(eq(catalogProducts.id, id))
       .limit(1);
-    if (row) return hydrate(row.data);
+    if (row) return row.published ? hydrate(row.data) : undefined;
   }
   return PRODUCTS.find((product) => product.id === id);
 }
