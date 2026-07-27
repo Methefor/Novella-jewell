@@ -1,7 +1,7 @@
 'use server';
 
 import { db, dbYok } from '@/db';
-import { inventory, orders } from '@/db/schema';
+import { inventory, orderEvents, orders } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { refundPayTRPayment } from '@/lib/checkout/paytr';
 import { sendOrderStatusEmail } from '@/lib/email';
@@ -59,6 +59,17 @@ export async function updateOrderStatus(formData: FormData) {
     .returning();
 
   if (updated && current.fulfillmentStatus !== updated.fulfillmentStatus) {
+    await db.insert(orderEvents).values({
+      orderId: updated.id,
+      eventType: 'fulfillment_status',
+      fromValue: current.fulfillmentStatus,
+      toValue: updated.fulfillmentStatus,
+      note:
+        parsed.fulfillmentStatus === 'shipped'
+          ? [parsed.carrier, parsed.trackingNumber].filter(Boolean).join(' · ')
+          : '',
+      createdBy: admin.email,
+    });
     try {
       await sendOrderStatusEmail(updated);
     } catch (error) {
@@ -70,6 +81,47 @@ export async function updateOrderStatus(formData: FormData) {
   }
 
   revalidatePath('/admin');
+  revalidatePath('/admin/siparisler');
+}
+
+export async function updateOrderNote(formData: FormData) {
+  const admin = await getAdminAuth();
+  if (admin.state !== 'admin') throw new Error('Yetkisiz işlem.');
+  if (dbYok) throw new Error('Veritabanı bağlantısı yok.');
+
+  const parsed = z
+    .object({
+      orderNo: z.string().regex(/^NJ-\d{4}-\d+$/),
+      operationNote: z.string().trim().max(2000),
+    })
+    .parse({
+      orderNo: formData.get('orderNo'),
+      operationNote: formData.get('operationNote'),
+    });
+
+  const [current] = await db
+    .select({ id: orders.id, operationNote: orders.operationNote })
+    .from(orders)
+    .where(eq(orders.orderNo, parsed.orderNo))
+    .limit(1);
+  if (!current) throw new Error('Sipariş bulunamadı.');
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(orders)
+      .set({ operationNote: parsed.operationNote, updatedAt: new Date() })
+      .where(eq(orders.id, current.id));
+    await tx.insert(orderEvents).values({
+      orderId: current.id,
+      eventType: 'operation_note',
+      fromValue: current.operationNote,
+      toValue: parsed.operationNote,
+      note: 'Operasyon notu güncellendi.',
+      createdBy: admin.email,
+    });
+  });
+
+  revalidatePath('/admin/siparisler');
 }
 
 export async function refundOrder(formData: FormData) {
@@ -144,6 +196,14 @@ export async function refundOrder(formData: FormData) {
       return row;
     });
     if (refunded) {
+      await db.insert(orderEvents).values({
+        orderId: refunded.id,
+        eventType: 'refund',
+        fromValue: order.fulfillmentStatus,
+        toValue: 'returned',
+        note: `${Number(order.total).toFixed(2)} TRY tam iade`,
+        createdBy: admin.email,
+      });
       try {
         await sendOrderStatusEmail(refunded);
       } catch (error) {
@@ -159,4 +219,5 @@ export async function refundOrder(formData: FormData) {
   }
 
   revalidatePath('/admin');
+  revalidatePath('/admin/siparisler');
 }

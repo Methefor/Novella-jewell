@@ -54,6 +54,7 @@ export const orders = pgTable('orders', {
   fulfillmentStatus: text('fulfillment_status').notNull().default('new'),
   carrier: text('carrier'),
   trackingNumber: text('tracking_number'),
+  operationNote: text('operation_note').notNull().default(''),
 
   items: jsonb('items').$type<OrderItemRow[]>().notNull(),
   total: numeric('total', { precision: 10, scale: 2 }).notNull(),
@@ -74,6 +75,21 @@ export const orders = pgTable('orders', {
   refundAmount: numeric('refund_amount', { precision: 10, scale: 2 }),
   refundStatus: text('refund_status'),
   refundReference: text('refund_reference'),
+});
+
+export const orderEvents = pgTable('order_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  orderId: uuid('order_id')
+    .notNull()
+    .references(() => orders.id, { onDelete: 'cascade' }),
+  eventType: text('event_type').notNull(),
+  fromValue: text('from_value'),
+  toValue: text('to_value'),
+  note: text('note').notNull().default(''),
+  createdBy: text('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const inventory = pgTable(
@@ -109,6 +125,14 @@ export type CampaignChannel =
   | 'instagram-story'
   | 'threads';
 
+export type CampaignContentDraft = {
+  instagramCaption: string;
+  threadsPost: string;
+  cta: string;
+  hashtags: string;
+  visualDirection: string;
+};
+
 export const contentCampaigns = pgTable('content_campaigns', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
@@ -133,6 +157,16 @@ export const campaignItems = pgTable(
     channels: jsonb('channels').$type<CampaignChannel[]>().notNull(),
     stage: text('stage').notNull().default('planned'),
     notes: text('notes').notNull().default(''),
+    contentDraft: jsonb('content_draft')
+      .$type<CampaignContentDraft>()
+      .notNull()
+      .default({
+        instagramCaption: '',
+        threadsPost: '',
+        cta: '',
+        hashtags: '',
+        visualDirection: '',
+      }),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -147,5 +181,6 @@ export const campaignItems = pgTable(
 
 export type OrderRow = typeof orders.$inferSelect;
 export type NewOrderRow = typeof orders.$inferInsert;
+export type OrderEventRow = typeof orderEvents.$inferSelect;
 export type ContentCampaignRow = typeof contentCampaigns.$inferSelect;
 export type CampaignItemRow = typeof campaignItems.$inferSelect;

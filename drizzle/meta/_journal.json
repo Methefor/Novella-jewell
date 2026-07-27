@@ -43,6 +43,20 @@
       "when": 1785369600000,
       "tag": "0005_content_campaigns",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785456000000,
+      "tag": "0006_campaign_content_drafts",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1785542400000,
+      "tag": "0007_order_operations",
+      "breakpoints": true
     }
   ]
 }

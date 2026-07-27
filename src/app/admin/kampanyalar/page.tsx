@@ -16,6 +16,7 @@ import { redirect } from 'next/navigation';
 import {
   addCampaignProduct,
   createCampaign,
+  generateCampaignItemDraft,
   updateCampaignItem,
   updateCampaignStatus,
 } from './actions';
@@ -409,6 +410,66 @@ export default async function CampaignsPage({
                                 </label>
                               </div>
                               <ChannelChecks selected={item.channels} compact />
+                              <div className="grid gap-4 border-t border-[#eee7db] pt-5">
+                                <div>
+                                  <p className="text-sm font-semibold">
+                                    Kanal bazlı içerik taslağı
+                                  </p>
+                                  <p className="mt-1 text-xs text-neutral-500">
+                                    Instagram ve Threads metinleri ayrı tutulur;
+                                    kaydetmek yayınlama işlemi yapmaz.
+                                  </p>
+                                </div>
+                                <label className="grid gap-2 text-sm">
+                                  Instagram açıklaması
+                                  <textarea
+                                    name="instagramCaption"
+                                    rows={5}
+                                    defaultValue={
+                                      item.contentDraft.instagramCaption
+                                    }
+                                    className="rounded-xl border border-[#d8cdbb] px-4 py-3"
+                                  />
+                                </label>
+                                <label className="grid gap-2 text-sm">
+                                  Threads metni
+                                  <textarea
+                                    name="threadsPost"
+                                    rows={3}
+                                    defaultValue={item.contentDraft.threadsPost}
+                                    className="rounded-xl border border-[#d8cdbb] px-4 py-3"
+                                  />
+                                </label>
+                                <div className="grid gap-4 lg:grid-cols-2">
+                                  <label className="grid gap-2 text-sm">
+                                    CTA
+                                    <input
+                                      name="cta"
+                                      defaultValue={item.contentDraft.cta}
+                                      className="rounded-xl border border-[#d8cdbb] px-4 py-3"
+                                    />
+                                  </label>
+                                  <label className="grid gap-2 text-sm">
+                                    Hashtag / SEO
+                                    <input
+                                      name="hashtags"
+                                      defaultValue={item.contentDraft.hashtags}
+                                      className="rounded-xl border border-[#d8cdbb] px-4 py-3"
+                                    />
+                                  </label>
+                                </div>
+                                <label className="grid gap-2 text-sm">
+                                  Görsel yönlendirmesi
+                                  <textarea
+                                    name="visualDirection"
+                                    rows={3}
+                                    defaultValue={
+                                      item.contentDraft.visualDirection
+                                    }
+                                    className="rounded-xl border border-[#d8cdbb] px-4 py-3"
+                                  />
+                                </label>
+                              </div>
                               <div className="flex flex-wrap gap-2">
                                 <button className="rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white">
                                   İçeriği güncelle
@@ -420,6 +481,24 @@ export default async function CampaignsPage({
                                   Ürünü düzenle
                                 </Link>
                               </div>
+                            </form>
+                            <form
+                              action={generateCampaignItemDraft}
+                              className="mt-3"
+                            >
+                              <input
+                                type="hidden"
+                                name="campaignId"
+                                value={selectedCampaign.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="productId"
+                                value={product.id}
+                              />
+                              <button className="rounded-lg border border-[#b9a679] bg-[#faf7f1] px-4 py-2.5 text-sm font-medium text-[#6f5d36]">
+                                Üründen taslak oluştur
+                              </button>
                             </form>
                           </div>
                         </div>
