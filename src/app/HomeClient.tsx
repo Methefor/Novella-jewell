@@ -161,21 +161,33 @@ export default function HomeClient({ products }: { products: Product[] }) {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-x-4 gap-y-9 sm:gap-x-6 lg:grid-cols-4">
-            {featuredRings.map((product, i) => (
+          {featuredRings.length > 0 && (
+            <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr] lg:gap-7">
               <motion.div
-                key={product.id}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: '-40px' }}
                 variants={fadeUp}
-                custom={i * 0.07}
-                className="lg:col-span-1"
               >
-                <ProductCard product={product} />
+                <EditorialFeature product={featuredRings[0]} />
               </motion.div>
-            ))}
-          </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 lg:grid-cols-2">
+                {featuredRings.slice(1).map((product, index) => (
+                  <motion.div
+                    key={product.id}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: '-40px' }}
+                    variants={fadeUp}
+                    custom={(index + 1) * 0.08}
+                    className={index === 2 ? 'col-span-2 mx-auto w-1/2 lg:mx-0' : ''}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -339,5 +351,69 @@ export default function HomeClient({ products }: { products: Product[] }) {
         </div>
       </section>
     </main>
+  );
+}
+
+function EditorialFeature({ product }: { product: Product }) {
+  const variant =
+    product.variants.find((item) => item.id === product.defaultVariant) ??
+    product.variants[0];
+  const gallery = product.images?.length ? product.images : variant.images;
+  const primary = gallery[0];
+  const alternate = gallery[1];
+
+  return (
+    <Link
+      href={`/urun/${product.slug}`}
+      className="group relative block min-h-[560px] overflow-hidden rounded-[1.6rem] bg-[#e9e1d5] md:min-h-[680px] lg:h-full"
+      aria-label={`${product.name} editoryal ürün görünümü`}
+    >
+      <Image
+        src={primary}
+        alt={`${product.name} ana görünüm`}
+        fill
+        priority
+        sizes="(max-width: 1023px) 100vw, 58vw"
+        className={`object-cover transition-all duration-1000 ease-out ${
+          alternate ? 'group-hover:scale-[1.025] group-hover:opacity-0' : 'group-hover:scale-[1.025]'
+        }`}
+      />
+      {alternate && (
+        <Image
+          src={alternate}
+          alt={`${product.name} model veya yakın plan görünümü`}
+          fill
+          sizes="(max-width: 1023px) 100vw, 58vw"
+          className="scale-[1.025] object-cover opacity-0 transition-all duration-1000 ease-out group-hover:scale-100 group-hover:opacity-100"
+        />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-black/5" />
+      <div className="absolute left-5 top-5 flex items-center gap-2 md:left-7 md:top-7">
+        <span className="rounded-full border border-white/35 bg-white/15 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-md">
+          Editörün seçimi
+        </span>
+        {alternate && (
+          <span className="rounded-full border border-white/25 bg-black/15 px-3 py-1.5 text-[10px] text-white/80 backdrop-blur-md">
+            Üzerine gel, detayını gör
+          </span>
+        )}
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-6 text-white md:p-8">
+        <div>
+          <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-white/65">
+            Yeni sezon · 316L çelik
+          </p>
+          <h3 className="max-w-xl font-serif text-3xl font-light leading-tight md:text-5xl">
+            {product.name}
+          </h3>
+          <p className="mt-3 text-sm text-white/80">
+            {product.price.toLocaleString('tr-TR')} ₺
+          </p>
+        </div>
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/40 bg-white/10 backdrop-blur-md transition-colors group-hover:bg-white group-hover:text-black">
+          <ArrowRight className="h-5 w-5" />
+        </span>
+      </div>
+    </Link>
   );
 }

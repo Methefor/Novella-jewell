@@ -57,7 +57,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     >
       {/* Image container — 1:1 kare, yumuşak köşe */}
       <div
-        className="relative w-full overflow-hidden img-slot rounded-lg"
+        className="relative w-full overflow-hidden rounded-xl border border-black/[0.04] bg-[#eee8df] shadow-[0_12px_35px_rgba(66,52,31,0.04)]"
         style={{ aspectRatio: '1/1' }}
         role="img"
         aria-label={`${product.name} ürün görseli`}
@@ -73,13 +73,18 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Secondary image (hover swap) */}
         {img2 && (
-          <Image
-            src={img2}
-            alt={`${product.name} - alternatif görünüm`}
-            fill
-            className="object-cover opacity-0 scale-105 transition-all duration-700 ease-spring group-hover:opacity-100 group-hover:scale-100"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
+          <>
+            <Image
+              src={img2}
+              alt={`${product.name} - alternatif görünüm`}
+              fill
+              className="object-cover opacity-0 scale-105 transition-all duration-700 ease-spring group-hover:opacity-100 group-hover:scale-100"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+            <span className="absolute bottom-3 left-3 z-10 hidden translate-y-2 rounded-full border border-white/40 bg-black/45 px-2.5 py-1 text-[9px] uppercase tracking-[0.16em] text-white/90 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:inline-flex">
+              İkinci görünüm
+            </span>
+          </>
         )}
 
         {/* Favori (kalp) — sağ üst köşe */}
@@ -127,7 +132,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Info below card */}
-      <div className="mt-3.5">
+      <div className="mt-4">
         <p className="text-[11px] uppercase tracking-widest text-black/40 mb-1">
           {categoryLabel[product.category] ?? product.category}
         </p>
