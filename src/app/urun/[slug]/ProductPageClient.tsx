@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props {
   product: Product;
@@ -87,6 +87,8 @@ export default function ProductPageClient({ product, collection }: Props) {
   const [activeImg, setActiveImg] = useState(0);
   const [openAccordion, setOpenAccordion] = useState<string>('malzeme');
   const [zoomAcik, setZoomAcik] = useState(false);
+  const [mobilSabitCta, setMobilSabitCta] = useState(false);
+  const anaSepetButonu = useRef<HTMLButtonElement>(null);
 
   const stokBilgi = dusukStok(product);
 
@@ -94,6 +96,18 @@ export default function ProductPageClient({ product, collection }: Props) {
   useEffect(() => {
     trackViewItem(product);
   }, [product]);
+
+  useEffect(() => {
+    const button = anaSepetButonu.current;
+    if (!button) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setMobilSabitCta(!entry.isIntersecting),
+      { threshold: 0.15 }
+    );
+    observer.observe(button);
+    return () => observer.disconnect();
+  }, []);
 
   // Hareket azaltma tercihi açıksa yakınlaşma yapılmaz; geçiş yine de
   // çapraz söner (sert kesme rahatsız edici olurdu), sadece hareket kalkar.
@@ -361,6 +375,7 @@ export default function ProductPageClient({ product, collection }: Props) {
             {/* CTA'lar */}
             <div className="flex flex-col gap-3">
               <button
+                ref={anaSepetButonu}
                 onClick={sepeteEkle}
                 className="btn-primary w-full flex items-center justify-center gap-2"
               >
@@ -563,7 +578,13 @@ export default function ProductPageClient({ product, collection }: Props) {
       </AnimatePresence>
 
       {/* Mobilde ürün içeriği incelenirken satın alma eylemi her zaman erişilebilir. */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-lg lg:hidden">
+      <div
+        className={`fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-lg transition-all duration-300 lg:hidden ${
+          mobilSabitCta
+            ? 'translate-y-0 opacity-100'
+            : 'pointer-events-none translate-y-full opacity-0'
+        }`}
+      >
         <div className="mx-auto flex max-w-lg items-center gap-4">
           <div className="min-w-0 flex-1">
             <p className="truncate text-[11px] text-black/45">{product.name}</p>
