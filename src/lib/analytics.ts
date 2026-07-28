@@ -30,6 +30,8 @@ type FirstPartyEventName =
   | 'page_view'
   | 'view_item'
   | 'add_to_cart'
+  | 'view_cart'
+  | 'remove_from_cart'
   | 'begin_checkout';
 
 export function trackFirstPartyEvent(
@@ -115,6 +117,36 @@ export function trackAddToCart(product: Product, quantity = 1): void {
     metadata: { quantity },
   });
   gtag('event', 'add_to_cart', {
+    currency: 'TRY',
+    value: product.price * quantity,
+    items: [toItem(product, quantity)],
+  });
+}
+
+/** Sepet sayfası görüntülendiğinde. */
+export function trackViewCart(value: number, items: Product[]): void {
+  trackFirstPartyEvent('view_cart', {
+    value,
+    metadata: { itemCount: items.length },
+  });
+  gtag('event', 'view_cart', {
+    currency: 'TRY',
+    value,
+    items: items.map((product) => toItem(product)),
+  });
+}
+
+/** Ürün sepetten tamamen çıkarıldığında. */
+export function trackRemoveFromCart(
+  product: Product,
+  quantity = 1
+): void {
+  trackFirstPartyEvent('remove_from_cart', {
+    productId: product.id,
+    value: product.price * quantity,
+    metadata: { quantity },
+  });
+  gtag('event', 'remove_from_cart', {
     currency: 'TRY',
     value: product.price * quantity,
     items: [toItem(product, quantity)],

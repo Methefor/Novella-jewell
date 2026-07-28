@@ -6,7 +6,8 @@ import { ILLER } from '@/lib/turkiye';
 import { useCartHydrated } from '@/hooks/useCartHydrated';
 import { useCartStore } from '@/store/cartStore';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Lock } from 'lucide-react';
+import { Check, CreditCard, Loader2, Lock, MapPin, ShoppingBag } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -193,6 +194,37 @@ export default function OdemeClient() {
   return (
     <main className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-6 md:px-12 pt-24 pb-20">
+        <nav aria-label="Ödeme adımları" className="mb-9">
+          <ol className="grid grid-cols-3 border-y border-black/10">
+            {[
+              { icon: ShoppingBag, label: 'Sepet', state: 'done' },
+              { icon: MapPin, label: 'Teslimat', state: 'current' },
+              { icon: CreditCard, label: 'Güvenli ödeme', state: 'next' },
+            ].map(({ icon: Icon, label, state }, index) => (
+              <li
+                key={label}
+                aria-current={state === 'current' ? 'step' : undefined}
+                className={`flex items-center justify-center gap-2 py-4 text-[10px] font-medium uppercase tracking-[0.12em] sm:text-xs ${
+                  index > 0 ? 'border-l border-black/10' : ''
+                } ${
+                  state === 'current'
+                    ? 'bg-champagne/45 text-black'
+                    : state === 'done'
+                      ? 'text-gold-dark'
+                      : 'text-black/35'
+                }`}
+              >
+                {state === 'done' ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Icon className="h-4 w-4" strokeWidth={1.6} />
+                )}
+                {label}
+              </li>
+            ))}
+          </ol>
+        </nav>
+
         <h1
           className="font-serif font-light text-3xl md:text-4xl text-black mb-10"
           style={{ letterSpacing: '-0.02em' }}
@@ -364,13 +396,26 @@ export default function OdemeClient() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex justify-between text-sm gap-2"
+                    className="flex items-center gap-3 text-sm"
                   >
-                    <span className="text-black/70 truncate">
+                    <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-md bg-white">
+                      {item.variant.images[0] && (
+                        <Image
+                          src={item.variant.images[0]}
+                          alt=""
+                          fill
+                          sizes="48px"
+                          className="object-cover"
+                        />
+                      )}
+                    </div>
+                    <span className="min-w-0 flex-1 truncate text-black/70">
                       {item.product.name}
-                      <span className="text-black/35"> ×{item.quantity}</span>
+                      <span className="block text-xs text-black/35">
+                        Adet: {item.quantity}
+                      </span>
                     </span>
-                    <span className="font-medium text-black flex-shrink-0 whitespace-nowrap">
+                    <span className="flex-shrink-0 whitespace-nowrap font-medium text-black">
                       {(item.product.price * item.quantity).toLocaleString(
                         'tr-TR'
                       )}{' '}
