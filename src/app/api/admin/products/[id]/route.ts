@@ -2,7 +2,8 @@ import { db, dbYok } from '@/db';
 import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
-import { eq } from 'drizzle-orm';
+import { and, eq, ne } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { productSchema } from '../route';
 
@@ -32,6 +33,18 @@ export async function PATCH(
   }
 
   const input = parsed.data;
+  const [slugOwner] = await db
+    .select({ id: catalogProducts.id })
+    .from(catalogProducts)
+    .where(and(eq(catalogProducts.slug, input.slug), ne(catalogProducts.id, id)))
+    .limit(1);
+  if (slugOwner) {
+    return NextResponse.json(
+      { error: 'Bu bağlantı adı başka bir ürün tarafından kullanılıyor.' },
+      { status: 409 }
+    );
+  }
+
   const [existing] = await db
     .select()
     .from(catalogProducts)
@@ -68,55 +81,57 @@ export async function PATCH(
   };
 
   try {
-    await db.transaction(async (tx) => {
-      const [currentStock] = await tx
-        .select({ stock: inventory.stock })
-        .from(inventory)
-        .where(eq(inventory.productId, id))
-        .limit(1);
-      await tx
-        .insert(catalogProducts)
-        .values({
-          id,
+    const [currentStock] = await db
+      .select({ stock: inventory.stock })
+      .from(inventory)
+      .where(eq(inventory.productId, id))
+      .limit(1);
+
+    await db
+      .insert(catalogProducts)
+      .values({
+        id,
+        slug: input.slug,
+        data: product,
+        published: input.published,
+      })
+      .onConflictDoUpdate({
+        target: catalogProducts.id,
+        set: {
           slug: input.slug,
           data: product,
           published: input.published,
-        })
-        .onConflictDoUpdate({
-          target: catalogProducts.id,
-          set: {
-            slug: input.slug,
-            data: product,
-            published: input.published,
-            updatedAt: new Date(),
-          },
-        });
-      await tx
-        .insert(inventory)
-        .values({ productId: id, variantId: 'v1', stock: input.stock })
-        .onConflictDoUpdate({
-          target: [inventory.productId, inventory.variantId],
-          set: { stock: input.stock, updatedAt: new Date() },
-        });
-      const previousStock = currentStock?.stock ?? 0;
-      if (previousStock !== input.stock) {
-        await tx.insert(stockMovements).values({
-          productId: id,
-          variantId: 'v1',
-          delta: input.stock - previousStock,
-          previousStock,
-          newStock: input.stock,
-          source: 'product_edit',
-          reason: 'Ürün formundan stok güncellendi',
-          createdBy: admin.email,
-        });
-      }
-    });
+          updatedAt: new Date(),
+        },
+      });
+
+    await db
+      .insert(inventory)
+      .values({ productId: id, variantId: 'v1', stock: input.stock })
+      .onConflictDoUpdate({
+        target: [inventory.productId, inventory.variantId],
+        set: { stock: input.stock, updatedAt: new Date() },
+      });
+
+    const previousStock =
+      currentStock?.stock ?? existing?.data.variants?.[0]?.stock ?? 0;
+    if (previousStock !== input.stock) {
+      await db.insert(stockMovements).values({
+        productId: id,
+        variantId: 'v1',
+        delta: input.stock - previousStock,
+        previousStock,
+        newStock: input.stock,
+        source: 'product_edit',
+        reason: 'Ürün formundan stok güncellendi',
+        createdBy: admin.email,
+      });
+    }
   } catch (error) {
     console.error('[admin/products/:id]', error);
     return NextResponse.json(
-      { error: 'Bağlantı adı kullanılıyor veya ürün güncellenemedi.' },
-      { status: 409 }
+      { error: 'Ürün kaydedilemedi. Lütfen tekrar deneyin.' },
+      { status: 500 }
     );
   }
 
@@ -130,5 +145,10 @@ export async function PATCH(
     metadata: { stock: input.stock, price: input.price, published: input.published },
   });
 
+  revalidatePath('/');
+  revalidatePath('/urunler');
+  revalidatePath('/admin');
+  revalidatePath('/admin/urunler');
+  revalidatePath(`/urun/${input.slug}`);
   return NextResponse.json({ ok: true, id, slug: input.slug });
 }

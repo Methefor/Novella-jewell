@@ -88,19 +88,18 @@ export async function POST(request: Request) {
   };
 
   try {
-    await db.transaction(async (tx) => {
-      await tx.insert(catalogProducts).values({
+    await db.insert(catalogProducts).values({
         id,
         slug: input.slug,
         data: product,
         published: input.published,
       });
-      await tx.insert(inventory).values({
+    await db.insert(inventory).values({
         productId: id,
         variantId: 'v1',
         stock: input.stock,
       });
-      await tx.insert(stockMovements).values({
+    await db.insert(stockMovements).values({
         productId: id,
         variantId: 'v1',
         delta: input.stock,
@@ -109,7 +108,6 @@ export async function POST(request: Request) {
         source: 'product_create',
         reason: 'Ürün oluşturulurken başlangıç stoğu',
         createdBy: admin.email,
-      });
     });
   } catch (error) {
     console.error('[admin/products]', error);

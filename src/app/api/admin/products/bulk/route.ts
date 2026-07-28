@@ -93,8 +93,7 @@ export async function POST(request: Request) {
   });
 
   try {
-    await db.transaction(async (tx) => {
-      await tx.insert(catalogProducts).values(
+    await db.insert(catalogProducts).values(
         records.map(({ id, slug, data }) => ({
           id,
           slug,
@@ -102,14 +101,14 @@ export async function POST(request: Request) {
           published: false,
         }))
       );
-      await tx.insert(inventory).values(
+    await db.insert(inventory).values(
         records.map(({ id, stock }) => ({
           productId: id,
           variantId: 'v1',
           stock,
         }))
       );
-      await tx.insert(stockMovements).values(
+    await db.insert(stockMovements).values(
         records.map(({ id, stock }) => ({
           productId: id,
           variantId: 'v1',
@@ -120,8 +119,7 @@ export async function POST(request: Request) {
           reason: 'Toplu ürün merkezinden başlangıç stoğu',
           createdBy: admin.email,
         }))
-      );
-    });
+    );
   } catch (error) {
     console.error('[admin/products/bulk]', error);
     return NextResponse.json(

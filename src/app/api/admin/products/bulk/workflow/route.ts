@@ -69,9 +69,8 @@ export async function POST(request: Request) {
   if (rows.length !== ids.length) return NextResponse.json({ error: 'Ürünlerden biri bulunamadı.' }, { status: 404 });
 
   if (action === 'approve-copy') {
-    await db.transaction(async (tx) => {
-      for (const row of rows) {
-        await tx.update(catalogProducts).set({
+    for (const row of rows) {
+        await db.update(catalogProducts).set({
           data: {
             ...row.data,
             adChecklist: {
@@ -84,8 +83,7 @@ export async function POST(request: Request) {
           },
           updatedAt: new Date(),
         }).where(eq(catalogProducts.id, row.id));
-      }
-    });
+    }
   }
 
   if (action === 'publish') {
