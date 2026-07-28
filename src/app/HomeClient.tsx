@@ -5,6 +5,7 @@ import type { Product } from '@/types/product';
 import Hero from '@/sections/Hero';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -18,13 +19,37 @@ const fadeUp = {
   }),
 };
 
+const categoryShowcase = [
+  {
+    title: 'Yüzükler',
+    eyebrow: 'Yeni sezon',
+    href: '/collections/yuzuk',
+    image: '/media/yuzuk/yuzuk-16c.jpg',
+    position: 'object-[50%_55%]',
+  },
+  {
+    title: 'Küpeler',
+    eyebrow: 'Zarif detay',
+    href: '/collections/kupe',
+    image: '/media/kupe/kupe-1.jpg',
+    position: 'object-center',
+  },
+  {
+    title: 'Bileklikler',
+    eyebrow: 'Günlük ışıltı',
+    href: '/collections/bilezik',
+    image: '/media/bileklik/bileklik-1.jpg',
+    position: 'object-center',
+  },
+] as const;
+
 export default function HomeClient({ products }: { products: Product[] }) {
 
-  // Ana vitrinde en yeni beş yüzük otomatik olarak editoryal sıraya girer.
+  // Ana vitrinde en yeni yüzükler otomatik olarak editoryal sıraya girer.
   const featuredRings = products
     .filter((p) => p.isNew && p.category === 'yuzuk')
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    .slice(0, 5);
+    .slice(0, 4);
 
   /**
    * Çok Satanlar — isBestSeller işaretine göre.
@@ -42,6 +67,62 @@ export default function HomeClient({ products }: { products: Product[] }) {
     <main>
       {/* Hero */}
       <Hero />
+
+      {/* İlk kaydırmada mağazanın ürün kapsamını açıkça gösterir. */}
+      <section className="border-b border-gold/20 bg-cream py-10 md:py-14">
+        <div className="container-custom">
+          <div className="mb-7 flex items-end justify-between gap-4">
+            <div>
+              <p className="section-label mb-2">Kategorileri keşfet</p>
+              <h2 className="font-serif text-2xl font-light tracking-[-0.02em] text-black md:text-3xl">
+                Stilinin parçasını seç.
+              </h2>
+            </div>
+            <Link href="/urunler" className="hidden items-center gap-2 text-sm text-black/50 transition-colors hover:text-black sm:inline-flex">
+              Tüm ürünler <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {categoryShowcase.map((category, index) => (
+              <motion.div
+                key={category.href}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: '-40px' }}
+                variants={fadeUp}
+                custom={index * 0.08}
+              >
+                <Link
+                  href={category.href}
+                  className="group relative block aspect-[4/5] overflow-hidden rounded-[1.35rem] bg-[#e9e1d4] md:aspect-[4/3]"
+                >
+                  <Image
+                    src={category.image}
+                    alt={`${category.title} kategorisi`}
+                    fill
+                    sizes="(max-width: 767px) 100vw, 33vw"
+                    className={`object-cover transition-transform duration-700 group-hover:scale-[1.035] ${category.position}`}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-white md:p-6">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-white/70">
+                        {category.eyebrow}
+                      </p>
+                      <h3 className="mt-1 font-serif text-3xl font-light">
+                        {category.title}
+                      </h3>
+                    </div>
+                    <span className="grid h-10 w-10 place-items-center rounded-full border border-white/45 bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white group-hover:text-black">
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Yeni yüzük vitrini */}
       <section className="py-16 md:py-24 bg-cream">
@@ -67,8 +148,8 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 Yeni Yüzükler
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-black/50 md:text-base">
-                Yeni eklenen beş tasarım, güçlü parçadan zarif tektaşa uzanan
-                editoryal bir seçkide.
+                Yeni sezonun seçili tasarımları, güçlü parçadan zarif tektaşa
+                uzanan editoryal bir seçkide.
               </p>
             </div>
             <Link
@@ -80,7 +161,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-x-4 gap-y-9 sm:gap-x-6 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-9 sm:gap-x-6 lg:grid-cols-4">
             {featuredRings.map((product, i) => (
               <motion.div
                 key={product.id}
@@ -89,13 +170,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 viewport={{ once: true, margin: '-40px' }}
                 variants={fadeUp}
                 custom={i * 0.07}
-                className={
-                  i < 2
-                    ? 'lg:col-span-3'
-                    : i === featuredRings.length - 1
-                      ? 'col-span-2 lg:col-span-2'
-                      : 'lg:col-span-2'
-                }
+                className="lg:col-span-1"
               >
                 <ProductCard product={product} />
               </motion.div>

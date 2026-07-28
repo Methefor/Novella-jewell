@@ -70,7 +70,7 @@ const HERO_WRIST: string | null = '/media/yuzuk/yuzuk-16c.jpg';
  *
  * null yaparsan sessizce HERO_WRIST görseline döner.
  */
-const HERO_VIDEO: string | null = '/media/video/hero-loop.mp4';
+const HERO_VIDEO: string | null = null;
 const HERO_VIDEO_POSTER = '/media/video/hero-poster.jpg';
 
 /**
@@ -78,7 +78,7 @@ const HERO_VIDEO_POSTER = '/media/video/hero-poster.jpg';
  * lg ve üzeri ekranlarda bu sürüm tam genişliğe yakın oynar.
  * studio/ ile üretilir: Site-HeroDonguWide kompozisyonu.
  */
-const HERO_VIDEO_WIDE: string | null = '/media/video/hero-loop-wide.mp4';
+const HERO_VIDEO_WIDE: string | null = null;
 const HERO_VIDEO_WIDE_POSTER = '/media/video/hero-poster-wide.jpg';
 
 /**
@@ -146,7 +146,7 @@ export default function Hero() {
       {/* ─────────── Görsel: aşağıdan yukarı yükselir ─────────── */}
       <motion.div
         style={{ y: reduceMotion ? undefined : imageY }}
-        className="absolute inset-x-0 bottom-0 top-0 flex items-end justify-center pointer-events-none"
+        className="absolute inset-x-0 bottom-0 top-0 flex items-end justify-center pointer-events-none lg:justify-end lg:pr-[5vw]"
         aria-hidden="true"
       >
         <HeroVisual hasWrist={hasWrist} reduceMotion={!!reduceMotion} />
@@ -158,14 +158,14 @@ export default function Hero() {
           y: reduceMotion ? undefined : textY,
           opacity: reduceMotion ? undefined : textFade,
         }}
-        className="relative h-full flex flex-col items-center justify-start pt-[8vh] sm:pt-[10vh] px-6"
+        className="relative h-full flex flex-col items-center justify-start pt-[8vh] px-6 sm:pt-[10vh] lg:w-[54%] lg:items-start lg:justify-center lg:pt-0 lg:pl-[7vw] lg:pr-4"
       >
         {/* Eyebrow */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15, ease }}
-          className="flex items-center justify-center gap-3 mb-5"
+          className="flex items-center justify-center gap-3 mb-5 lg:justify-start"
         >
           <span className="h-px w-8 bg-gold/50" aria-hidden="true" />
           <span className="font-sans font-light text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-gold-dark">
@@ -176,7 +176,7 @@ export default function Hero() {
 
         {/* H1 — kelimeler tek tek yükselir */}
         <h1
-          className="font-serif font-light text-black text-center text-balance mb-6"
+          className="font-serif font-light text-black text-center text-balance mb-6 lg:text-left"
           style={{
             fontSize: 'clamp(2.3rem, 6.5vw, 4.6rem)',
             lineHeight: 1.02,
@@ -194,7 +194,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.6, ease }}
-          className="font-sans font-light text-black/50 text-center text-balance mb-7"
+          className="font-sans font-light text-black/55 text-center text-balance mb-7 lg:text-left"
           style={{
             fontSize: 'clamp(14px, 1.5vw, 16px)',
             lineHeight: 1.7,
@@ -210,7 +210,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.7, ease }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-7"
+          className="flex flex-wrap items-center justify-center gap-2 mb-7 lg:justify-start"
           role="list"
           aria-label="Ürün özellikleri"
         >
@@ -230,7 +230,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.85, ease }}
-          className="flex flex-wrap items-center justify-center gap-3"
+          className="flex flex-wrap items-center justify-center gap-3 lg:justify-start"
         >
           <Link
             href="/urunler"
@@ -406,7 +406,7 @@ function HeroVisual({
         }
         animate={{ y: '0%', scale: 1, opacity: 1 }}
         transition={{ duration: 1.8, delay: 0.15, ease }}
-        className="relative w-full max-w-[560px] h-[88%]"
+        className="relative w-full max-w-[560px] h-[88%] lg:h-[86%] lg:w-[47vw] lg:max-w-[720px]"
         style={{
           maskImage: feather,
           WebkitMaskImage: feather,
@@ -417,8 +417,8 @@ function HeroVisual({
           alt=""
           fill
           priority
-          sizes="(max-width: 640px) 100vw, 560px"
-          className="object-cover object-center"
+          sizes="(max-width: 1023px) 100vw, 47vw"
+          className="object-cover object-center lg:object-[52%_48%]"
         />
 
         {/* Metin perdesi — başlık görselin üstüne geldiğinde okunurluğu

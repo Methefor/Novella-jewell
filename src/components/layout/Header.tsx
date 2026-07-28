@@ -77,6 +77,27 @@ export default function Header() {
             </button>
           </div>
 
+          <nav
+            className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 lg:flex"
+            aria-label="Ürün kategorileri"
+          >
+            {[
+              ['Yeni Gelenler', '/collections/yeni-gelenler'],
+              ['Yüzük', '/collections/yuzuk'],
+              ['Küpe', '/collections/kupe'],
+              ['Bileklik', '/collections/bilezik'],
+              ['Koleksiyonlar', '/koleksiyonlar'],
+            ].map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="whitespace-nowrap text-[12px] font-medium text-black/55 transition-colors hover:text-black"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
           {/* Right group */}
           <div className="flex items-center gap-1">
             {/* New collection pill — desktop only */}
