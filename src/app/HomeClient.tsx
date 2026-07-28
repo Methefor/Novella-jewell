@@ -4,7 +4,15 @@ import ProductCard from '@/components/product/ProductCard';
 import type { Product } from '@/types/product';
 import Hero from '@/sections/Hero';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  Droplets,
+  Gift,
+  PackageCheck,
+  RotateCcw,
+  ShieldCheck,
+  Truck,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -246,6 +254,99 @@ export default function HomeClient({ products }: { products: Product[] }) {
         </div>
       </section>
 
+      {/* Malzeme güveni — gerçek ürün ve kullanım görselleriyle. */}
+      <section className="overflow-hidden bg-[#171713] py-20 text-white md:py-28">
+        <div className="container-custom">
+          <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-80px' }}
+              variants={fadeUp}
+            >
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[#cdbc91]">
+                Malzemeyi tanıyın
+              </p>
+              <h2 className="mt-4 max-w-xl font-serif text-4xl font-light leading-[1.05] tracking-[-0.03em] md:text-6xl">
+                Günlük hayat için seçilen{' '}
+                <span className="italic text-[#cdbc91]">316L çelik.</span>
+              </h2>
+              <p className="mt-6 max-w-lg text-sm font-light leading-7 text-white/60 md:text-base">
+                Suyla temas eden, gün boyu teninizde kalan bir takıda görünüm kadar
+                malzeme de önemlidir. Novella parçaları suya dayanıklı ve kararmaya
+                karşı dirençli 316L paslanmaz çelik esaslıdır.
+              </p>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                {[
+                  {
+                    icon: Droplets,
+                    title: 'Suya dayanıklı',
+                    body: 'Duş ve günlük su temasında kullanım rahatlığı.',
+                  },
+                  {
+                    icon: ShieldCheck,
+                    title: 'Kararmaya dirençli',
+                    body: 'Doğru bakımla rengini ve parlaklığını uzun süre korur.',
+                  },
+                ].map(({ icon: Icon, title, body }) => (
+                  <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.045] p-5">
+                    <Icon className="h-5 w-5 text-[#cdbc91]" strokeWidth={1.6} />
+                    <h3 className="mt-4 text-sm font-semibold">{title}</h3>
+                    <p className="mt-2 text-xs leading-5 text-white/50">{body}</p>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/rehber/316l-celik-nedir"
+                className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#d9cba7] transition-colors hover:text-white"
+              >
+                316L çeliği yakından tanıyın
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </motion.div>
+
+            <div className="grid grid-cols-[0.86fr_1.14fr] items-end gap-3 sm:gap-5">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease }}
+                className="relative aspect-[3/4] overflow-hidden rounded-[1.4rem] border border-white/10"
+              >
+                <Image
+                  src="/media/yuzuk/yuzuk-16c.jpg"
+                  alt="316L çelik yüzüğün gerçek ürün yakın planı"
+                  fill
+                  sizes="(max-width: 1023px) 43vw, 24vw"
+                  className="object-cover object-center"
+                />
+                <span className="absolute bottom-4 left-4 rounded-full bg-black/45 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] backdrop-blur-md">
+                  Ürün detayı
+                </span>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 34 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.9, delay: 0.08, ease }}
+                className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem] border border-white/10"
+              >
+                <Image
+                  src="/media/yuzuk/yuzuk-16b.jpg"
+                  alt="Novella yüzüğün model üzerinde gerçek ürün görünümü"
+                  fill
+                  sizes="(max-width: 1023px) 57vw, 32vw"
+                  className="object-cover object-center"
+                />
+                <span className="absolute bottom-4 left-4 rounded-full bg-black/45 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] backdrop-blur-md">
+                  Günlük kullanım
+                </span>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hikayemiz — marka anlatısı, /hikayemiz sayfasına köprü */}
       <section className="relative overflow-hidden bg-champagne border-y border-gold/25">
         <div className="absolute inset-0 texture-gold" aria-hidden="true" />
@@ -301,52 +402,54 @@ export default function HomeClient({ products }: { products: Product[] }) {
         </div>
       </section>
 
-      {/* Values strip */}
-      <section className="py-14 md:py-16 bg-cream-deep border-y border-border">
+      {/* Paketleme ve teslimat deneyimi — doğrulanabilir adımlarla. */}
+      <section className="border-y border-border bg-cream-deep py-16 md:py-24">
         <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="section-label mb-3">Sipariş deneyimi</p>
+            <h2 className="font-serif text-3xl font-light tracking-[-0.025em] md:text-5xl">
+              Seçiminden teslimata, özenle.
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-black/50">
+              Kendiniz için ya da hediye olarak seçin; siparişiniz korunaklı,
+              sunuma hazır ve takip edilebilir şekilde hazırlanır.
+            </p>
+          </div>
+
+          <div className="relative mt-12 grid gap-4 md:grid-cols-4 md:gap-0">
+            <div className="absolute left-[12.5%] right-[12.5%] top-7 hidden h-px bg-gold/30 md:block" />
             {[
-              {
-                title: '316L Paslanmaz Çelik',
-                body: 'Kararmaz, solmaz, suya dayanıklı.',
-              },
-              {
-                title: 'Hediye Paketleme',
-                body: 'Her sipariş özel kutusunda gelir.',
-              },
-              {
-                title: '14 Gün Cayma Hakkı',
-                // "Koşulsuz" denemez: kişiye özel üretim ve ambalajı açılmış
-                // küpelerde yasal istisna var (Yönetmelik m.15). Bkz. /iade
-                body: 'Sebep belirtmeden iade edebilirsiniz.',
-              },
-            ].map(({ title, body }) => (
+              { icon: Gift, step: '01', title: 'Özel kutusunda', body: 'Takınız sunuma hazır Novella kutusunda hazırlanır.' },
+              { icon: PackageCheck, step: '02', title: 'Kontrollü paketleme', body: 'Ürün, sipariş bilgileriyle eşleştirilerek korunaklı paketlenir.' },
+              { icon: Truck, step: '03', title: 'Takipli teslimat', body: 'Kargoya verildiğinde sipariş durumunu takip edebilirsiniz.' },
+              { icon: RotateCcw, step: '04', title: '14 gün cayma hakkı', body: 'Yasal istisnalar dışında iade talebinizi kolayca oluşturabilirsiniz.' },
+            ].map(({ icon: Icon, step, title, body }, index) => (
               <motion.div
                 key={title}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={fadeUp}
-                custom={0.1}
-                className="py-2"
+                custom={index * 0.08}
+                className="relative rounded-2xl border border-gold/20 bg-white/60 p-5 text-center md:rounded-none md:border-y md:border-l-0 md:border-r md:bg-transparent md:px-6 md:py-8 md:first:border-l"
               >
-                <div className="flex items-center justify-center mb-3">
-                  <span className="h-px w-6 bg-gold/40" aria-hidden="true" />
+                <div className="relative z-10 mx-auto grid h-14 w-14 place-items-center rounded-full border border-gold/35 bg-cream-deep text-gold-dark">
+                  <Icon className="h-5 w-5" strokeWidth={1.6} />
                 </div>
-                <p
-                  className="font-serif font-light text-black mb-1.5"
-                  style={{ fontSize: '1.2rem', letterSpacing: '-0.015em' }}
-                >
-                  {title}
-                </p>
-                <p
-                  className="font-sans font-light"
-                  style={{ fontSize: '13px', color: 'rgba(10,10,10,0.45)' }}
-                >
-                  {body}
-                </p>
+                <p className="mt-5 text-[9px] font-semibold uppercase tracking-[0.18em] text-gold-dark/70">{step}</p>
+                <h3 className="mt-2 font-serif text-xl font-light">{title}</h3>
+                <p className="mt-2 text-xs leading-5 text-black/45">{body}</p>
               </motion.div>
             ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link href="/kargo" className="rounded-full border border-gold/35 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-white">
+              Kargo ve teslimat
+            </Link>
+            <Link href="/iade" className="rounded-full border border-gold/35 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-white">
+              İade koşulları
+            </Link>
           </div>
         </div>
       </section>
