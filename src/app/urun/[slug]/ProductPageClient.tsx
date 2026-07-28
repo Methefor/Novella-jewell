@@ -14,7 +14,16 @@ import { dusukStok, getRelatedProducts } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ChevronDown, MessageCircle, ShoppingBag, ZoomIn } from 'lucide-react';
+import {
+  ChevronDown,
+  Droplets,
+  Gift,
+  MessageCircle,
+  ShieldCheck,
+  ShoppingBag,
+  Truck,
+  ZoomIn,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -117,12 +126,17 @@ export default function ProductPageClient({ product, collection }: Props) {
 
   const related = getRelatedProducts(product.id, product.collection);
 
+  const sepeteEkle = () => {
+    addToCart(product, product.defaultVariant, 1);
+    trackAddToCart(product, 1);
+  };
+
   const waText = encodeURIComponent(
     `Merhaba, *${product.name}* ürünü hakkında bilgi almak istiyorum.`
   );
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white pb-24 lg:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-24 pb-20">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-20">
           {/* ── Gallery (sol) ── */}
@@ -137,7 +151,7 @@ export default function ProductPageClient({ product, collection }: Props) {
           >
             {/* Thumbnails */}
             {gallery.length > 1 && (
-              <div className="flex flex-col gap-2 w-16 flex-shrink-0">
+              <div className="hidden sm:flex flex-col gap-2 w-16 flex-shrink-0">
                 {gallery.map((src, i) => (
                   <button
                     key={i}
@@ -289,7 +303,7 @@ export default function ProductPageClient({ product, collection }: Props) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease, delay: 0.08 }}
-            className="flex flex-col gap-6 lg:pt-2"
+            className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start lg:pt-2"
           >
             {/* Koleksiyon etiketi */}
             {collection && (
@@ -347,10 +361,7 @@ export default function ProductPageClient({ product, collection }: Props) {
             {/* CTA'lar */}
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => {
-                  addToCart(product, product.defaultVariant, 1);
-                  trackAddToCart(product, 1);
-                }}
+                onClick={sepeteEkle}
                 className="btn-primary w-full flex items-center justify-center gap-2"
               >
                 <ShoppingBag className="w-4 h-4" />
@@ -381,6 +392,52 @@ export default function ProductPageClient({ product, collection }: Props) {
               )}
             </div>
 
+            {/* Satın alma kararının yanında görünür, doğrulanabilir güven bilgileri. */}
+            <div className="grid grid-cols-2 border-y border-black/10">
+              {[
+                {
+                  icon: Droplets,
+                  title: 'Suya dayanıklı',
+                  body: 'Günlük kullanım için',
+                },
+                {
+                  icon: ShieldCheck,
+                  title: '316L çelik',
+                  body: 'Kararmaya dirençli',
+                },
+                {
+                  icon: Gift,
+                  title: 'Hediye kutusunda',
+                  body: 'Sunuma hazır',
+                },
+                {
+                  icon: Truck,
+                  title: 'Takipli teslimat',
+                  body: '1–3 iş gününde kargoda',
+                },
+              ].map(({ icon: Icon, title, body }, index) => (
+                <div
+                  key={title}
+                  className={`flex gap-3 py-4 ${
+                    index % 2 === 0
+                      ? 'border-r border-black/10 pr-3'
+                      : 'pl-4'
+                  } ${index < 2 ? 'border-b border-black/10' : ''}`}
+                >
+                  <Icon
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 text-gold-dark"
+                    strokeWidth={1.6}
+                  />
+                  <div>
+                    <p className="text-xs font-semibold text-black">{title}</p>
+                    <p className="mt-1 text-[11px] leading-4 text-black/45">
+                      {body}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             {/* Kategori + Malzeme chips */}
             <div className="flex gap-2 flex-wrap">
               <span className="pill pill-light">
@@ -392,17 +449,6 @@ export default function ProductPageClient({ product, collection }: Props) {
             </div>
 
             {/* Güvence şeridi — premium marka hissi */}
-            <div className="flex items-center gap-4 pt-2 text-xs text-black/40">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-gold" />
-                Ömür boyu parlaklık
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-gold" />
-                Hediye kutusunda
-              </span>
-            </div>
-
             {/* Akordeon */}
             <div className="border-t border-black/8 pt-5 space-y-0">
               {accordionItems.map((item) => (
@@ -515,6 +561,26 @@ export default function ProductPageClient({ product, collection }: Props) {
           />
         )}
       </AnimatePresence>
+
+      {/* Mobilde ürün içeriği incelenirken satın alma eylemi her zaman erişilebilir. */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-lg lg:hidden">
+        <div className="mx-auto flex max-w-lg items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[11px] text-black/45">{product.name}</p>
+            <p className="mt-0.5 text-base font-semibold text-black">
+              {product.price.toLocaleString('tr-TR')} ₺
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={sepeteEkle}
+            className="inline-flex min-h-12 flex-shrink-0 items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-semibold text-white transition-colors hover:bg-gold-dark"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            Sepete Ekle
+          </button>
+        </div>
+      </div>
     </main>
   );
 }
