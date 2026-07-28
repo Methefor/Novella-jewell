@@ -102,7 +102,7 @@ export class PayTRProvider implements CheckoutProvider {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async createPayment(order: Order, _randomNr: string): Promise<PaymentResult> {
+  async createPayment(order: Order, randomNr: string): Promise<PaymentResult> {
     const userIp = order.userIp?.trim() || '127.0.0.1';
     // DB order_no (NJ-2026-XXXX) → PayTR'nin kabul ettiği alfanumerik biçim
     const merchantOid = toPayTROid(order.id);
@@ -148,7 +148,7 @@ export class PayTRProvider implements CheckoutProvider {
     // için callback'te hesaplanan toplam bu yönlendirmeye eklenemez.
     const merchantOkUrl = `${baseUrl}/odeme/sonuc?status=success&orderNo=${encodeURIComponent(
       order.id
-    )}&total=${encodeURIComponent(order.total.toFixed(2))}`;
+    )}&verify=${encodeURIComponent(randomNr)}`;
     const merchantFailUrl = `${baseUrl}/odeme/sonuc?status=error&orderNo=${encodeURIComponent(
       order.id
     )}`;

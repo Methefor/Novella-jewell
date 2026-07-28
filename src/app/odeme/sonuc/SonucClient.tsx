@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import {
   CheckCircle2,
   Copy,
+  Loader2,
   MessageCircle,
   Package,
   Truck,
@@ -34,22 +35,76 @@ export default function SonucClient() {
   // Callback order_no gönderiyor (NJ-2026-0001); eski orderId parametresi fallback.
   const orderNo =
     searchParams.get('orderNo') ?? searchParams.get('orderId') ?? '';
+  const verify = searchParams.get('verify') ?? '';
   const reason = searchParams.get('reason');
-  const total = Number(searchParams.get('total')) || 0;
   const clearCart = useCartStore((s) => s.clearCart);
 
   const [copied, setCopied] = useState(false);
+  const [verification, setVerification] = useState<
+    'checking' | 'paid' | 'failed'
+  >(status === 'success' ? 'checking' : 'failed');
+  const [verifiedTotal, setVerifiedTotal] = useState(0);
 
-  const isSuccess = status === 'success';
+  const isSuccess = verification === 'paid';
 
   // Sepet YALNIZCA ödeme başarılıysa temizlenir.
   // Aynı anda GA4 purchase olayı gönderilir. transaction_id sayesinde sayfa
   // yenilenirse GA çift saymaz. value: total URL'den; yoksa 0.
   useEffect(() => {
-    if (!isSuccess) return;
+    if (status !== 'success' || !orderNo || !verify) {
+      setVerification('failed');
+      return;
+    }
+
+    let cancelled = false;
+    let attempt = 0;
+
+    const verifyOrder = async () => {
+      attempt += 1;
+      try {
+        const response = await fetch(
+          `/api/odeme/dogrula?orderNo=${encodeURIComponent(
+            orderNo
+          )}&verify=${encodeURIComponent(verify)}`,
+          { cache: 'no-store' }
+        );
+        const result = (await response.json()) as {
+          status?: string;
+          total?: string | null;
+        };
+        if (cancelled) return;
+
+        if (response.ok && result.status === 'paid') {
+          setVerifiedTotal(Number(result.total) || 0);
+          setVerification('paid');
+          return;
+        }
+        if (result.status === 'failed' || response.status === 404) {
+          setVerification('failed');
+          return;
+        }
+      } catch {
+        // Geçici ağ hatasında kontrollü tekrar devam eder.
+      }
+
+      if (!cancelled && attempt < 10) {
+        window.setTimeout(verifyOrder, 1200);
+      } else if (!cancelled) {
+        setVerification('failed');
+      }
+    };
+
+    void verifyOrder();
+    return () => {
+      cancelled = true;
+    };
+  }, [orderNo, status, verify]);
+
+  useEffect(() => {
+    if (!isSuccess || !orderNo) return;
     clearCart();
-    trackPurchase(orderNo || `NV-${Date.now()}`, total);
-  }, [isSuccess, clearCart, orderNo, total]);
+    trackPurchase(orderNo, verifiedTotal);
+  }, [isSuccess, clearCart, orderNo, verifiedTotal]);
 
   const copyOrderNo = async () => {
     if (!orderNo) return;
@@ -74,19 +129,42 @@ export default function SonucClient() {
         transition={{ duration: 0.6, ease }}
         className="max-w-lg w-full"
       >
-        {isSuccess ? (
+        {verification === 'checking' ? (
+          <VerificationCard />
+        ) : isSuccess ? (
           <SuccessCard
             orderNo={orderNo}
-            total={total}
+            total={verifiedTotal}
             copied={copied}
             onCopy={copyOrderNo}
             waText={waText}
           />
         ) : (
-          <ErrorCard reason={reason} />
+          <ErrorCard
+            reason={reason ?? (status === 'success' ? 'verification' : null)}
+          />
         )}
       </motion.div>
     </main>
+  );
+}
+
+function VerificationCard() {
+  return (
+    <div className="text-center">
+      <div className="mb-6 flex justify-center">
+        <div className="grid h-16 w-16 place-items-center rounded-full bg-gold/10 text-gold-dark">
+          <Loader2 className="h-7 w-7 animate-spin" />
+        </div>
+      </div>
+      <h1 className="mb-3 font-serif text-3xl font-light text-black">
+        Ödemeniz doğrulanıyor
+      </h1>
+      <p className="mx-auto max-w-sm text-sm leading-relaxed text-black/50">
+        Banka onayı siparişinizle eşleştiriliyor. Bu işlem genellikle birkaç
+        saniye sürer; lütfen bu sayfayı kapatmayın.
+      </p>
+    </div>
   );
 }
 
@@ -210,6 +288,8 @@ function ErrorCard({ reason }: { reason: string | null }) {
       <p className="text-sm text-black/50 leading-relaxed mb-8">
         {reason === 'signature'
           ? 'Güvenlik doğrulaması başarısız oldu. Lütfen tekrar deneyin veya WhatsApp üzerinden destek alın.'
+          : reason === 'verification'
+            ? 'Ödeme onayı henüz doğrulanamadı. Kartınızdan tahsilat gördüyseniz tekrar ödeme yapmadan önce sipariş numaranızla bizimle iletişime geçin.'
           : 'Ödeme işlemi banka veya kart sağlayıcısı tarafından onaylanmadı. Tekrar deneyebilir veya WhatsApp üzerinden sipariş verebilirsiniz.'}
       </p>
 

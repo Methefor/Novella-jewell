@@ -1,6 +1,7 @@
 import { getCheckoutProvider } from '@/lib/checkout';
 import { buildOrder } from '@/lib/checkout/buildOrder';
 import { createPendingOrder } from '@/lib/orders';
+import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     // random_nr'ı burada üretiyoruz: aynı değer hem DB pending siparişe
     // kaydedilecek hem de (eski Shopier akışında) imzada kullanılacak.
-    const randomNr = String(Math.floor(Math.random() * 900000) + 100000);
+    const randomNr = crypto.randomBytes(24).toString('hex');
 
     // Fiyat, kargo ve stok burada yeniden hesaplanır. id geçici — birazdan
     // DB'nin ürettiği order_no ile değiştirilecek.

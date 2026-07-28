@@ -46,9 +46,9 @@ async function handleCallback(req: NextRequest) {
   const provider = getCheckoutProvider();
   if (!provider.verifyCallback(params)) {
     console.error('[callback] İmza doğrulama başarısız', { orderNo });
-    return NextResponse.redirect(
-      `${siteUrl}/odeme/sonuc?status=error&reason=signature`
-    );
+    return new NextResponse('PAYTR notification failed: bad hash', {
+      status: 400,
+    });
   }
 
   // PayTR status: success | failed; eski Shopier: status=success veya payment_status=1.
