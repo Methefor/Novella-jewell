@@ -8,6 +8,8 @@ import {
   ArrowRight,
   Droplets,
   Gift,
+  Instagram,
+  MessageCircle,
   PackageCheck,
   RotateCcw,
   ShieldCheck,
@@ -399,6 +401,125 @@ export default function HomeClient({ products }: { products: Product[] }) {
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Stil günlüğü — model üzerinde gerçek ürün görünümü ve sosyal kanallara köprü. */}
+      <section className="overflow-hidden bg-[#f7f3ec] py-20 md:py-28">
+        <div className="container-custom">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={fadeUp}
+            className="mb-10 flex flex-col justify-between gap-6 md:mb-14 md:flex-row md:items-end"
+          >
+            <div className="max-w-2xl">
+              <p className="section-label mb-3">Novella stil günlüğü</p>
+              <h2 className="font-serif text-4xl font-light leading-[1.05] tracking-[-0.035em] md:text-6xl">
+                Bir yüzük, üç farklı{' '}
+                <span className="italic text-gold-dark">ruh hali.</span>
+              </h2>
+            </div>
+            <p className="max-w-sm text-sm font-light leading-6 text-black/50 md:text-right">
+              Yakın plandan günlük stile: parçaların ölçüsünü, ışıltısını ve eldeki
+              duruşunu satın almadan önce görün.
+            </p>
+          </motion.div>
+
+          <div className="grid gap-4 md:grid-cols-12 md:gap-5">
+            {[
+              {
+                href: '/urun/stockholm-nova-yildiz-yuzuk',
+                image: '/media/yuzuk/yuzuk-17c.jpg',
+                alt: 'Stockholm Nova Yıldız Yüzük model üzerinde',
+                mood: 'Cesur detay',
+                name: 'Stockholm Nova',
+                className: 'md:col-span-5 md:mt-16',
+                aspect: 'aspect-[4/5]',
+              },
+              {
+                href: '/urun/paris-amour-zincir-yuzuk',
+                image: '/media/yuzuk/yuzuk-18b.jpg',
+                alt: 'Paris Amour Zincir Yüzük model üzerinde',
+                mood: 'Günlük zarafet',
+                name: 'Paris Amour',
+                className: 'md:col-span-4',
+                aspect: 'aspect-[3/4]',
+              },
+              {
+                href: '/urun/paris-grace-tektas-yuzuk',
+                image: '/media/yuzuk/yuzuk-19b.jpg',
+                alt: 'Paris Grace Tektaş Yüzük model üzerinde',
+                mood: 'Modern klasik',
+                name: 'Paris Grace',
+                className: 'md:col-span-3 md:mt-28',
+                aspect: 'aspect-[4/5]',
+              },
+            ].map((look, index) => (
+              <motion.div
+                key={look.name}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.8, delay: index * 0.08, ease }}
+                className={look.className}
+              >
+                <Link href={look.href} className="group block">
+                  <div className={`relative overflow-hidden bg-[#e7ded1] ${look.aspect}`}>
+                    <Image
+                      src={look.image}
+                      alt={look.alt}
+                      fill
+                      sizes="(max-width: 767px) 100vw, 42vw"
+                      className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.025]"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent" />
+                    <span className="absolute bottom-5 left-5 text-[10px] uppercase tracking-[0.2em] text-white/90">
+                      {look.mood}
+                    </span>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between border-b border-black/10 pb-4">
+                    <h3 className="font-serif text-xl font-light">{look.name}</h3>
+                    <ArrowRight className="h-4 w-4 text-black/40 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-14 border-y border-black/10 py-7 md:mt-20">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+              <div>
+                <p className="font-serif text-2xl font-light md:text-3xl">
+                  Yeni stiller, bakım notları ve perde arkası.
+                </p>
+                <p className="mt-2 text-sm text-black/45">
+                  Novella&apos;yı günlük akışında takip et.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="https://www.instagram.com/novellajewellofficial/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-dark"
+                >
+                  <Instagram className="h-4 w-4" />
+                  Instagram
+                </a>
+                <a
+                  href="https://www.threads.com/@novellajewellofficial"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-black/20 px-5 py-3 text-sm font-medium transition-colors hover:border-black hover:bg-white"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Threads
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
