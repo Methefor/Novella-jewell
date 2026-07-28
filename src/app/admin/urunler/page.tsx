@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic';
 
 type ProductFilter =
   | 'all'
+  | 'published'
   | 'missing-visuals'
   | 'draft'
   | 'out-of-stock'
@@ -28,6 +29,7 @@ export default async function ProductsAdminPage({
   const params = await searchParams;
   const query = (params.q ?? '').trim().toLocaleLowerCase('tr-TR');
   const filter: ProductFilter = [
+    'published',
     'missing-visuals',
     'draft',
     'out-of-stock',
@@ -68,6 +70,7 @@ export default async function ProductsAdminPage({
   });
   const filterCounts: Record<ProductFilter, number> = {
     all: productStates.length,
+    published: productStates.filter(({ published }) => published).length,
     'missing-visuals': productStates.filter(
       ({ readiness }) => readiness.imageCount < 3
     ).length,
@@ -85,6 +88,7 @@ export default async function ProductsAdminPage({
           .includes(query);
       const matchesFilter =
         filter === 'all' ||
+        (filter === 'published' && published) ||
         (filter === 'missing-visuals' && readiness.imageCount < 3) ||
         (filter === 'draft' && !published) ||
         (filter === 'out-of-stock' && stock === 0) ||
@@ -97,6 +101,7 @@ export default async function ProductsAdminPage({
     label: string;
   }> = [
     { value: 'all', label: 'Tümü' },
+    { value: 'published', label: 'Yayında' },
     { value: 'missing-visuals', label: 'Eksik görselli' },
     { value: 'draft', label: 'Taslak' },
     { value: 'out-of-stock', label: 'Stokta yok' },
