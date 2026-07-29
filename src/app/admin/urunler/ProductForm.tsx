@@ -1,6 +1,5 @@
 'use client';
 
-import { upload } from '@vercel/blob/client';
 import { Check, ChevronLeft, ChevronRight, GripVertical, Star, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -162,11 +161,21 @@ export default function ProductForm({
       const images: string[] = [];
       for (const item of imageItems) {
         if (item.file) {
-          const blob = await upload(`products/${slug}/${item.file.name}`, item.file, {
-            access: 'public',
-            handleUploadUrl: '/api/admin/products/upload',
+          const uploadForm = new FormData();
+          uploadForm.set('file', item.file);
+          uploadForm.set('pathname', `products/${slug}/${item.file.name}`);
+          const uploadResponse = await fetch('/api/admin/products/upload', {
+            method: 'POST',
+            body: uploadForm,
           });
-          images.push(blob.url);
+          const uploadResult = (await uploadResponse.json()) as {
+            url?: string;
+            error?: string;
+          };
+          if (!uploadResponse.ok || !uploadResult.url) {
+            throw new Error(uploadResult.error || 'Görsel yüklenemedi.');
+          }
+          images.push(uploadResult.url);
         } else {
           images.push(item.src);
         }
