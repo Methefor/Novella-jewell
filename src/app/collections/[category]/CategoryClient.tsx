@@ -57,14 +57,14 @@ export default function CategoryClient({ category, products }: CategoryClientPro
       (p) => p.compareAtPrice && p.compareAtPrice > p.price
     );
   } else {
-    const categoryMap: Record<string, string> = {
-      bilezik: 'Bilezik',
-      kupe: 'Küpe',
-      yuzuk: 'Yüzük',
+    const categoryMap: Record<string, Product['category']> = {
+      bilezik: 'bilezik',
+      kupe: 'kupe',
+      yuzuk: 'yuzuk',
     };
     const cat = categoryMap[category];
     if (cat) {
-      categoryProducts = allProducts.filter((p) => p.category === cat.toLocaleLowerCase('tr-TR'));
+      categoryProducts = allProducts.filter((product) => product.category === cat);
     }
   }
 
