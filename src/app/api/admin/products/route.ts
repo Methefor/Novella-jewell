@@ -3,6 +3,7 @@ import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { NextResponse } from 'next/server';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const productSchema = z.object({
@@ -38,6 +39,27 @@ export const productSchema = z.object({
   }),
 });
 
+export async function GET(request: Request) {
+  const admin = await getAdminAuth();
+  if (admin.state !== 'admin') {
+    return NextResponse.json({ error: 'Yetkisiz işlem.' }, { status: 401 });
+  }
+  if (dbYok) {
+    return NextResponse.json({ error: 'Veritabanı bağlantısı yok.' }, { status: 503 });
+  }
+
+  const slug = new URL(request.url).searchParams.get('slug')?.trim() ?? '';
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    return NextResponse.json({ error: 'Geçersiz bağlantı adı.' }, { status: 400 });
+  }
+  const [existing] = await db
+    .select({ id: catalogProducts.id })
+    .from(catalogProducts)
+    .where(eq(catalogProducts.slug, slug))
+    .limit(1);
+  return NextResponse.json({ available: !existing, productId: existing?.id });
+}
+
 export async function POST(request: Request) {
   const admin = await getAdminAuth();
   if (admin.state !== 'admin') {
@@ -56,6 +78,20 @@ export async function POST(request: Request) {
   }
 
   const input = parsed.data;
+  const [slugOwner] = await db
+    .select({ id: catalogProducts.id })
+    .from(catalogProducts)
+    .where(eq(catalogProducts.slug, input.slug))
+    .limit(1);
+  if (slugOwner) {
+    return NextResponse.json(
+      {
+        error: 'Bu ürün zaten kaydedilmiş. Ürün listesinden düzenleyebilirsiniz.',
+        productId: slugOwner.id,
+      },
+      { status: 409 }
+    );
+  }
   const id = `product-${crypto.randomUUID()}`;
   const now = new Date().toISOString();
   const product = {

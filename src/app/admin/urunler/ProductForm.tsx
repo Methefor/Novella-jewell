@@ -157,6 +157,24 @@ export default function ProductForm({
     setError('');
 
     try {
+      if (!editing) {
+        const availabilityResponse = await fetch(
+          `/api/admin/products?slug=${encodeURIComponent(slug)}`
+        );
+        const availability = (await availabilityResponse.json()) as {
+          available?: boolean;
+          error?: string;
+        };
+        if (!availabilityResponse.ok) {
+          throw new Error(availability.error || 'Bağlantı adı kontrol edilemedi.');
+        }
+        if (!availability.available) {
+          throw new Error(
+            'Bu ürün zaten kaydedilmiş. Ürün listesinden bularak düzenleyebilirsiniz.'
+          );
+        }
+      }
+
       const form = new FormData(event.currentTarget);
       const images: string[] = [];
       for (const item of imageItems) {
