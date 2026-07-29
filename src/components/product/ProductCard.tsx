@@ -5,7 +5,6 @@ import { trackAddToCart } from '@/lib/analytics';
 import { dusukStok } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
-import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -30,7 +29,6 @@ export default function ProductCard({ product }: ProductCardProps) {
   const gallery = product.images ?? defaultVariant.images;
   const img1 = gallery[0];
   const img2 = gallery[1] ?? null;
-
   const stokBilgi = dusukStok(product);
 
   const hasDiscount =
@@ -43,109 +41,93 @@ export default function ProductCard({ product }: ProductCardProps) {
       )
     : 0;
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleAddToCart = () => {
     addToCart(product, product.defaultVariant, 1);
     trackAddToCart(product, 1);
   };
 
   return (
-    <Link
-      href={`/urun/${product.slug}`}
-      className="group block"
-      aria-label={`${product.name} ürün detayına git`}
-    >
-      {/* Image container — 1:1 kare, yumuşak köşe */}
-      <div
-        className="relative w-full overflow-hidden rounded-xl border border-black/[0.04] bg-[#eee8df] shadow-[0_12px_35px_rgba(66,52,31,0.04)]"
-        style={{ aspectRatio: '1/1' }}
-        role="img"
-        aria-label={`${product.name} ürün görseli`}
+    <article className="group block">
+      <Link
+        href={`/urun/${product.slug}`}
+        className="block"
+        aria-label={`${product.name} ürün detayına git`}
       >
-        {/* Primary image — hover'da hafif zoom */}
-        <Image
-          src={img1}
-          alt={`${product.name} - ${categoryLabel[product.category] ?? product.category}`}
-          fill
-          className={`object-cover transition-all duration-700 ease-spring ${img2 ? 'group-hover:opacity-0 group-hover:scale-105' : 'group-hover:scale-105'}`}
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        />
-
-        {/* Secondary image (hover swap) */}
-        {img2 && (
-          <>
-            <Image
-              src={img2}
-              alt={`${product.name} - alternatif görünüm`}
-              fill
-              className="object-cover opacity-0 scale-105 transition-all duration-700 ease-spring group-hover:opacity-100 group-hover:scale-100"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            />
-            <span className="absolute bottom-3 left-3 z-10 hidden translate-y-2 rounded-full border border-white/40 bg-black/45 px-2.5 py-1 text-[9px] uppercase tracking-[0.16em] text-white/90 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:inline-flex">
-              İkinci görünüm
-            </span>
-          </>
-        )}
-
-        {/* Favori (kalp) — sağ üst köşe */}
-        <FavoriButton product={product} variant="card" />
-
-        {/* Badges */}
         <div
-          className="absolute top-3 left-3 flex flex-col gap-1.5 z-10"
-          aria-label="Ürün etiketleri"
+          className="relative w-full overflow-hidden rounded-xl border border-black/[0.04] bg-[#eee8df] shadow-[0_12px_35px_rgba(66,52,31,0.04)]"
+          style={{ aspectRatio: '1/1' }}
+          role="img"
+          aria-label={`${product.name} ürün görseli`}
         >
-          {product.isNew && (
-            <span
-              className="bg-black text-white text-[10px] font-medium tracking-widest uppercase px-2.5 py-1 rounded-full"
-              role="status"
-              aria-label="Yeni ürün"
-            >
-              Yeni
-            </span>
-          )}
-          {hasDiscount && (
-            <span
-              className="bg-gold text-white text-[10px] font-medium px-2.5 py-1 rounded-full"
-              role="status"
-              aria-label={`%${discountPct} indirim`}
-            >
-              %{discountPct}
-            </span>
-          )}
-        </div>
+          <Image
+            src={img1}
+            alt={`${product.name} - ${categoryLabel[product.category] ?? product.category}`}
+            fill
+            className={`object-cover transition-all duration-700 ease-spring ${img2 ? 'group-hover:opacity-0 group-hover:scale-105' : 'group-hover:scale-105'}`}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
 
-        {/* Sepete ekle: mobilde kompakt ikon, masaüstünde hover barı */}
-        <motion.div
-          className="absolute bottom-3 right-3 z-10 overflow-hidden rounded-full bg-black/90 shadow-lg backdrop-blur-sm md:inset-x-0 md:bottom-0 md:right-auto md:rounded-none md:shadow-none md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300"
-          style={{ transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)' }}
-        >
-          <button
-            onClick={handleAddToCart}
-            className="flex h-11 w-11 items-center justify-center gap-2 text-white text-sm font-medium tracking-wide transition-colors duration-200 hover:bg-gold md:h-auto md:w-full md:py-3.5"
-            aria-label={`${product.name} ürününü sepete ekle`}
+          {img2 && (
+            <>
+              <Image
+                src={img2}
+                alt={`${product.name} - alternatif görünüm`}
+                fill
+                className="object-cover scale-105 opacity-0 transition-all duration-700 ease-spring group-hover:scale-100 group-hover:opacity-100"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              />
+              <span className="absolute bottom-3 left-3 z-10 hidden translate-y-2 rounded-full border border-white/40 bg-black/45 px-2.5 py-1 text-[9px] uppercase tracking-[0.16em] text-white/90 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:inline-flex">
+                İkinci görünüm
+              </span>
+            </>
+          )}
+
+          <FavoriButton product={product} variant="card" />
+
+          <div
+            className="absolute top-3 left-3 z-10 flex flex-col gap-1.5"
+            aria-label="Ürün etiketleri"
           >
-            <ShoppingBag className="w-4 h-4" aria-hidden="true" />
-            <span className="sr-only md:not-sr-only">Sepete Ekle</span>
-          </button>
-        </motion.div>
-      </div>
+            {product.isNew && (
+              <span
+                className="rounded-full bg-black px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-white"
+                role="status"
+                aria-label="Yeni ürün"
+              >
+                Yeni
+              </span>
+            )}
+            {hasDiscount && (
+              <span
+                className="rounded-full bg-gold px-2.5 py-1 text-[10px] font-medium text-white"
+                role="status"
+                aria-label={`%${discountPct} indirim`}
+              >
+                %{discountPct}
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
 
-      {/* Info below card */}
-      <div className="mt-4">
-        <p className="text-[11px] uppercase tracking-widest text-black/40 mb-1">
+      <div className="mt-3.5">
+        <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-black/50">
           {categoryLabel[product.category] ?? product.category}
         </p>
-        <h3 className="text-sm font-medium text-black leading-snug group-hover:text-gold transition-colors duration-200 line-clamp-2">
-          {product.name}
-        </h3>
-        <div className="flex items-baseline gap-2 mt-1.5">
-          <span className="text-sm font-semibold text-black">
+
+        <Link href={`/urun/${product.slug}`} className="block">
+          <h3 className="line-clamp-2 min-h-10 text-[13px] font-medium leading-5 text-black transition-colors duration-200 group-hover:text-gold-dark sm:text-sm">
+            {product.name}
+          </h3>
+        </Link>
+
+        <div className="mt-1.5 flex items-baseline gap-2">
+          <span className="text-sm font-semibold text-black sm:text-[15px]">
             {product.price.toLocaleString('tr-TR')} ₺
           </span>
           {hasDiscount && (
             <span
-              className="text-xs text-black/35 line-through"
+              className="text-xs text-black/45 line-through"
               aria-label="Eski fiyat"
             >
               {product.compareAtPrice!.toLocaleString('tr-TR')} ₺
@@ -153,13 +135,22 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Düşük stok — kıtlık sinyali, gerçek stokla */}
         {stokBilgi.goster && (
-          <p className="text-[11px] text-gold-dark font-medium mt-1.5">
+          <p className="mt-1.5 text-xs font-medium text-[#80683c]">
             Son {stokBilgi.adet} adet
           </p>
         )}
+
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-black bg-black px-3 py-2.5 text-[12px] font-medium tracking-[0.04em] text-white transition-all duration-200 hover:border-gold-dark hover:bg-gold-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 sm:text-[13px]"
+          aria-label={`${product.name} ürününü sepete ekle`}
+        >
+          <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>Sepete Ekle</span>
+        </button>
       </div>
-    </Link>
+    </article>
   );
 }
