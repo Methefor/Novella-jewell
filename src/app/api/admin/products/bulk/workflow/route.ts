@@ -16,7 +16,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const schema = z.object({
-  action: z.enum(['approve-copy', 'queue', 'publish', 'unpublish']),
+  action: z.enum(['approve-copy', 'queue', 'publish', 'unpublish', 'trash', 'restore']),
   ids: z.array(z.string().min(1)).min(1).max(200),
 });
 
@@ -87,6 +87,12 @@ export async function POST(request: Request) {
   }
 
   if (action === 'publish') {
+    if (rows.some((row) => row.data.deletedAt)) {
+      return NextResponse.json(
+        { error: 'Çöp kutusundaki ürünleri önce geri yükleyin.' },
+        { status: 409 }
+      );
+    }
     const notReady = rows.filter((row) =>
       !getProductReadiness({
         ...row.data,
@@ -107,6 +113,34 @@ export async function POST(request: Request) {
       .update(catalogProducts)
       .set({ published: false, updatedAt: new Date() })
       .where(inArray(catalogProducts.id, ids));
+  }
+
+  if (action === 'trash') {
+    const deletedAt = new Date().toISOString();
+    for (const row of rows) {
+      await db
+        .update(catalogProducts)
+        .set({
+          published: false,
+          data: { ...row.data, deletedAt, updatedAt: deletedAt },
+          updatedAt: new Date(),
+        })
+        .where(eq(catalogProducts.id, row.id));
+    }
+  }
+
+  if (action === 'restore') {
+    for (const row of rows) {
+      const { deletedAt: _deletedAt, ...restoredData } = row.data;
+      await db
+        .update(catalogProducts)
+        .set({
+          published: false,
+          data: { ...restoredData, updatedAt: new Date().toISOString() },
+          updatedAt: new Date(),
+        })
+        .where(eq(catalogProducts.id, row.id));
+    }
   }
 
   let campaignId: string | undefined;
@@ -138,7 +172,7 @@ export async function POST(request: Request) {
     summary: `${ids.length} ürüne ${action} işlemi uygulandı.`,
     metadata: { count: ids.length, campaignId: campaignId ?? null },
   });
-  if (action === 'publish' || action === 'unpublish') {
+  if (['publish', 'unpublish', 'trash', 'restore'].includes(action)) {
     revalidatePath('/');
     revalidatePath('/urunler');
     revalidatePath('/koleksiyonlar');

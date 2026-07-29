@@ -14,6 +14,7 @@ export const dynamic = 'force-dynamic';
 type ProductFilter =
   | 'all'
   | 'published'
+  | 'trash'
   | 'missing-visuals'
   | 'draft'
   | 'out-of-stock'
@@ -30,6 +31,7 @@ export default async function ProductsAdminPage({
   const query = (params.q ?? '').trim().toLocaleLowerCase('tr-TR');
   const filter: ProductFilter = [
     'published',
+    'trash',
     'missing-visuals',
     'draft',
     'out-of-stock',
@@ -53,8 +55,9 @@ export default async function ProductsAdminPage({
     ...dynamicProducts,
     ...PRODUCTS.filter((product) => !rowById.has(product.id)),
   ];
-  const readyCount = products.filter((product) => getProductReadiness(product).ready).length;
-  const publishedCount = products.filter((product) => {
+  const activeProducts = products.filter((product) => !product.deletedAt);
+  const readyCount = activeProducts.filter((product) => getProductReadiness(product).ready).length;
+  const publishedCount = activeProducts.filter((product) => {
     const row = rowById.get(product.id);
     return row ? row.published : !product.hidden;
   }).length;
@@ -66,20 +69,21 @@ export default async function ProductsAdminPage({
       (sum, variant) => sum + variant.stock,
       0
     );
-    return { product, published, readiness, stock };
+    return { product, published, readiness, stock, deleted: Boolean(product.deletedAt) };
   });
   const filterCounts: Record<ProductFilter, number> = {
-    all: productStates.length,
-    published: productStates.filter(({ published }) => published).length,
+    all: productStates.filter(({ deleted }) => !deleted).length,
+    published: productStates.filter(({ published, deleted }) => published && !deleted).length,
+    trash: productStates.filter(({ deleted }) => deleted).length,
     'missing-visuals': productStates.filter(
-      ({ readiness }) => readiness.imageCount < 3
+      ({ readiness, deleted }) => !deleted && readiness.imageCount < 3
     ).length,
-    draft: productStates.filter(({ published }) => !published).length,
-    'out-of-stock': productStates.filter(({ stock }) => stock === 0).length,
-    ready: productStates.filter(({ readiness }) => readiness.ready).length,
+    draft: productStates.filter(({ published, deleted }) => !deleted && !published).length,
+    'out-of-stock': productStates.filter(({ stock, deleted }) => !deleted && stock === 0).length,
+    ready: productStates.filter(({ readiness, deleted }) => !deleted && readiness.ready).length,
   };
   const visibleProducts = productStates.filter(
-    ({ product, published, readiness, stock }) => {
+    ({ product, published, readiness, stock, deleted }) => {
       const matchesQuery =
         !query ||
         [product.name, product.slug, product.collection, product.category]
@@ -87,12 +91,13 @@ export default async function ProductsAdminPage({
           .toLocaleLowerCase('tr-TR')
           .includes(query);
       const matchesFilter =
-        filter === 'all' ||
-        (filter === 'published' && published) ||
-        (filter === 'missing-visuals' && readiness.imageCount < 3) ||
-        (filter === 'draft' && !published) ||
-        (filter === 'out-of-stock' && stock === 0) ||
-        (filter === 'ready' && readiness.ready);
+        (filter === 'all' && !deleted) ||
+        (filter === 'published' && !deleted && published) ||
+        (filter === 'trash' && deleted) ||
+        (filter === 'missing-visuals' && !deleted && readiness.imageCount < 3) ||
+        (filter === 'draft' && !deleted && !published) ||
+        (filter === 'out-of-stock' && !deleted && stock === 0) ||
+        (filter === 'ready' && !deleted && readiness.ready);
       return matchesQuery && matchesFilter;
     }
   );
@@ -102,6 +107,7 @@ export default async function ProductsAdminPage({
   }> = [
     { value: 'all', label: 'Tümü' },
     { value: 'published', label: 'Yayında' },
+    { value: 'trash', label: 'Çöp kutusu' },
     { value: 'missing-visuals', label: 'Eksik görselli' },
     { value: 'draft', label: 'Taslak' },
     { value: 'out-of-stock', label: 'Stokta yok' },
@@ -116,7 +122,7 @@ export default async function ProductsAdminPage({
             <Link href="/admin" className="text-sm text-neutral-600">← Dashboard</Link>
             <h1 className="mt-3 font-heading text-4xl">Ürün Yönetimi</h1>
             <p className="mt-2 text-sm text-neutral-500">
-              {products.length} ürün · {publishedCount} yayında · {readyCount} reklama hazır
+              {activeProducts.length} ürün · {publishedCount} yayında · {readyCount} reklama hazır
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -133,7 +139,7 @@ export default async function ProductsAdminPage({
         </header>
 
         <div className="mb-5 grid gap-3 sm:grid-cols-3">
-          <Summary label="Toplam ürün" value={products.length} />
+          <Summary label="Toplam ürün" value={activeProducts.length} />
           <Summary label="Mağazada yayında" value={publishedCount} />
           <Summary label="Reklama hazır" value={readyCount} accent />
         </div>
@@ -190,13 +196,14 @@ export default async function ProductsAdminPage({
         </section>
 
         <ProductBulkManager
-          products={visibleProducts.map(({ product, published, readiness, stock }) => ({
+          products={visibleProducts.map(({ product, published, readiness, stock, deleted }) => ({
             id: product.id,
             name: product.name,
             slug: product.slug,
             price: product.price,
             stock,
             published,
+            deleted,
             readiness: {
               ready: readiness.ready,
               score: readiness.score,

@@ -72,6 +72,8 @@ export interface Product {
    * gizli 49 ₺'lik test ürünü koymaya yarar. Test bitince sil.
    */
   hidden?: boolean;
+  /** Admin çöp kutusuna taşınan ürünler için geri alınabilir silme zamanı. */
+  deletedAt?: string;
 
   // Set ürünler için parça sayısı — set çekimleri gelince fiyat formülü: toplamın %85-90
   setParcaSayisi?: number;

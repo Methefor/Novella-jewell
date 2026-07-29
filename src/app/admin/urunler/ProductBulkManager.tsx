@@ -11,6 +11,7 @@ type ProductListItem = {
   price: number;
   stock: number;
   published: boolean;
+  deleted: boolean;
   readiness: {
     ready: boolean;
     score: number;
@@ -26,6 +27,7 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
   const [message, setMessage] = useState('');
   const selected = useMemo(() => new Set(selectedIds), [selectedIds]);
   const allSelected = products.length > 0 && products.every((product) => selected.has(product.id));
+  const showingTrash = products.every((product) => product.deleted);
 
   function toggleAll() {
     setSelectedIds(allSelected ? [] : products.map((product) => product.id));
@@ -41,13 +43,27 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
     setMessage('');
   }
 
-  async function run(action: 'publish' | 'unpublish', ids = selectedIds) {
+  async function run(
+    action: 'publish' | 'unpublish' | 'trash' | 'restore',
+    ids = selectedIds
+  ) {
     if (!ids.length || busy) return;
-    const verb = action === 'publish' ? 'yayına almak' : 'yayından kaldırmak';
+    const verb =
+      action === 'publish'
+        ? 'yayına almak'
+        : action === 'unpublish'
+          ? 'yayından kaldırmak'
+          : action === 'trash'
+            ? 'çöp kutusuna taşımak'
+            : 'geri yüklemek';
     const detail =
       action === 'unpublish'
         ? '\n\nÜrünler mağazada görünmeyecek, ancak silinmeyecek ve daha sonra yeniden yayınlanabilecek.'
-        : '\n\nYalnızca görsel ve kalite kontrolleri tamamlanmış ürünler yayınlanabilir.';
+        : action === 'publish'
+          ? '\n\nYalnızca görsel ve kalite kontrolleri tamamlanmış ürünler yayınlanabilir.'
+          : action === 'trash'
+            ? '\n\nÜrünler mağazadan ve normal yönetim listesinden kaldırılacak. Çöp kutusundan geri yüklenebilir.'
+            : '\n\nÜrünler taslak durumunda geri yüklenecek.';
     if (!window.confirm(`${ids.length} ürünü ${verb} istediğinize emin misiniz?${detail}`)) return;
 
     setBusy(true);
@@ -61,9 +77,15 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error || 'İşlem tamamlanamadı.');
       setSelectedIds([]);
-      setMessage(
-        `${ids.length} ürün ${action === 'publish' ? 'yayına alındı' : 'yayından kaldırıldı'}.`
-      );
+      const resultLabel =
+        action === 'publish'
+          ? 'yayına alındı'
+          : action === 'unpublish'
+            ? 'yayından kaldırıldı'
+            : action === 'trash'
+              ? 'çöp kutusuna taşındı'
+              : 'taslak olarak geri yüklendi';
+      setMessage(`${ids.length} ürün ${resultLabel}.`);
       router.refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'İşlem tamamlanamadı.');
@@ -95,22 +117,48 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
           </label>
           <div className="flex flex-wrap items-center gap-2">
             <span className="mr-1 text-xs text-neutral-500">{selectedIds.length} ürün seçildi</span>
-            <button
-              type="button"
-              disabled={!selectedIds.length || busy}
-              onClick={() => run('unpublish')}
-              className="rounded-lg border border-[#d8cdbb] px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Seçilenleri yayından kaldır
-            </button>
-            <button
-              type="button"
-              disabled={!selectedIds.length || busy}
-              onClick={() => run('publish')}
-              className="rounded-lg bg-black px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Seçilenleri yayınla
-            </button>
+            {!showingTrash && (
+              <>
+                <button
+                  type="button"
+                  disabled={!selectedIds.length || busy}
+                  onClick={() => run('unpublish')}
+                  className="rounded-lg border border-[#d8cdbb] px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Seçilenleri yayından kaldır
+                </button>
+                <button
+                  type="button"
+                  disabled={!selectedIds.length || busy}
+                  onClick={() => run('publish')}
+                  className="rounded-lg bg-black px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Seçilenleri yayınla
+                </button>
+              </>
+            )}
+            {selectedIds.length > 0 &&
+            products
+              .filter((product) => selected.has(product.id))
+              .every((product) => product.deleted) ? (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => run('restore')}
+                className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-40"
+              >
+                Seçilenleri geri yükle
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={!selectedIds.length || busy}
+                onClick={() => run('trash')}
+                className="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-700 disabled:opacity-40"
+              >
+                Seçilenleri sil
+              </button>
+            )}
           </div>
         </div>
         {message && (
@@ -140,8 +188,8 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="font-semibold">{product.name}</h2>
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${product.published ? 'bg-emerald-100 text-emerald-800' : 'bg-neutral-100 text-neutral-600'}`}>
-                      {product.published ? 'Yayında' : 'Taslak'}
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${product.deleted ? 'bg-red-50 text-red-700' : product.published ? 'bg-emerald-100 text-emerald-800' : 'bg-neutral-100 text-neutral-600'}`}>
+                      {product.deleted ? 'Çöp kutusunda' : product.published ? 'Yayında' : 'Taslak'}
                     </span>
                     <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${product.readiness.ready ? 'bg-[#efe9d8] text-[#75643d]' : 'bg-amber-100 text-amber-800'}`}>
                       {product.readiness.ready ? 'Reklama hazır' : `Hazırlık %${product.readiness.score}`}
@@ -159,22 +207,45 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Link href={`/admin/urunler/${encodeURIComponent(product.id)}`} className="rounded-lg border border-[#d8cdbb] px-3 py-2 text-sm font-medium hover:border-black">
-                  Düzenle
-                </Link>
+                {!product.deleted && (
+                  <Link href={`/admin/urunler/${encodeURIComponent(product.id)}`} className="rounded-lg border border-[#d8cdbb] px-3 py-2 text-sm font-medium hover:border-black">
+                    Düzenle
+                  </Link>
+                )}
                 {product.published && (
                   <Link href={`/urun/${product.slug}`} target="_blank" className="rounded-lg border border-[#d8cdbb] px-3 py-2 text-sm">
                     Görüntüle
                   </Link>
                 )}
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => run(product.published ? 'unpublish' : 'publish', [product.id])}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium disabled:opacity-40 ${product.published ? 'bg-neutral-100 text-neutral-700' : 'bg-black text-white'}`}
-                >
-                  {product.published ? 'Yayından kaldır' : 'Yayınla'}
-                </button>
+                {product.deleted ? (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => run('restore', [product.id])}
+                    className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-40"
+                  >
+                    Geri yükle
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => run(product.published ? 'unpublish' : 'publish', [product.id])}
+                      className={`rounded-lg px-3 py-2 text-sm font-medium disabled:opacity-40 ${product.published ? 'bg-neutral-100 text-neutral-700' : 'bg-black text-white'}`}
+                    >
+                      {product.published ? 'Yayından kaldır' : 'Yayınla'}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => run('trash', [product.id])}
+                      className="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-700 disabled:opacity-40"
+                    >
+                      Sil
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </article>
