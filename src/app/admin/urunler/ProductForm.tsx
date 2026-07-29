@@ -153,6 +153,7 @@ export default function ProductForm({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formElement = event.currentTarget;
     setBusy(true);
     setError('');
 
@@ -175,7 +176,7 @@ export default function ProductForm({
         }
       }
 
-      const form = new FormData(event.currentTarget);
+      const form = new FormData(formElement);
       const images: string[] = [];
       for (const item of imageItems) {
         if (item.file) {
