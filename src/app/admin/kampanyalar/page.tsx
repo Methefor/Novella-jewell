@@ -2,6 +2,7 @@ import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import {
   campaignItems,
+  campaignMediaAssets,
   catalogProducts,
   contentCampaigns,
   type CampaignChannel,
@@ -70,6 +71,14 @@ export default async function CampaignsPage({
           .from(campaignItems)
           .where(eq(campaignItems.campaignId, selectedCampaign.id))
           .orderBy(asc(campaignItems.createdAt))
+      : [];
+  const selectedMedia =
+    !dbYok && selectedCampaign
+      ? await db
+          .select()
+          .from(campaignMediaAssets)
+          .where(eq(campaignMediaAssets.campaignId, selectedCampaign.id))
+          .orderBy(desc(campaignMediaAssets.createdAt))
       : [];
 
   const catalogById = new Map(catalogRows.map((row) => [row.id, row]));
@@ -270,6 +279,34 @@ export default async function CampaignsPage({
                     {completedCount}/{selectedItems.length} içerik yayına hazır
                     veya yayınlandı
                   </p>
+                </section>
+
+                <section className="rounded-2xl border border-[#e3d9c8] bg-white p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9e8e63]">Medya kütüphanesi</p>
+                      <h2 className="mt-1 font-heading text-2xl">Kampanya videoları</h2>
+                    </div>
+                    <Link href="/admin/icerik-uret" className="rounded-lg bg-black px-4 py-2 text-xs font-semibold text-white">Video üret ve aktar</Link>
+                  </div>
+                  {selectedMedia.length ? (
+                    <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                      {selectedMedia.map((media) => (
+                        <article key={media.id} className="overflow-hidden rounded-xl border border-[#e7ded1] bg-[#faf8f4]">
+                          <video src={media.url} controls preload="metadata" playsInline className="aspect-[4/5] w-full bg-black object-contain" />
+                          <div className="p-3">
+                            <p className="truncate text-xs font-semibold" title={media.filename}>{media.filename}</p>
+                            <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-neutral-500">
+                              <span className="rounded-full bg-[#eee7db] px-2 py-1 uppercase">{media.format}</span>
+                              <span>{(media.size / 1024 / 1024).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} MB · İncelemede</span>
+                            </div>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-4 rounded-xl bg-[#f8f5ef] p-5 text-sm text-neutral-500">Bu kampanyaya henüz video aktarılmadı.</p>
+                  )}
                 </section>
 
                 <details className="rounded-2xl border border-[#e3d9c8] bg-white p-5">

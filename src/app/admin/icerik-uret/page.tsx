@@ -1,5 +1,8 @@
 import { getAdminAuth } from '@/lib/admin-auth';
 import { getCatalogProducts } from '@/lib/catalog';
+import { db, dbYok } from '@/db';
+import { contentCampaigns } from '@/db/schema';
+import { desc } from 'drizzle-orm';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import ContentStudioClient, { type MotionProduct } from './ContentStudioClient';
@@ -21,6 +24,12 @@ export default async function ContentStudioPage() {
       images: Array.from(new Set((product.images?.length ? product.images : product.variants.flatMap((variant) => variant.images)).filter(Boolean))),
     }))
     .filter((product) => product.images.length > 0);
+  const campaigns = dbYok
+    ? []
+    : await db
+        .select({ id: contentCampaigns.id, name: contentCampaigns.name })
+        .from(contentCampaigns)
+        .orderBy(desc(contentCampaigns.updatedAt));
 
   return (
     <main className="min-h-screen bg-[#f4efe7] px-4 py-8 sm:px-8 sm:py-10">
@@ -34,7 +43,7 @@ export default async function ContentStudioPage() {
           </div>
           <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d6cab8] bg-white px-5 py-3 text-sm font-semibold">Reklam hazırlığına dön</Link>
         </header>
-        <ContentStudioClient products={products} />
+        <ContentStudioClient products={products} campaigns={campaigns} />
       </div>
     </main>
   );

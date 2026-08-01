@@ -266,6 +266,23 @@ export const campaignItems = pgTable(
   ]
 );
 
+export type CampaignMediaFormat = 'story' | 'feed' | 'square';
+
+export const campaignMediaAssets = pgTable('campaign_media_assets', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  campaignId: uuid('campaign_id')
+    .notNull()
+    .references(() => contentCampaigns.id, { onDelete: 'cascade' }),
+  url: text('url').notNull(),
+  pathname: text('pathname').notNull(),
+  filename: text('filename').notNull(),
+  format: text('format').$type<CampaignMediaFormat>().notNull(),
+  size: integer('size').notNull(),
+  status: text('status').notNull().default('review'),
+  createdBy: text('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 export type OrderRow = typeof orders.$inferSelect;
 export type NewOrderRow = typeof orders.$inferInsert;
 export type OrderEventRow = typeof orderEvents.$inferSelect;
@@ -275,3 +292,4 @@ export type AnalyticsEventRow = typeof analyticsEvents.$inferSelect;
 export type ProductMediaAssetRow = typeof productMediaAssets.$inferSelect;
 export type ContentCampaignRow = typeof contentCampaigns.$inferSelect;
 export type CampaignItemRow = typeof campaignItems.$inferSelect;
+export type CampaignMediaAssetRow = typeof campaignMediaAssets.$inferSelect;

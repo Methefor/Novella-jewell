@@ -3,8 +3,10 @@
 import { Check, Clipboard, Download, Film, LoaderCircle, Search, X } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
+import { upload } from '@vercel/blob/client';
 
 export type MotionProduct = { id: string; name: string; slug: string; price: number; images: string[] };
+type CampaignOption = { id: string; name: string };
 type SelectedAsset = { key: string; productId: string; productName: string; image: string };
 
 const formats = [
@@ -15,7 +17,7 @@ const formats = [
 
 const remotionPath = (src: string) => (src.startsWith('/') ? src.slice(1) : src);
 
-export default function ContentStudioClient({ products }: { products: MotionProduct[] }) {
+export default function ContentStudioClient({ products, campaigns }: { products: MotionProduct[]; campaigns: CampaignOption[] }) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<SelectedAsset[]>([]);
   const [selectedFormats, setSelectedFormats] = useState<string[]>(formats.map((format) => format.id));
@@ -24,6 +26,9 @@ export default function ContentStudioClient({ products }: { products: MotionProd
   const [cta, setCta] = useState('Yeni yüzükleri keşfet');
   const [copied, setCopied] = useState(false);
   const [renderState, setRenderState] = useState<{ status: 'idle' | 'rendering' | 'success' | 'error'; message: string }>({ status: 'idle', message: '' });
+  const [campaignId, setCampaignId] = useState(campaigns[0]?.id ?? '');
+  const [videoFiles, setVideoFiles] = useState<File[]>([]);
+  const [uploadState, setUploadState] = useState<{ status: 'idle' | 'uploading' | 'success' | 'error'; message: string }>({ status: 'idle', message: '' });
   const visibleProducts = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('tr-TR');
     return normalized ? products.filter((product) => product.name.toLocaleLowerCase('tr-TR').includes(normalized)) : products;
@@ -64,6 +69,28 @@ export default function ContentStudioClient({ products }: { products: MotionProd
       setRenderState({ status: 'error', message });
     }
   }
+  async function uploadVideos() {
+    if (!campaignId || videoFiles.length === 0 || uploadState.status === 'uploading') return;
+    setUploadState({ status: 'uploading', message: `${videoFiles.length} video medya kütüphanesine yükleniyor.` });
+    try {
+      for (const file of videoFiles) {
+        if (file.type !== 'video/mp4') throw new Error(`${file.name} MP4 biçiminde değil.`);
+        if (file.size > 60 * 1024 * 1024) throw new Error(`${file.name} 60 MB sınırını aşıyor.`);
+        const lower = file.name.toLocaleLowerCase('tr-TR');
+        const format = lower.includes('story') ? 'story' : lower.includes('square') ? 'square' : 'feed';
+        const safeName = file.name.toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9.-]+/g, '-');
+        await upload(`campaigns/${campaignId}/${safeName}`, file, {
+          access: 'public',
+          handleUploadUrl: '/api/admin/campaign-media/upload',
+          clientPayload: JSON.stringify({ campaignId, format, filename: file.name, size: file.size }),
+        });
+      }
+      setUploadState({ status: 'success', message: `${videoFiles.length} video kampanya medya kütüphanesine eklendi. Yayınlanmadı.` });
+      setVideoFiles([]);
+    } catch (error) {
+      setUploadState({ status: 'error', message: error instanceof Error ? error.message : 'Videolar yüklenemedi.' });
+    }
+  }
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,.65fr)]">
@@ -81,6 +108,7 @@ export default function ContentStudioClient({ products }: { products: MotionProd
         <section className="overflow-hidden rounded-3xl bg-[#171713] p-6 text-white"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#c7ad70]">Canlı taslak</p><div className="relative mx-auto mt-5 aspect-[9/16] max-h-[510px] overflow-hidden rounded-[2rem] bg-[#302d27]"><div className="absolute inset-0 grid grid-cols-3">{selected.map((asset) => <div key={asset.key} className="relative"><Image src={asset.image} alt="" fill className="object-cover opacity-75" sizes="180px" /></div>)}</div><div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-black/20" /><div className="absolute bottom-0 left-0 right-0 p-6"><p className="font-heading text-3xl leading-none">{headline || 'Başlık'}</p><p className="mt-2 text-sm text-white/75">{subheadline || 'Alt başlık'}</p><span className="mt-5 inline-flex rounded-full border border-white/50 px-4 py-2 text-[10px] uppercase tracking-[0.16em]">{cta || 'CTA'}</span></div></div></section>
         <section className="rounded-3xl border border-[#ded3c3] bg-white p-6"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#947d4e]">02 · Metin ve format</p><div className="mt-4 space-y-3"><TextField label="Başlık" value={headline} onChange={setHeadline} /><TextField label="Alt başlık" value={subheadline} onChange={setSubheadline} /><TextField label="CTA" value={cta} onChange={setCta} /></div><div className="mt-5 flex flex-wrap gap-2">{formats.map((format) => { const active = selectedFormats.includes(format.id); return <button key={format.id} type="button" onClick={() => toggleFormat(format.id)} className={`rounded-full px-3 py-2 text-xs font-semibold ${active ? 'bg-black text-white' : 'bg-[#eee9e1] text-neutral-600'}`}>{format.label}</button>; })}</div></section>
         <section className="rounded-3xl border border-[#ded3c3] bg-white p-6"><div className="flex items-center gap-2"><Film className="h-5 w-5" /><h2 className="font-heading text-2xl">Video üretimi</h2></div><p className="mt-2 text-xs leading-relaxed text-neutral-500">Bilgisayarında bir kez <strong>npm run studio:bridge</strong> komutunu çalıştır. Ardından seçili formatların tamamını buradan oluşturabilirsin. Bu işlem paylaşım yapmaz.</p>{!ready && <p className="mt-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">Devam etmek için tam 3 görsel, en az 1 format ve bir başlık seçin.</p>}{renderState.message && <p className={`mt-4 rounded-xl p-3 text-xs ${renderState.status === 'success' ? 'bg-emerald-50 text-emerald-800' : renderState.status === 'error' ? 'bg-rose-50 text-rose-800' : 'bg-blue-50 text-blue-800'}`}>{renderState.message}</p>}<div className="mt-4 grid gap-2"><button type="button" disabled={!ready || renderState.status === 'rendering'} onClick={renderOnComputer} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-black px-4 text-sm font-semibold text-white disabled:opacity-35">{renderState.status === 'rendering' ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Film className="h-4 w-4" />}{renderState.status === 'rendering' ? 'Videolar hazırlanıyor' : 'Videoları bilgisayarımda oluştur'}</button><details className="rounded-xl border border-[#e2d8c8] p-3"><summary className="cursor-pointer text-xs font-semibold text-neutral-600">Manuel üretim seçenekleri</summary><div className="mt-3 grid gap-2"><button type="button" disabled={!ready} onClick={downloadProps} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#eee9e1] px-4 text-xs font-semibold disabled:opacity-35"><Download className="h-4 w-4" />JSON paketini indir</button><button type="button" disabled={!ready} onClick={copyCommands} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-[#d6cab8] px-4 text-xs font-semibold disabled:opacity-35">{copied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}{copied ? 'Komutlar kopyalandı' : 'Render komutlarını kopyala'}</button></div></details></div></section>
+        <section className="rounded-3xl border border-[#ded3c3] bg-white p-6"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#947d4e]">03 · Kampanya medyası</p><h2 className="mt-2 font-heading text-2xl">Videoları taslağa aktar</h2><p className="mt-2 text-xs leading-relaxed text-neutral-500"><strong>studio/out</strong> klasöründe oluşan MP4 dosyalarını seç. Dosyalar yalnızca inceleme kuyruğuna alınır.</p><div className="mt-4 grid gap-3"><select value={campaignId} onChange={(event) => setCampaignId(event.target.value)} className="w-full rounded-xl border-[#d6cab8] bg-[#faf8f4] text-sm"><option value="">Kampanya seçin</option>{campaigns.map((campaign) => <option key={campaign.id} value={campaign.id}>{campaign.name}</option>)}</select><label className="grid cursor-pointer place-items-center rounded-xl border border-dashed border-[#bcae96] bg-[#faf8f4] px-4 py-5 text-center text-xs text-neutral-600"><span>{videoFiles.length ? `${videoFiles.length} MP4 seçildi` : 'MP4 dosyalarını seç'}</span><input type="file" accept="video/mp4" multiple className="sr-only" onChange={(event) => setVideoFiles(Array.from(event.target.files ?? []))} /></label>{uploadState.message && <p className={`rounded-xl p-3 text-xs ${uploadState.status === 'success' ? 'bg-emerald-50 text-emerald-800' : uploadState.status === 'error' ? 'bg-rose-50 text-rose-800' : 'bg-blue-50 text-blue-800'}`}>{uploadState.message}</p>}<button type="button" onClick={uploadVideos} disabled={!campaignId || videoFiles.length === 0 || uploadState.status === 'uploading'} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#9b8352] px-4 text-sm font-semibold text-white disabled:opacity-35">{uploadState.status === 'uploading' ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4 rotate-180" />}{uploadState.status === 'uploading' ? 'Medya yükleniyor' : 'Kampanya taslağına aktar'}</button>{!campaigns.length && <p className="text-xs text-amber-700">Önce Kampanya Panosu’nda bir kampanya oluşturun.</p>}</div></section>
       </aside>
     </div>
   );
