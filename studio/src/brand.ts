@@ -31,7 +31,8 @@ export const GRADYAN_SAMPANYA = `linear-gradient(160deg, ${RENK.krem} 0%, ${RENK
  * gerçekten indirir ve render'ın onu beklemesini sağlar.
  */
 import { loadFont as loadCormorant } from '@remotion/google-fonts/CormorantGaramond';
-import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
+import { loadFont as loadInstrumentSans } from '@remotion/google-fonts/InstrumentSans';
+import { loadFont as loadInstrumentSerif } from '@remotion/google-fonts/InstrumentSerif';
 
 /**
  * ⚠️ HER İKİ SUBSET DE ŞART: 'latin' + 'latin-ext'.
@@ -46,14 +47,20 @@ const { fontFamily: cormorantFamily } = loadCormorant('normal', {
   subsets: ['latin', 'latin-ext'],
 });
 
-const { fontFamily: interFamily } = loadInter('normal', {
-  weights: ['300', '400', '500', '600'],
+const { fontFamily: instrumentSansFamily } = loadInstrumentSans('normal', {
+  weights: ['400', '500', '600'],
+  subsets: ['latin', 'latin-ext'],
+});
+
+const { fontFamily: instrumentSerifFamily } = loadInstrumentSerif('normal', {
+  weights: ['400'],
   subsets: ['latin', 'latin-ext'],
 });
 
 export const YAZI = {
   baslik: cormorantFamily,
-  govde: interFamily,
+  editorial: instrumentSerifFamily,
+  govde: instrumentSansFamily,
 } as const;
 
 /** Sitedeki --ease-spring ile aynı eğri. Hareketin karakteri buradan gelir. */
@@ -70,5 +77,7 @@ export const MARKA = {
 export const FORMAT_DIKEY = { width: 1080, height: 1920, fps: 30 } as const;
 /** Feed gönderisi. */
 export const FORMAT_KARE = { width: 1080, height: 1080, fps: 30 } as const;
+/** Instagram akışında ekranı kareden daha güçlü dolduran gönderi/reklam formatı. */
+export const FORMAT_DORT_BES = { width: 1080, height: 1350, fps: 30 } as const;
 /** YouTube / web banner. */
 export const FORMAT_YATAY = { width: 1920, height: 1080, fps: 30 } as const;

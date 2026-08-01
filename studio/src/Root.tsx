@@ -1,8 +1,20 @@
 import React from 'react';
 import { Composition } from 'remotion';
-import { FORMAT_DIKEY, FORMAT_KARE } from './brand';
+import { FORMAT_DIKEY, FORMAT_DORT_BES, FORMAT_KARE } from './brand';
 import { HeroDongu, type HeroDonguProps } from './HeroDongu';
 import { UrunReklami, type UrunReklamiProps } from './UrunReklami';
+import { YuzukLansmani, type YuzukLansmaniProps } from './YuzukLansmani';
+
+const yuzukLansmaniProps = {
+  gorseller: [
+    'media/yuzuk/yuzuk-16c.jpg',
+    'media/yuzuk/yuzuk-17c.jpg',
+    'media/yuzuk/yuzuk-18b.jpg',
+  ],
+  baslik: 'Özgün parçalar.',
+  altBaslik: 'Ulaşılabilir bir lüks.',
+  cta: 'Yeni yüzükleri keşfet',
+} satisfies YuzukLansmaniProps;
 
 /**
  * Kompozisyon listesi.
@@ -18,6 +30,9 @@ import { UrunReklami, type UrunReklamiProps } from './UrunReklami';
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition id="Novella-YuzukLansmani-Story" component={YuzukLansmani} durationInFrames={210} fps={FORMAT_DIKEY.fps} width={FORMAT_DIKEY.width} height={FORMAT_DIKEY.height} defaultProps={yuzukLansmaniProps} />
+      <Composition id="Novella-YuzukLansmani-Feed" component={YuzukLansmani} durationInFrames={210} fps={FORMAT_DORT_BES.fps} width={FORMAT_DORT_BES.width} height={FORMAT_DORT_BES.height} defaultProps={yuzukLansmaniProps} />
+      <Composition id="Novella-YuzukLansmani-Square" component={YuzukLansmani} durationInFrames={210} fps={FORMAT_KARE.fps} width={FORMAT_KARE.width} height={FORMAT_KARE.height} defaultProps={yuzukLansmaniProps} />
       {/* ────────────────────────────────────────────────────────────
           SİTE HERO DÖNGÜSÜ — yazısız, sessiz, sonsuz döner.
           Reklamlardan ayrı: sitede metni sayfanın kendisi söylüyor,
