@@ -17,8 +17,10 @@ import { redirect } from 'next/navigation';
 import {
   addCampaignProduct,
   createCampaign,
+  deleteCampaignMedia,
   generateCampaignItemDraft,
   updateCampaignItem,
+  updateCampaignMedia,
   updateCampaignStatus,
 } from './actions';
 
@@ -44,6 +46,13 @@ const campaignStatusLabels: Record<string, string> = {
   draft: 'Taslak',
   active: 'Aktif',
   completed: 'Tamamlandı',
+};
+
+const mediaStatusLabels: Record<string, string> = {
+  review: 'İncelemede',
+  approved: 'Onaylandı',
+  rejected: 'Reddedildi',
+  ready: 'Yayına hazır',
 };
 
 export default async function CampaignsPage({
@@ -290,15 +299,32 @@ export default async function CampaignsPage({
                     <Link href="/admin/icerik-uret" className="rounded-lg bg-black px-4 py-2 text-xs font-semibold text-white">Video üret ve aktar</Link>
                   </div>
                   {selectedMedia.length ? (
-                    <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <div className="mt-5 grid gap-4">
                       {selectedMedia.map((media) => (
                         <article key={media.id} className="overflow-hidden rounded-xl border border-[#e7ded1] bg-[#faf8f4]">
-                          <video src={media.url} controls preload="metadata" playsInline className="aspect-[4/5] w-full bg-black object-contain" />
-                          <div className="p-3">
-                            <p className="truncate text-xs font-semibold" title={media.filename}>{media.filename}</p>
-                            <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-neutral-500">
-                              <span className="rounded-full bg-[#eee7db] px-2 py-1 uppercase">{media.format}</span>
-                              <span>{(media.size / 1024 / 1024).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} MB · İncelemede</span>
+                          <div className="grid lg:grid-cols-[230px_1fr]">
+                            <video src={media.url} controls preload="metadata" playsInline className="aspect-[4/5] h-full w-full bg-black object-contain" />
+                            <div className="p-4 sm:p-5">
+                              <div className="flex flex-wrap items-start justify-between gap-3">
+                                <div className="min-w-0"><p className="truncate text-sm font-semibold" title={media.filename}>{media.filename}</p><p className="mt-1 text-xs text-neutral-500">{(media.size / 1024 / 1024).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} MB · {media.format.toUpperCase()}</p></div>
+                                <span className={`rounded-full px-3 py-1 text-[10px] font-semibold ${media.status === 'ready' ? 'bg-emerald-100 text-emerald-800' : media.status === 'rejected' ? 'bg-rose-100 text-rose-800' : media.status === 'approved' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}`}>{mediaStatusLabels[media.status] ?? media.status}</span>
+                              </div>
+                              <details className="mt-4 border-t border-[#e7ded1] pt-4" open={media.status === 'review'}>
+                                <summary className="cursor-pointer text-xs font-semibold">Metin ve onay düzenle</summary>
+                                <form action={updateCampaignMedia} className="mt-4 grid gap-3">
+                                  <input type="hidden" name="mediaId" value={media.id} />
+                                  <input type="hidden" name="campaignId" value={selectedCampaign.id} />
+                                  <label className="grid gap-1.5 text-xs">Instagram metni<textarea name="instagramCaption" defaultValue={media.instagramCaption} rows={4} maxLength={2200} className="rounded-lg border-[#d8cdbb] text-sm" /></label>
+                                  <label className="grid gap-1.5 text-xs">Threads metni<textarea name="threadsPost" defaultValue={media.threadsPost} rows={3} maxLength={500} className="rounded-lg border-[#d8cdbb] text-sm" /></label>
+                                  <div className="grid gap-3 sm:grid-cols-2"><label className="grid gap-1.5 text-xs">CTA<input name="cta" defaultValue={media.cta} maxLength={200} className="rounded-lg border-[#d8cdbb] text-sm" /></label><label className="grid gap-1.5 text-xs">Hashtag / SEO<input name="hashtags" defaultValue={media.hashtags} maxLength={500} className="rounded-lg border-[#d8cdbb] text-sm" /></label></div>
+                                  <label className="grid gap-1.5 text-xs">İnceleme notu<input name="reviewNote" defaultValue={media.reviewNote} maxLength={600} className="rounded-lg border-[#d8cdbb] text-sm" /></label>
+                                  <div className="grid gap-3 sm:grid-cols-[1fr_auto]"><select name="status" defaultValue={media.status} className="rounded-lg border-[#d8cdbb] text-sm"><option value="review">İncelemede</option><option value="approved">Onaylandı</option><option value="rejected">Reddedildi</option><option value="ready">Yayına hazır</option></select><button className="rounded-lg bg-black px-5 py-2.5 text-xs font-semibold text-white">Metni ve durumu kaydet</button></div>
+                                </form>
+                              </details>
+                              <details className="mt-3 border-t border-rose-100 pt-3">
+                                <summary className="cursor-pointer text-xs text-rose-700">Videoyu kalıcı olarak sil</summary>
+                                <form action={deleteCampaignMedia} className="mt-3 flex flex-wrap gap-2"><input type="hidden" name="mediaId" value={media.id} /><input type="hidden" name="campaignId" value={selectedCampaign.id} /><input required name="confirmation" pattern="SİL" placeholder="Onay için SİL yazın" className="min-w-44 flex-1 rounded-lg border-rose-200 text-xs" /><button className="rounded-lg bg-rose-700 px-4 py-2 text-xs font-semibold text-white">Blob ve kaydı sil</button></form>
+                              </details>
                             </div>
                           </div>
                         </article>

@@ -1,0 +1,6 @@
+ALTER TABLE "campaign_media_assets"
+ADD COLUMN IF NOT EXISTS "instagram_caption" text DEFAULT '' NOT NULL,
+ADD COLUMN IF NOT EXISTS "threads_post" text DEFAULT '' NOT NULL,
+ADD COLUMN IF NOT EXISTS "cta" text DEFAULT '' NOT NULL,
+ADD COLUMN IF NOT EXISTS "hashtags" text DEFAULT '' NOT NULL,
+ADD COLUMN IF NOT EXISTS "review_note" text DEFAULT '' NOT NULL;

@@ -279,6 +279,11 @@ export const campaignMediaAssets = pgTable('campaign_media_assets', {
   format: text('format').$type<CampaignMediaFormat>().notNull(),
   size: integer('size').notNull(),
   status: text('status').notNull().default('review'),
+  instagramCaption: text('instagram_caption').notNull().default(''),
+  threadsPost: text('threads_post').notNull().default(''),
+  cta: text('cta').notNull().default(''),
+  hashtags: text('hashtags').notNull().default(''),
+  reviewNote: text('review_note').notNull().default(''),
   createdBy: text('created_by').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });

@@ -4,6 +4,7 @@ import { db, dbYok } from '@/db';
 import { PRODUCTS } from '@/data/products';
 import {
   campaignItems,
+  campaignMediaAssets,
   catalogProducts,
   contentCampaigns,
   type CampaignChannel,
@@ -13,6 +14,7 @@ import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
 import type { Product } from '@/types/product';
 import { and, eq } from 'drizzle-orm';
+import { del } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -287,5 +289,78 @@ export async function updateCampaignStatus(formData: FormData) {
     summary: `Kampanya durumu ${input.status} olarak güncellendi.`,
   });
 
+  revalidatePath('/admin/kampanyalar');
+}
+
+const mediaStatusSchema = z.enum(['review', 'approved', 'rejected', 'ready']);
+
+export async function updateCampaignMedia(formData: FormData) {
+  const admin = await requireAdmin();
+  const input = z.object({
+    mediaId: z.string().uuid(),
+    campaignId: z.string().uuid(),
+    status: mediaStatusSchema,
+    instagramCaption: z.string().trim().max(2200),
+    threadsPost: z.string().trim().max(500),
+    cta: z.string().trim().max(200),
+    hashtags: z.string().trim().max(500),
+    reviewNote: z.string().trim().max(600),
+  }).parse({
+    mediaId: formData.get('mediaId'),
+    campaignId: formData.get('campaignId'),
+    status: formData.get('status'),
+    instagramCaption: formData.get('instagramCaption'),
+    threadsPost: formData.get('threadsPost'),
+    cta: formData.get('cta'),
+    hashtags: formData.get('hashtags'),
+    reviewNote: formData.get('reviewNote'),
+  });
+  if (input.status === 'ready' && (!input.instagramCaption || !input.threadsPost)) {
+    throw new Error('Yayına hazır için Instagram ve Threads metinleri zorunludur.');
+  }
+  await db.update(campaignMediaAssets).set({
+    status: input.status,
+    instagramCaption: input.instagramCaption,
+    threadsPost: input.threadsPost,
+    cta: input.cta,
+    hashtags: input.hashtags,
+    reviewNote: input.reviewNote,
+  }).where(and(eq(campaignMediaAssets.id, input.mediaId), eq(campaignMediaAssets.campaignId, input.campaignId)));
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.media_update',
+    entityType: 'campaign-media',
+    entityId: input.mediaId,
+    summary: `Kampanya medyası ${input.status} durumuna alındı.`,
+    metadata: { campaignId: input.campaignId, status: input.status },
+  });
+  revalidatePath('/admin/kampanyalar');
+}
+
+export async function deleteCampaignMedia(formData: FormData) {
+  const admin = await requireAdmin();
+  const input = z.object({
+    mediaId: z.string().uuid(),
+    campaignId: z.string().uuid(),
+    confirmation: z.literal('SİL'),
+  }).parse({
+    mediaId: formData.get('mediaId'),
+    campaignId: formData.get('campaignId'),
+    confirmation: formData.get('confirmation'),
+  });
+  const [media] = await db.select().from(campaignMediaAssets).where(and(eq(campaignMediaAssets.id, input.mediaId), eq(campaignMediaAssets.campaignId, input.campaignId))).limit(1);
+  if (!media) throw new Error('Medya bulunamadı.');
+  await del(media.url);
+  await db.delete(campaignMediaAssets).where(eq(campaignMediaAssets.id, media.id));
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.media_delete',
+    entityType: 'campaign-media',
+    entityId: media.id,
+    summary: `${media.filename} kalıcı olarak silindi.`,
+    metadata: { campaignId: input.campaignId },
+  });
   revalidatePath('/admin/kampanyalar');
 }
