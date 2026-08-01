@@ -97,9 +97,6 @@ export default async function AdminPage() {
             <Link href="/admin/analitik" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
               Analitik
             </Link>
-            <Link href="/admin/pomelli" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
-              Pomelli
-            </Link>
             <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
               Reklam Hazırlığı
             </Link>
