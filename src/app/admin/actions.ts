@@ -12,20 +12,17 @@ import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { refundPayTRPayment } from '@/lib/checkout/paytr';
 import { sendOrderStatusEmail } from '@/lib/email';
+import {
+  canTransitionFulfillmentStatus,
+  FULFILLMENT_STATUSES,
+} from '@/lib/order-status';
 import { and, eq, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 const updateSchema = z.object({
   orderNo: z.string().regex(/^NJ-\d{4}-\d+$/),
-  fulfillmentStatus: z.enum([
-    'new',
-    'preparing',
-    'shipped',
-    'delivered',
-    'cancelled',
-    'returned',
-  ]),
+  fulfillmentStatus: z.enum(FULFILLMENT_STATUSES),
   carrier: z.string().trim().max(80).optional(),
   trackingNumber: z.string().trim().max(120).optional(),
 });
@@ -51,13 +48,31 @@ export async function updateOrderStatus(formData: FormData) {
   if (current.status !== 'paid') {
     throw new Error('Ödemesi tamamlanmamış sipariş ilerletilemez.');
   }
+  if (
+    !canTransitionFulfillmentStatus(
+      current.fulfillmentStatus,
+      parsed.fulfillmentStatus
+    )
+  ) {
+    throw new Error(
+      `Geçersiz sipariş durumu geçişi: ${current.fulfillmentStatus} → ${parsed.fulfillmentStatus}.`
+    );
+  }
+  if (
+    parsed.fulfillmentStatus === 'shipped' &&
+    (!parsed.carrier || !parsed.trackingNumber)
+  ) {
+    throw new Error(
+      'Kargoya verilen sipariş için kargo firması ve takip numarası zorunludur.'
+    );
+  }
 
   const [updated] = await db
     .update(orders)
     .set({
       fulfillmentStatus: parsed.fulfillmentStatus,
-      carrier: parsed.carrier || null,
-      trackingNumber: parsed.trackingNumber || null,
+      carrier: parsed.carrier || current.carrier,
+      trackingNumber: parsed.trackingNumber || current.trackingNumber,
       cancelledAt:
         parsed.fulfillmentStatus === 'cancelled' ? new Date() : null,
       updatedAt: new Date(),

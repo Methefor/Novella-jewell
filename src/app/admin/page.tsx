@@ -7,6 +7,7 @@ import { UserButton } from '@clerk/nextjs';
 import { desc } from 'drizzle-orm';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { getSelectableFulfillmentStatuses } from '@/lib/order-status';
 import { refundOrder, updateOrderStatus } from './actions';
 
 const statusLabels = {
@@ -152,10 +153,12 @@ export default async function AdminPage() {
                 <form action={updateOrderStatus} className="mt-5 grid gap-3 border-t border-[#eee7dc] pt-5 md:grid-cols-[1fr_1fr_1fr_auto]">
                   <input type="hidden" name="orderNo" value={order.orderNo} />
                   <select name="fulfillmentStatus" defaultValue={order.fulfillmentStatus} disabled={order.status !== 'paid'} className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50">
-                    {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                    {getSelectableFulfillmentStatuses(order.fulfillmentStatus).map((value) => (
+                      <option key={value} value={value}>{statusLabels[value]}</option>
+                    ))}
                   </select>
-                  <input name="carrier" defaultValue={order.carrier ?? ''} disabled={order.status !== 'paid'} placeholder="Kargo firması" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
-                  <input name="trackingNumber" defaultValue={order.trackingNumber ?? ''} disabled={order.status !== 'paid'} placeholder="Takip numarası" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
+                  <input name="carrier" defaultValue={order.carrier ?? ''} disabled={order.status !== 'paid'} placeholder="Kargo firması (kargoda zorunlu)" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
+                  <input name="trackingNumber" defaultValue={order.trackingNumber ?? ''} disabled={order.status !== 'paid'} placeholder="Takip numarası (kargoda zorunlu)" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
                   <button disabled={order.status !== 'paid'} className="rounded-lg bg-black px-5 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40">Kaydet</button>
                 </form>
 

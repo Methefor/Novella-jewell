@@ -5,6 +5,7 @@ import { and, desc, eq, inArray } from 'drizzle-orm';
 import { Download, PackageSearch, Search } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { getSelectableFulfillmentStatuses } from '@/lib/order-status';
 import { refundOrder, updateOrderNote, updateOrderStatus } from '../actions';
 
 export const dynamic = 'force-dynamic';
@@ -219,10 +220,12 @@ export default async function OrdersPage({
                     <form action={updateOrderStatus} className="grid gap-3">
                       <input type="hidden" name="orderNo" value={order.orderNo} />
                       <select name="fulfillmentStatus" defaultValue={order.fulfillmentStatus} disabled={order.status !== 'paid'} className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50">
-                        {Object.entries(fulfillmentLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                        {getSelectableFulfillmentStatuses(order.fulfillmentStatus).map((value) => (
+                          <option key={value} value={value}>{fulfillmentLabels[value]}</option>
+                        ))}
                       </select>
-                      <input name="carrier" defaultValue={order.carrier ?? ''} disabled={order.status !== 'paid'} placeholder="Kargo firması" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
-                      <input name="trackingNumber" defaultValue={order.trackingNumber ?? ''} disabled={order.status !== 'paid'} placeholder="Takip numarası" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
+                      <input name="carrier" defaultValue={order.carrier ?? ''} disabled={order.status !== 'paid'} placeholder="Kargo firması (kargoda zorunlu)" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
+                      <input name="trackingNumber" defaultValue={order.trackingNumber ?? ''} disabled={order.status !== 'paid'} placeholder="Takip numarası (kargoda zorunlu)" className="rounded-lg border-[#d8cdbb] text-sm disabled:opacity-50" />
                       <button disabled={order.status !== 'paid'} className="rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white disabled:opacity-40">Durumu kaydet</button>
                     </form>
 
