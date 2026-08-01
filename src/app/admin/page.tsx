@@ -109,6 +109,9 @@ export default async function AdminPage() {
             <Link href="/admin/icerik-takvimi" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
               İçerik Takvimi
             </Link>
+            <Link href="/admin/mukerrer-urunler" className="rounded-xl border border-[#d8cdbb] bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-black">
+              Mükerrer Kontrolü
+            </Link>
             <UserButton />
           </nav>
         </header>
