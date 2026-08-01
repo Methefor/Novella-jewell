@@ -1,515 +1,81 @@
 'use client';
 
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
+import type { Product } from '@/types/product';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-/**
- * ╔══════════════════════════════════════════════════════════════╗
- * ║  HERO GÖRSELİ — TEK AYAR NOKTASI                             ║
- * ╚══════════════════════════════════════════════════════════════╝
- *
- * İki mod var. Hangisinin çalışacağını HERO_WRIST belirler.
- *
- * ── MOD 1: BİLEK (hedeflenen tasarım) ─────────────────────────
- *   const HERO_WRIST = '/media/hero-wrist.jpg';
- *
- *   Bilek fotoğrafı aşağıdan yukarı doğru yükselir, alt kenarı ışığa
- *   karışarak kaybolur, bileklik üzerinden altın bir ışık geçer.
- *   Kaydırdıkça bilek yükselmeye devam eder (parallax).
- *
- *   FOTOĞRAF ŞARTNAMESİ (buna uyarsa tasarım birebir oturur):
- *   • Dikey, 3:4 veya 2:3 (örn. 1200×1600). Yatay ÇEKME.
- *   • Kol aşağıdan yukarı doğru, hafif çapraz. Bilek karenin ÜST
- *     yarısında olsun — alt kısım boş kalacak, oraya ışık karışacak.
- *   • Arka plan sade ve AÇIK: krem/bej duvar, tercihen pencere ışığı.
- *     Koyu veya kalabalık arka plan tasarımı bozar.
- *   • Işık: pencereden gelen yumuşak yan ışık. Flaş kullanma.
- *   • Bileklik NET olsun, arka plan hafif bulanık.
- *   • Kadraj: parmak uçlarından dirseğe kadar değil — el bileği ve
- *     önkolun yarısı yeterli. Yüz girmesin.
- *   • Ten tonu doğal kalsın, aşırı filtre uygulama.
- *
- *   ⚠️ Fotoğraftaki bileklik SATTIĞIN ürünün TA KENDİSİ olmalı.
- *   Farklı bir bileklik göstermek yanıltıcı ticari uygulamadır.
- *
- * ── MOD 2: MADALYON (yedek) ───────────────────────────────────
- *   const HERO_WRIST = null;
- *
- *   Hiç uygun görsel yoksa, ürün çekimi dairesel madalyonda gelir.
- *   Daire seçildi çünkü ürün çekimleri kare — dikey çerçeve onları
- *   kenarlardan kesiyor.
- *
- * ── ŞU ANKİ DURUM ─────────────────────────────────────────────
- *   Bilek fotoğrafı henüz yok. Yerine gerçek bir ürün çekimi
- *   (ipek üzerinde çapraz bileklik) MOD 1'de kullanılıyor; kenarları
- *   zemine eridiği için hero olarak iyi duruyor. Bilek fotoğrafı
- *   çekilince aşağıdaki yol onunla değiştirilecek — başka hiçbir
- *   şeye dokunmaya gerek yok.
- */
-const HERO_WRIST: string | null = '/media/yuzuk/yuzuk-16c.jpg';
-
-/**
- * ── VİDEO MODU (HERO_WRIST'ten önceliklidir) ──
- *
- * Sessiz, yazısız, sonsuz dönen döngü. studio/ ile üretilir:
- *   cd studio && npx remotion render src/index.ts Site-HeroDongu \
- *     ../public/media/video/hero-loop.mp4 --crf=30
- *
- * Neden yazısız: Instagram reklamında marka adı, fiyat ve rozetler piksele
- * gömülü. Sitede o bilgiler zaten HTML olarak var — videoya gömmek Google'ın
- * okuyamayacağı, seçilemeyen bir tekrar olur.
- *
- * null yaparsan sessizce HERO_WRIST görseline döner.
- */
-const HERO_VIDEO: string | null = null;
-const HERO_VIDEO_POSTER = '/media/video/hero-poster.jpg';
-
-/**
- * Geniş (16:9) sürüm — masaüstünde dikey video küçük kaldığı için
- * lg ve üzeri ekranlarda bu sürüm tam genişliğe yakın oynar.
- * studio/ ile üretilir: Site-HeroDonguWide kompozisyonu.
- */
-const HERO_VIDEO_WIDE: string | null = null;
-const HERO_VIDEO_WIDE_POSTER = '/media/video/hero-poster-wide.jpg';
-
-/**
- * lg kırılımını (1024px) izler. SSR'da false başlar; mount sonrası
- * gerçek değere oturur — böylece hydration uyuşmazlığı olmaz.
- */
-function useIsDesktop(): boolean {
-  const [desktop, setDesktop] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
-    const guncelle = () => setDesktop(mq.matches);
-    guncelle();
-    mq.addEventListener('change', guncelle);
-    return () => mq.removeEventListener('change', guncelle);
-  }, []);
-
-  return desktop;
+function productImage(product?: Product): string | null {
+  if (!product) return null;
+  return product.images?.[0] ?? product.variants[0]?.images?.[0] ?? null;
 }
 
-/** MOD 2 yedeği — HERO_WRIST null olursa devreye girer. */
-const HERO_PRODUCT = '/media/bileklik/bileklik-1.jpg';
-
-const featurePills = ['Suya Dayanıklı', 'Alerji Yapmaz', 'Hediye Kutusunda'];
-
-export default function Hero() {
+export default function Hero({ products }: { products: Product[] }) {
   const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
-
-  // Kaydırdıkça görsel yükselmeye devam eder — "yukarı çıkma" hissini sürdürür.
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start'],
-  });
-  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '-14%']);
-  const textY = useTransform(scrollYProgress, [0, 1], ['0%', '38%']);
-  const textFade = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
-
-  const hasWrist = HERO_WRIST !== null;
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const visualY = useTransform(scrollYProgress, [0, 1], ['0%', '-9%']);
+  const copyY = useTransform(scrollYProgress, [0, 1], ['0%', '24%']);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.62], [1, 0]);
+  const images = products.map(productImage).filter((image): image is string => Boolean(image));
+  const fallback = '/media/yuzuk/yuzuk-16c.jpg';
+  const heroImages = [images[0] ?? fallback, images[1] ?? images[0] ?? fallback, images[2] ?? images[1] ?? images[0] ?? fallback];
 
   return (
-    <section
-      ref={ref}
-      className="relative w-full overflow-hidden bg-champagne"
-      style={{ height: 'calc(100dvh - var(--navbar-h, 64px))' }}
-      aria-label="Ana hero bölümü"
-    >
-      {/* Doku katmanları — saf CSS, asset bağımlılığı yok */}
-      <div className="absolute inset-0 texture-gold" aria-hidden="true" />
-      <div className="absolute inset-0 texture-lines" aria-hidden="true" />
-
-      {/* Yukarıdan inen ışık huzmesi — bileği aydınlatan kaynak hissi.
-          Nefes alan opaklik: yalnızca opacity anime edilir (GPU-dostu, layout tetiklemez). */}
-      <motion.div
-        animate={reduceMotion ? undefined : { opacity: [0.75, 1, 0.75] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute left-1/2 top-0 -translate-x-1/2 w-[130vw] sm:w-[80vw] h-[65vh] pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255,252,244,0.95) 0%, rgba(247,238,220,0.45) 45%, transparent 75%)',
-        }}
-        aria-hidden="true"
-      />
-
-      {/* ─────────── Görsel: aşağıdan yukarı yükselir ─────────── */}
-      <motion.div
-        style={{ y: reduceMotion ? undefined : imageY }}
-        className="absolute inset-x-0 bottom-0 top-0 flex items-end justify-center pointer-events-none lg:justify-end lg:pr-[5vw]"
-        aria-hidden="true"
-      >
-        <HeroVisual hasWrist={hasWrist} reduceMotion={!!reduceMotion} />
-      </motion.div>
-
-      {/* ─────────── Metin ─────────── */}
-      <motion.div
-        style={{
-          y: reduceMotion ? undefined : textY,
-          opacity: reduceMotion ? undefined : textFade,
-        }}
-        className="relative h-full flex flex-col items-center justify-start pt-[8vh] px-6 sm:pt-[10vh] lg:w-[54%] lg:items-start lg:justify-center lg:pt-0 lg:pl-[7vw] lg:pr-4"
-      >
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15, ease }}
-          className="flex items-center justify-center gap-3 mb-5 lg:justify-start"
-        >
-          <span className="h-px w-8 bg-gold/50" aria-hidden="true" />
-          <span className="font-sans font-light text-[10px] sm:text-[11px] tracking-[0.25em] uppercase text-gold-dark">
-            El seçimi paslanmaz çelik takı
-          </span>
-          <span className="h-px w-8 bg-gold/50" aria-hidden="true" />
+    <section ref={ref} className="relative min-h-[760px] overflow-hidden bg-[#f1ece3] lg:min-h-[calc(100dvh-var(--navbar-h))]" aria-label="Novella yeni yüzük vitrini">
+      <div className="absolute inset-0 texture-gold opacity-55" aria-hidden="true" />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 76% 20%, rgba(255,255,255,.95), transparent 34%), linear-gradient(120deg, rgba(250,248,245,.85), rgba(232,221,201,.56))' }} aria-hidden="true" />
+      <div className="container-custom relative grid min-h-[760px] items-center gap-10 pb-12 pt-12 lg:min-h-[calc(100dvh-var(--navbar-h))] lg:grid-cols-[.82fr_1.18fr] lg:pb-10 lg:pt-8">
+        <motion.div style={{ y: reduceMotion ? undefined : copyY, opacity: reduceMotion ? undefined : copyOpacity }} className="relative z-20 max-w-[610px] pt-2 lg:pt-0">
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1, ease }} className="mb-6 flex items-center gap-3">
+            <span className="h-px w-10 bg-[#8f7b50]/55" />
+            <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-[#8f7b50]">Novella · Yeni yüzük seçkisi</span>
+          </motion.div>
+          <h1 className="font-editorial text-[#16130f]" style={{ fontSize: 'clamp(3.35rem, 7.2vw, 7.6rem)', lineHeight: 0.86, letterSpacing: '-0.045em' }}>
+            <RisingLine delay={0.2}>Özgün</RisingLine>
+            <RisingLine delay={0.34} className="italic text-[#8f7b50]">parçalar.</RisingLine>
+            <span className="mt-2 block font-serif text-[.56em] leading-[.98] tracking-[-.035em]">Ulaşılabilir bir lüks.</span>
+          </h1>
+          <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.62, ease }} className="mt-7 max-w-md text-[14px] font-light leading-7 text-black/58 md:text-[15px]">
+            Günlük stilinize karakter katan, suya dayanıklı 316L çelik yüzükler. Her parça Novella’nın modern ve zamansız dünyası için seçildi.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.78, ease }} className="mt-8 flex flex-wrap items-center gap-5">
+            <Link href="/collections/yuzuk" className="group inline-flex min-h-12 items-center gap-4 rounded-full bg-[#16130f] px-6 text-sm font-medium text-white transition-colors hover:bg-[#8f7b50]">
+              Yüzükleri keşfet <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link href="/collections/yeni-gelenler" className="border-b border-black/25 pb-1 text-sm text-black/58 transition-colors hover:border-black hover:text-black">Yeni gelenler</Link>
+          </motion.div>
+          <div className="mt-9 flex flex-wrap gap-x-5 gap-y-2 text-[10px] uppercase tracking-[0.18em] text-black/42"><span>316L çelik</span><span>Suya dayanıklı</span><span>Hediye kutusunda</span></div>
         </motion.div>
 
-        {/* H1 — kelimeler tek tek yükselir */}
-        <h1
-          className="font-serif font-light text-black text-center text-balance mb-6 lg:text-left"
-          style={{
-            fontSize: 'clamp(2.3rem, 6.5vw, 4.6rem)',
-            lineHeight: 1.02,
-            letterSpacing: '-0.035em',
-          }}
-        >
-          <RisingLine delay={0.3}>Kararmayan çelik.</RisingLine>
-          <RisingLine delay={0.45}>
-            <span className="italic text-gold-dark">Eskimeyen zarafet.</span>
-          </RisingLine>
-        </h1>
-
-        {/* Subtitle — premium marka dili */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.6, ease }}
-          className="font-sans font-light text-black/55 text-center text-balance mb-7 lg:text-left"
-          style={{
-            fontSize: 'clamp(14px, 1.5vw, 16px)',
-            lineHeight: 1.7,
-            maxWidth: '32rem',
-          }}
-        >
-          316L paslanmaz çelik yüzük, küpe ve bileklikler. Suya dayanıklı,
-          kararmaya dirençli ve her gün kullanmak için tasarlandı.
-        </motion.p>
-
-        {/* Pills */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.7, ease }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-7 lg:justify-start"
-          role="list"
-          aria-label="Ürün özellikleri"
-        >
-          {featurePills.map((label) => (
-            <span
-              key={label}
-              className="px-3.5 py-1.5 rounded-full font-sans font-light text-[12px] text-black/60 bg-white/55 border border-gold/25 backdrop-blur-sm"
-              role="listitem"
-            >
-              {label}
-            </span>
-          ))}
+        <motion.div style={{ y: reduceMotion ? undefined : visualY }} className="relative z-10 h-[430px] sm:h-[520px] lg:h-[min(78vh,760px)]" aria-hidden="true">
+          <HeroFrame src={heroImages[1]} className="left-[1%] top-[18%] h-[58%] w-[42%] -rotate-[4deg]" delay={0.38} sizes="(max-width: 1023px) 45vw, 26vw" reduceMotion={!!reduceMotion} />
+          <HeroFrame src={heroImages[0]} className="left-[28%] top-[2%] z-10 h-[78%] w-[51%] rotate-[2deg]" delay={0.18} sizes="(max-width: 1023px) 55vw, 34vw" reduceMotion={!!reduceMotion} priority />
+          <HeroFrame src={heroImages[2]} className="bottom-[1%] right-[0%] z-20 h-[47%] w-[37%] rotate-[5deg]" delay={0.52} sizes="(max-width: 1023px) 40vw, 23vw" reduceMotion={!!reduceMotion} />
+          <motion.div animate={reduceMotion ? undefined : { rotate: 360 }} transition={{ duration: 26, repeat: Infinity, ease: 'linear' }} className="absolute bottom-[9%] left-[12%] z-30 grid h-24 w-24 place-items-center rounded-full border border-[#8f7b50]/35 bg-[#faf8f5]/82 backdrop-blur-md">
+            <span className="text-center text-[9px] uppercase leading-4 tracking-[.2em] text-[#8f7b50]">Novella<br />Selected</span>
+          </motion.div>
         </motion.div>
-
-        {/* Butonlar */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.85, ease }}
-          className="flex flex-wrap items-center justify-center gap-3 lg:justify-start"
-        >
-          <Link
-            href="/urunler"
-            className="inline-flex items-center justify-center min-h-[46px] px-7 bg-black text-white rounded-full hover:bg-gold transition-colors duration-300 text-sm font-medium tracking-wide"
-          >
-            Tüm Ürünleri Keşfet
-          </Link>
-          <Link
-            href="/collections/yeni-gelenler"
-            className="inline-flex items-center justify-center min-h-[46px] px-7 text-black border border-gold/45 rounded-full hover:border-gold hover:bg-white/50 transition-colors duration-300 text-sm font-medium"
-          >
-            Yeni Gelenler
-          </Link>
-        </motion.div>
-      </motion.div>
-
-      {/* Kaydırma ipucu */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.6, ease }}
-        style={{ opacity: reduceMotion ? undefined : textFade }}
-        className="absolute bottom-5 left-1/2 -translate-x-1/2 pointer-events-none"
-        aria-hidden="true"
-      >
-        <motion.span
-          animate={reduceMotion ? undefined : { y: [0, 7, 0] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          className="block h-8 w-px bg-gradient-to-b from-transparent via-gold/60 to-transparent"
-        />
-      </motion.div>
-
-      <div
-        className="absolute bottom-0 left-0 right-0 h-px bg-gold/50"
-        aria-hidden="true"
-      />
+      </div>
     </section>
   );
 }
 
-/** H1 satırı — maskeli kutudan yukarı doğru yükselir. */
-function RisingLine({
-  children,
-  delay,
-}: {
-  children: React.ReactNode;
-  delay: number;
-}) {
-  return (
-    <span className="block overflow-hidden">
-      <motion.span
-        initial={{ y: '105%' }}
-        animate={{ y: '0%' }}
-        transition={{ duration: 1.1, delay, ease }}
-        className="block"
-      >
-        {children}
-      </motion.span>
-    </span>
-  );
+function RisingLine({ children, delay, className = '' }: { children: React.ReactNode; delay: number; className?: string }) {
+  return <span className={`block overflow-hidden pb-[.08em] ${className}`}><motion.span className="block" initial={{ y: '108%' }} animate={{ y: 0 }} transition={{ duration: 1.05, delay, ease }}>{children}</motion.span></span>;
 }
 
-/**
- * Görsel katmanı.
- * Bilek fotoğrafı varsa tam genişlikte yükselir; yoksa ürün çekimi
- * kemerli çerçevede aynı hareketle gelir.
- */
-function HeroVisual({
-  hasWrist,
-  reduceMotion,
-}: {
-  hasWrist: boolean;
-  reduceMotion: boolean;
-}) {
-  // Masaüstünde geniş (16:9) video ve daha büyük yuva kullanılır.
-  const isDesktop = useIsDesktop();
-  const videoSrc = isDesktop && HERO_VIDEO_WIDE ? HERO_VIDEO_WIDE : HERO_VIDEO;
-  const videoPoster = isDesktop ? HERO_VIDEO_WIDE_POSTER : HERO_VIDEO_POSTER;
-
-  // Kenarların arka plana karışması.
-  // Sadece alt kenarı yumuşatmak yetmiyor: sol/sağ/üst sert kalınca görsel
-  // zemine yapıştırılmış bir dikdörtgen gibi duruyor. Elips maske her yönden
-  // eritir, böylece bilek ışığın içinden çıkıyormuş gibi görünür.
-  // Geniş videoda elips yatayda daha geniş tutulur.
-  const feather = isDesktop
-    ? 'radial-gradient(ellipse 84% 62% at 50% 45%, #000 46%, rgba(0,0,0,0.85) 66%, transparent 90%)'
-    : 'radial-gradient(ellipse 72% 60% at 50% 40%, #000 40%, rgba(0,0,0,0.85) 62%, transparent 88%)';
-
-  // ── Video modu ──
-  // Hareket azaltma tercihi açıksa video HİÇ yüklenmez; poster gösterilir.
-  // Bu hem erişilebilirlik hem de gereksiz indirmeyi önleme.
-  if (HERO_VIDEO && !reduceMotion) {
-    return (
-      <motion.div
-        initial={{ y: '18%', scale: 1.08, opacity: 0 }}
-        animate={{ y: '0%', scale: 1, opacity: 1 }}
-        transition={{ duration: 1.8, delay: 0.15, ease }}
-        className="relative w-full max-w-[560px] h-[88%] lg:max-w-[1280px] lg:w-[94%] lg:h-[94%]"
-        style={{ maskImage: feather, WebkitMaskImage: feather }}
-      >
-        {/* Ken Burns: çok yavaş ölçek salınımı — yalnızca transform, GPU'da çalışır. */}
-        <motion.div
-          animate={{ scale: [1, 1.045, 1] }}
-          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute inset-0 will-change-transform"
-        >
-          <video
-            // key: kaynak değişince (mobil↔masaüstü) tarayıcının videoyu
-            // yeniden yüklemesini garanti eder.
-            key={videoSrc ?? 'hero-video'}
-            // autoPlay + muted + playsInline üçü birden ŞART: iOS Safari
-            // sessiz olmayan videoyu otomatik oynatmaz, playsInline olmadan da
-            // tam ekrana geçirir.
-            autoPlay
-            muted
-            loop
-            playsInline
-            // poster: video yüklenene kadar ilk kare görünür, boş kutu olmaz.
-            poster={videoPoster}
-            preload="auto"
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          >
-            {videoSrc && <source src={videoSrc} type="video/mp4" />}
-          </video>
-        </motion.div>
-
-        <GoldSweep reduceMotion={false} />
-
-        {/* Metin perdesi */}
-        <div
-          className="absolute inset-x-0 top-0 h-[52%] pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(250,248,245,0.92) 0%, rgba(250,248,245,0.55) 55%, transparent 100%)',
-          }}
-        />
-      </motion.div>
-    );
-  }
-
-  // ── Video var ama hareket azaltma açık: sadece poster ──
-  if (HERO_VIDEO && reduceMotion) {
-    return (
-      <div
-        className="relative w-full max-w-[560px] h-[88%] lg:max-w-[1280px] lg:w-[94%] lg:h-[94%]"
-        style={{ maskImage: feather, WebkitMaskImage: feather }}
-      >
-        <Image
-          src={videoPoster}
-          alt=""
-          fill
-          priority
-          sizes="(max-width: 640px) 100vw, 560px"
-          className="object-cover object-center"
-        />
-        <div
-          className="absolute inset-x-0 top-0 h-[52%] pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(250,248,245,0.92) 0%, rgba(250,248,245,0.55) 55%, transparent 100%)',
-          }}
-        />
-      </div>
-    );
-  }
-
-  if (hasWrist) {
-    return (
-      <motion.div
-        initial={
-          reduceMotion ? undefined : { y: '18%', scale: 1.08, opacity: 0 }
-        }
-        animate={{ y: '0%', scale: 1, opacity: 1 }}
-        transition={{ duration: 1.8, delay: 0.15, ease }}
-        className="relative w-full max-w-[560px] h-[88%] lg:h-[86%] lg:w-[47vw] lg:max-w-[720px]"
-        style={{
-          maskImage: feather,
-          WebkitMaskImage: feather,
-        }}
-      >
-        <Image
-          src={HERO_WRIST!}
-          alt=""
-          fill
-          priority
-          sizes="(max-width: 1023px) 100vw, 47vw"
-          className="object-cover object-center lg:object-[52%_48%]"
-        />
-
-        {/* Metin perdesi — başlık görselin üstüne geldiğinde okunurluğu
-            garanti eder. Fotoğrafın açık/koyu olmasından bağımsız çalışır. */}
-        <div
-          className="absolute inset-x-0 top-0 h-[52%] pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(250,248,245,0.92) 0%, rgba(250,248,245,0.55) 55%, transparent 100%)',
-          }}
-        />
-
-        <GoldSweep reduceMotion={reduceMotion} />
-      </motion.div>
-    );
-  }
-
-  // ── Ürün modu: dairesel madalyon ──
-  // Daire seçildi çünkü ürün çekimleri KARE. Dikey bir çerçeveye
-  // zorlamak bilekliği kenarlardan kesiyor; daire kare görseli
-  // kırpmadan taşır.
+function HeroFrame({ src, className, delay, sizes, priority = false, reduceMotion }: { src: string; className: string; delay: number; sizes: string; priority?: boolean; reduceMotion: boolean }) {
   return (
-    <motion.div
-      initial={reduceMotion ? undefined : { y: '16%', opacity: 0 }}
-      animate={{ y: '0%', opacity: 1 }}
-      transition={{ duration: 1.6, delay: 0.25, ease }}
-      className="relative mb-[9vh] w-[min(62vw,300px)] aspect-square"
-    >
-      {/* Altın hale — madalyonun arkasından sızan ışık */}
-      <div
-        className="absolute -inset-12 rounded-full blur-3xl"
-        style={{
-          background:
-            'radial-gradient(circle at 50% 50%, rgba(184,165,116,0.42) 0%, transparent 65%)',
-        }}
-      />
-
-      <div className="relative w-full h-full rounded-full overflow-hidden border border-gold/35 shadow-[0_20px_60px_rgba(120,100,60,0.18)]">
-        <motion.div
-          initial={reduceMotion ? undefined : { scale: 1.16 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 2.6, delay: 0.25, ease }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={HERO_PRODUCT}
-            alt=""
-            fill
-            priority
-            sizes="(max-width: 640px) 62vw, 300px"
-            className="object-cover object-center"
-          />
-        </motion.div>
-
-        <GoldSweep reduceMotion={reduceMotion} />
-      </div>
+    <motion.div initial={{ opacity: 0, y: 42, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.15, delay, ease }} className={`absolute overflow-hidden bg-[#e7ded0] shadow-[0_24px_70px_rgba(65,46,24,.16)] ${className}`}>
+      <motion.div animate={reduceMotion ? undefined : { scale: [1, 1.035, 1] }} transition={{ duration: 13 + delay * 3, repeat: Infinity, ease: 'easeInOut' }} className="absolute inset-0">
+        <Image src={src} alt="" fill priority={priority} sizes={sizes} className="object-cover" />
+      </motion.div>
+      <div className="absolute inset-0 ring-1 ring-inset ring-white/45" />
     </motion.div>
-  );
-}
-
-/** Görselin üzerinden bir kez geçen altın ışık — metalin parladığı an. */
-function GoldSweep({ reduceMotion }: { reduceMotion: boolean }) {
-  if (reduceMotion) return null;
-
-  return (
-    <motion.div
-      // x 240%'e kadar gider: 130%'te durursa yarım genişlikteki şerit
-      // görselin sağ kenarında park edip görünür bir dikey çizgi bırakıyor.
-      // opacity de sonda sıfırlanır ki hiçbir iz kalmasın.
-      // Uzun aralıklarla tekrar eder — metal ara ara parıldar, dikkat dağıtmaz.
-      initial={{ x: '-140%', opacity: 0 }}
-      animate={{ x: '240%', opacity: [0, 1, 1, 0] }}
-      transition={{
-        duration: 2.1,
-        delay: 1.15,
-        ease: 'easeInOut',
-        repeat: Infinity,
-        repeatDelay: 6.5,
-        opacity: {
-          duration: 2.1,
-          delay: 1.15,
-          times: [0, 0.15, 0.8, 1],
-          repeat: Infinity,
-          repeatDelay: 6.5,
-        },
-      }}
-      className="absolute inset-y-0 w-1/2 pointer-events-none"
-      style={{
-        background:
-          'linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.42) 45%, rgba(255,245,220,0.28) 60%, transparent 100%)',
-      }}
-    />
   );
 }

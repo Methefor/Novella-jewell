@@ -36,8 +36,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-body)', 'Inter', 'sans-serif'],
+        sans: ['var(--font-body)', 'Instrument Sans', 'sans-serif'],
         serif: ['var(--font-heading)', 'Cormorant Garamond', 'serif'],
+        editorial: ['var(--font-editorial)', 'Instrument Serif', 'serif'],
       },
       fontSize: {
         'display-lg': [

@@ -56,7 +56,7 @@
     color: var(--color-text);
     font-family:
       var(--font-body),
-      Inter,
+      'Instrument Sans',
       -apple-system,
       sans-serif;
     font-size: 16px;
@@ -113,7 +113,7 @@
     background: var(--color-text);
     color: #fff;
     padding: 0.75rem 1.25rem;
-    font-family: var(--font-body), Inter, sans-serif;
+    font-family: var(--font-body), 'Instrument Sans', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
     border-bottom-right-radius: var(--radius-md);
@@ -172,7 +172,7 @@
     gap: 0.5rem;
     padding: 0.375rem 0.875rem;
     border-radius: var(--radius-pill);
-    font-family: var(--font-body), Inter, sans-serif;
+    font-family: var(--font-body), 'Instrument Sans', sans-serif;
     font-size: 11px;
     font-weight: 400;
     white-space: nowrap;

@@ -10,7 +10,11 @@ import PageTransition from '@/components/layout/PageTransition';
 import { SITE } from '@/lib/config';
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
-import { Cormorant_Garamond, Inter } from 'next/font/google';
+import {
+  Cormorant_Garamond,
+  Instrument_Sans,
+  Instrument_Serif,
+} from 'next/font/google';
 import './globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -20,10 +24,16 @@ const cormorant = Cormorant_Garamond({
   display: 'swap',
 });
 
-const inter = Inter({
+const instrumentSans = Instrument_Sans({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-body',
+  display: 'swap',
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-editorial',
   display: 'swap',
 });
 
@@ -146,7 +156,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-    <html lang="tr" className={`${cormorant.variable} ${inter.variable}`}>
+    <html lang="tr" className={`${cormorant.variable} ${instrumentSans.variable} ${instrumentSerif.variable}`}>
       <body className="font-body antialiased">
         <script
           type="application/ld+json"

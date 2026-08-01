@@ -61,6 +61,11 @@ export default function HomeClient({ products }: { products: Product[] }) {
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     .slice(0, 4);
 
+  const heroRings = products
+    .filter((p) => p.category === 'yuzuk')
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 3);
+
   /**
    * Çok Satanlar — isBestSeller işaretine göre.
    * Eskiden ürün ID'leri elle yazılıydı (kupe-11, allBilezik[3]…); katalog
@@ -76,7 +81,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
   return (
     <main>
       {/* Hero */}
-      <Hero />
+      <Hero products={heroRings} />
 
       {/* İlk kaydırmada mağazanın ürün kapsamını açıkça gösterir. */}
       <section className="border-b border-gold/20 bg-cream py-10 md:py-14">

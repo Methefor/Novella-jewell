@@ -11,7 +11,8 @@ import {
   useMotionValueEvent,
   useScroll,
 } from 'framer-motion';
-import { Heart, Plus, Search, ShoppingBag, X } from 'lucide-react';
+import { ArrowUpRight, Heart, Menu, Search, ShoppingBag, X } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -24,6 +25,13 @@ const navLinks = [
   { label: 'Hikayemiz', href: '/hikayemiz' },
   { label: 'İletişim', href: '/#iletisim' },
 ];
+
+const menuCategories = [
+  { label: 'Yüzükler', note: 'Özgün formlar', href: '/collections/yuzuk', image: '/media/yuzuk/yuzuk-16c.jpg' },
+  { label: 'Yeni gelenler', note: 'Son seçkiler', href: '/collections/yeni-gelenler', image: '/media/yuzuk/yuzuk-15.jpg' },
+  { label: 'Küpeler', note: 'Zarif detaylar', href: '/collections/kupe', image: '/media/kupe/kupe-1.jpg' },
+  { label: 'Bileklikler', note: 'Günlük ışıltı', href: '/collections/bilezik', image: '/media/bileklik/bileklik-1.jpg' },
+] as const;
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -62,18 +70,14 @@ export default function Header() {
               NOVELLA
             </Link>
 
-            {/* Menu pill */}
+            {/* Editorial discovery trigger */}
             <button
               onClick={() => setMenuOpen(true)}
-              className="flex items-center gap-2 px-3 py-[7px] bg-black rounded-full text-white hover:bg-accent transition-colors duration-300"
+              className="group flex items-center gap-2 border-l border-black/12 py-1 pl-3 text-black/60 transition-colors hover:text-black"
               aria-label="Menüyü aç"
             >
-              <span className="w-[18px] h-[18px] rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                <Plus className="w-[9px] h-[9px] text-black stroke-[2.5]" />
-              </span>
-              <span className="text-[11px] font-sans font-light leading-none pr-0.5">
-                Menü
-              </span>
+              <Menu className="h-[17px] w-[17px]" />
+              <span className="hidden text-[11px] font-medium uppercase tracking-[0.14em] sm:inline">Keşfet</span>
             </button>
           </div>
 
@@ -151,81 +155,49 @@ export default function Header() {
         </div>
       </motion.header>
 
-      {/* Full-screen menu overlay */}
+      {/* Editorial discovery drawer */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
-            className="fixed inset-0 z-[100] bg-white flex flex-col"
-          >
-            {/* Top bar */}
-            <div
-              style={{ height: 'var(--navbar-h)' }}
-              className="flex items-center justify-between px-6 md:px-10 border-b border-black/5 flex-shrink-0"
+          <div className="fixed inset-0 z-[100]">
+            <motion.button
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+              className="absolute inset-0 cursor-default bg-black/28 backdrop-blur-[2px]"
+              aria-label="Menüyü kapat"
+            />
+            <motion.aside
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+              transition={{ duration: 0.62, ease }}
+              className="absolute inset-y-0 right-0 flex w-full max-w-[620px] flex-col overflow-y-auto bg-[#faf8f5] shadow-[-30px_0_80px_rgba(24,18,10,.16)]"
+              aria-label="Keşif menüsü"
             >
-              <span className="font-serif text-[22px] font-medium tracking-[0.15em]">
-                NOVELLA
-              </span>
-              <button
-                onClick={() => setMenuOpen(false)}
-                className="p-2 text-black/40 hover:text-black transition-colors"
-                aria-label="Menüyü kapat"
-              >
-                <X className="w-[18px] h-[18px]" />
-              </button>
-            </div>
-
-            {/* Nav links */}
-            <nav className="flex flex-col justify-center flex-1 px-6 md:px-10 gap-1">
-              {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.label}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 0.05 + i * 0.06, ease }}
-                >
-                  <Link
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="group block py-3 font-serif font-light text-black hover:text-accent transition-colors duration-300"
-                    style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)' }}
-                  >
-                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-2">
-                      {link.label}
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-
-            {/* Bottom bar */}
-            <div className="px-6 md:px-10 py-6 border-t border-black/5 flex items-center justify-between flex-shrink-0">
-              <span className="text-[11px] font-sans text-black/30">
-                © {new Date().getFullYear()} Novella
-              </span>
-              <div className="flex items-center gap-5 text-[11px] font-sans text-black/35">
-                <a
-                  href={SITE.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-black transition-colors"
-                >
-                  Instagram
-                </a>
-                <a
-                  href="https://api.whatsapp.com/send?phone=905451125059"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-black transition-colors"
-                >
-                  WhatsApp
-                </a>
+              <div className="flex min-h-20 items-center justify-between border-b border-black/8 px-6 md:px-9">
+                <div><p className="text-[9px] uppercase tracking-[.24em] text-[#8f7b50]">Novella dünyası</p><p className="mt-1 font-editorial text-2xl">Kendi parçanı keşfet.</p></div>
+                <button onClick={() => setMenuOpen(false)} className="grid h-10 w-10 place-items-center rounded-full border border-black/12 transition-colors hover:bg-black hover:text-white" aria-label="Menüyü kapat"><X className="h-4 w-4" /></button>
               </div>
-            </div>
-          </motion.div>
+              <nav className="grid grid-cols-2 gap-3 p-4 md:gap-4 md:p-6">
+                {menuCategories.map((category, index) => (
+                  <motion.div key={category.href} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .16 + index * .06, ease }}>
+                    <Link href={category.href} onClick={() => setMenuOpen(false)} className="group relative block aspect-[4/5] overflow-hidden bg-[#e6ded2]">
+                      <Image src={category.image} alt="" fill sizes="(max-width: 640px) 50vw, 280px" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-4 text-white">
+                        <div><p className="text-[9px] uppercase tracking-[.18em] text-white/65">{category.note}</p><p className="mt-1 font-editorial text-[clamp(1.35rem,4vw,2rem)] leading-none">{category.label}</p></div>
+                        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+              <div className="mt-auto border-t border-black/8 px-6 py-6 md:px-9">
+                <div className="flex flex-wrap gap-x-6 gap-y-3 text-[11px] text-black/50">
+                  {navLinks.slice(2).map((link) => <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="hover:text-black">{link.label}</Link>)}
+                  <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-black">Instagram</a>
+                </div>
+                <p className="mt-5 text-[9px] uppercase tracking-[.18em] text-black/28">316L çelik · suya dayanıklı · ulaşılabilir lüks</p>
+              </div>
+            </motion.aside>
+          </div>
         )}
       </AnimatePresence>
 
