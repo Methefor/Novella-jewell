@@ -284,6 +284,9 @@ export const campaignMediaAssets = pgTable('campaign_media_assets', {
   cta: text('cta').notNull().default(''),
   hashtags: text('hashtags').notNull().default(''),
   reviewNote: text('review_note').notNull().default(''),
+  productIds: jsonb('product_ids').$type<string[]>().notNull().default([]),
+  scheduledAt: timestamp('scheduled_at', { withTimezone: true }),
+  scheduledChannels: jsonb('scheduled_channels').$type<CampaignChannel[]>().notNull().default([]),
   createdBy: text('created_by').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });

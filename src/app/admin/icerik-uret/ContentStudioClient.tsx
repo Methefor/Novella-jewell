@@ -82,7 +82,7 @@ export default function ContentStudioClient({ products, campaigns }: { products:
         await upload(`campaigns/${campaignId}/${safeName}`, file, {
           access: 'public',
           handleUploadUrl: '/api/admin/campaign-media/upload',
-          clientPayload: JSON.stringify({ campaignId, format, filename: file.name, size: file.size }),
+          clientPayload: JSON.stringify({ campaignId, format, filename: file.name, size: file.size, productIds: Array.from(new Set(selected.map((asset) => asset.productId))) }),
         });
       }
       setUploadState({ status: 'success', message: `${videoFiles.length} video kampanya medya kütüphanesine eklendi. Yayınlanmadı.` });

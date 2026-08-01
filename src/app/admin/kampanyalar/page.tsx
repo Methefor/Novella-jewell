@@ -19,6 +19,7 @@ import {
   createCampaign,
   deleteCampaignMedia,
   generateCampaignItemDraft,
+  generateCampaignMediaDraft,
   updateCampaignItem,
   updateCampaignMedia,
   updateCampaignStatus,
@@ -54,6 +55,12 @@ const mediaStatusLabels: Record<string, string> = {
   rejected: 'Reddedildi',
   ready: 'Yayına hazır',
 };
+
+function dateTimeLocal(value: Date | null) {
+  if (!value) return '';
+  const offset = value.getTimezoneOffset() * 60_000;
+  return new Date(value.getTime() - offset).toISOString().slice(0, 16);
+}
 
 export default async function CampaignsPage({
   searchParams,
@@ -133,6 +140,7 @@ export default async function CampaignsPage({
               onay ve yayın aşamalarını tek yerde takip edin.
             </p>
           </div>
+          <Link href="/admin/icerik-takvimi" className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white">İçerik takvimi</Link>
           <Link
             href="/admin/reklam-hazirlik"
             className="rounded-xl border border-[#d8cdbb] bg-white px-5 py-3 text-sm font-medium"
@@ -311,6 +319,12 @@ export default async function CampaignsPage({
                               </div>
                               <details className="mt-4 border-t border-[#e7ded1] pt-4" open={media.status === 'review'}>
                                 <summary className="cursor-pointer text-xs font-semibold">Metin ve onay düzenle</summary>
+                                <form action={generateCampaignMediaDraft} className="mt-4">
+                                  <input type="hidden" name="mediaId" value={media.id} />
+                                  <input type="hidden" name="campaignId" value={selectedCampaign.id} />
+                                  <button disabled={!media.productIds.length} className="rounded-lg border border-[#bda979] bg-white px-4 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-40">Ürün bilgilerinden metin üret</button>
+                                  {!media.productIds.length && <p className="mt-2 text-[10px] text-amber-700">Eski yükleme: ürün bağı yok. Yeni videolarda otomatik oluşur.</p>}
+                                </form>
                                 <form action={updateCampaignMedia} className="mt-4 grid gap-3">
                                   <input type="hidden" name="mediaId" value={media.id} />
                                   <input type="hidden" name="campaignId" value={selectedCampaign.id} />
@@ -318,6 +332,10 @@ export default async function CampaignsPage({
                                   <label className="grid gap-1.5 text-xs">Threads metni<textarea name="threadsPost" defaultValue={media.threadsPost} rows={3} maxLength={500} className="rounded-lg border-[#d8cdbb] text-sm" /></label>
                                   <div className="grid gap-3 sm:grid-cols-2"><label className="grid gap-1.5 text-xs">CTA<input name="cta" defaultValue={media.cta} maxLength={200} className="rounded-lg border-[#d8cdbb] text-sm" /></label><label className="grid gap-1.5 text-xs">Hashtag / SEO<input name="hashtags" defaultValue={media.hashtags} maxLength={500} className="rounded-lg border-[#d8cdbb] text-sm" /></label></div>
                                   <label className="grid gap-1.5 text-xs">İnceleme notu<input name="reviewNote" defaultValue={media.reviewNote} maxLength={600} className="rounded-lg border-[#d8cdbb] text-sm" /></label>
+                                  <div className="rounded-xl border border-[#e3d9c8] bg-white p-3">
+                                    <label className="grid gap-1.5 text-xs">Yayın tarihi ve saati<input type="datetime-local" name="scheduledAt" defaultValue={dateTimeLocal(media.scheduledAt)} className="rounded-lg border-[#d8cdbb] text-sm" /></label>
+                                    <div className="mt-3 flex flex-wrap gap-3">{channels.map((channel) => <label key={channel.value} className="inline-flex items-center gap-1.5 text-[11px]"><input type="checkbox" name="scheduledChannels" value={channel.value} defaultChecked={media.scheduledChannels.includes(channel.value)} className="rounded border-[#bcae96] text-black focus:ring-black" />{channel.label}</label>)}</div>
+                                  </div>
                                   <div className="grid gap-3 sm:grid-cols-[1fr_auto]"><select name="status" defaultValue={media.status} className="rounded-lg border-[#d8cdbb] text-sm"><option value="review">İncelemede</option><option value="approved">Onaylandı</option><option value="rejected">Reddedildi</option><option value="ready">Yayına hazır</option></select><button className="rounded-lg bg-black px-5 py-2.5 text-xs font-semibold text-white">Metni ve durumu kaydet</button></div>
                                 </form>
                               </details>

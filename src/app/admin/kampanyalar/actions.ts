@@ -305,6 +305,8 @@ export async function updateCampaignMedia(formData: FormData) {
     cta: z.string().trim().max(200),
     hashtags: z.string().trim().max(500),
     reviewNote: z.string().trim().max(600),
+    scheduledAt: z.string().optional(),
+    scheduledChannels: z.array(channelSchema).max(4),
   }).parse({
     mediaId: formData.get('mediaId'),
     campaignId: formData.get('campaignId'),
@@ -314,9 +316,14 @@ export async function updateCampaignMedia(formData: FormData) {
     cta: formData.get('cta'),
     hashtags: formData.get('hashtags'),
     reviewNote: formData.get('reviewNote'),
+    scheduledAt: (formData.get('scheduledAt') as string) || undefined,
+    scheduledChannels: formData.getAll('scheduledChannels'),
   });
   if (input.status === 'ready' && (!input.instagramCaption || !input.threadsPost)) {
     throw new Error('Yayına hazır için Instagram ve Threads metinleri zorunludur.');
+  }
+  if (input.scheduledAt && input.scheduledChannels.length === 0) {
+    throw new Error('Yayın tarihi seçildiğinde en az bir kanal seçilmelidir.');
   }
   await db.update(campaignMediaAssets).set({
     status: input.status,
@@ -325,6 +332,8 @@ export async function updateCampaignMedia(formData: FormData) {
     cta: input.cta,
     hashtags: input.hashtags,
     reviewNote: input.reviewNote,
+    scheduledAt: input.scheduledAt ? new Date(input.scheduledAt) : null,
+    scheduledChannels: input.scheduledChannels as CampaignChannel[],
   }).where(and(eq(campaignMediaAssets.id, input.mediaId), eq(campaignMediaAssets.campaignId, input.campaignId)));
   await writeAdminAuditLog({
     actorId: admin.userId,
@@ -334,6 +343,42 @@ export async function updateCampaignMedia(formData: FormData) {
     entityId: input.mediaId,
     summary: `Kampanya medyası ${input.status} durumuna alındı.`,
     metadata: { campaignId: input.campaignId, status: input.status },
+  });
+  revalidatePath('/admin/kampanyalar');
+}
+
+export async function generateCampaignMediaDraft(formData: FormData) {
+  const admin = await requireAdmin();
+  const input = z.object({ mediaId: z.string().uuid(), campaignId: z.string().uuid() }).parse({
+    mediaId: formData.get('mediaId'),
+    campaignId: formData.get('campaignId'),
+  });
+  const [media] = await db.select().from(campaignMediaAssets).where(and(eq(campaignMediaAssets.id, input.mediaId), eq(campaignMediaAssets.campaignId, input.campaignId))).limit(1);
+  if (!media) throw new Error('Medya bulunamadı.');
+  if (!media.productIds.length) throw new Error('Bu videoya bağlı ürün bulunmuyor. Videoyu İçerik Üret merkezinden yeniden aktarın.');
+  const rows = await db.select({ id: catalogProducts.id, data: catalogProducts.data }).from(catalogProducts);
+  const rowById = new Map(rows.map((row) => [row.id, row.data]));
+  const products = media.productIds.map((id) => rowById.get(id) ?? PRODUCTS.find((product) => product.id === id)).filter((product): product is NonNullable<typeof product> => Boolean(product));
+  if (!products.length) throw new Error('Bağlı ürünler katalogda bulunamadı.');
+  const names = products.map((product) => product.name);
+  const nameText = names.length === 1 ? names[0] : `${names.slice(0, -1).join(', ')} ve ${names.at(-1)}`;
+  const features = Array.from(new Set(products.flatMap((product) => product.features).filter(Boolean))).slice(0, 2);
+  const detail = features.length ? ` ${features.join(' · ')}.` : '';
+  await db.update(campaignMediaAssets).set({
+    instagramCaption: `${nameText}: günlük stile zarif ama kendine özgü bir dokunuş.${detail}\n\n316L paslanmaz çelik yapısı suya dayanıklı, kararmaya karşı dirençli ve gün boyu kullanıma uygundur. Novella’nın yeni yüzüklerini keşfedin.`,
+    threadsPost: `Bir yüzüğü vazgeçilmez yapan sizce nedir: güçlü bir form mu, her stile uyum sağlaması mı? ${nameText}, ikisini aynı hikâyede buluşturuyor.`,
+    cta: 'Yeni yüzükleri novellajewell.com’da keşfedin.',
+    hashtags: '#NovellaJewell #ÇelikTakı #Yüzük #316LÇelik #TakıStili',
+    status: media.status === 'rejected' ? 'review' : media.status,
+  }).where(eq(campaignMediaAssets.id, media.id));
+  await writeAdminAuditLog({
+    actorId: admin.userId,
+    actorEmail: admin.email,
+    action: 'campaign.media_copy_generate',
+    entityType: 'campaign-media',
+    entityId: media.id,
+    summary: `${products.length} üründen Instagram ve Threads taslağı üretildi.`,
+    metadata: { campaignId: input.campaignId, productCount: products.length },
   });
   revalidatePath('/admin/kampanyalar');
 }
