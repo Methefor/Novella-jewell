@@ -24,6 +24,7 @@ function headers(origin) {
     'Access-Control-Allow-Origin': allowedOrigins.has(origin) ? origin : 'https://novellajewell.com',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Private-Network': 'true',
     'Content-Type': 'application/json; charset=utf-8',
     Vary: 'Origin',
   };
