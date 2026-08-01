@@ -112,6 +112,12 @@ export default async function AdReadinessPage({
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
+              href="/admin/icerik-uret"
+              className="inline-flex min-h-12 items-center rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white"
+            >
+              İçerik üret
+            </Link>
+            <Link
               href="/admin/kampanyalar"
               className="inline-flex min-h-12 items-center rounded-xl border border-[#d8cdbb] bg-white px-5 py-3 text-sm font-semibold"
             >
