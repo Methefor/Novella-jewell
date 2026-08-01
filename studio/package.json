@@ -6,6 +6,7 @@
   "scripts": {
     "studio": "remotion studio",
     "render": "remotion render",
+    "bridge": "node scripts/render-bridge.mjs",
     "still": "remotion still",
     "upgrade": "remotion upgrade"
   },
