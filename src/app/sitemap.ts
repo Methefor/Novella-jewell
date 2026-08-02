@@ -1,9 +1,9 @@
 import { getAllCollections } from '@/data/collections';
+import { getCatalogProducts } from '@/lib/catalog';
 import { SITE } from '@/lib/config';
-import { getAllProducts } from '@/lib/products';
 import { MetadataRoute } from 'next';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE.url;
   const now = new Date();
 
@@ -48,9 +48,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const productPages: MetadataRoute.Sitemap = getAllProducts().map((product) => ({
+  // Admin panelinden yayına alınan dinamik ürünler de sitemap'e girmeli.
+  // Statik ürün listesini kullanmak yeni ürünlerin Google tarafından
+  // keşfedilmesini geciktiriyordu.
+  const products = await getCatalogProducts();
+  const productPages: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${base}/urun/${product.slug}`,
-    lastModified: now,
+    lastModified: product.updatedAt ?? now,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));

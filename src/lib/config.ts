@@ -19,9 +19,10 @@ export const SITE = {
   // Domain alınınca SADECE bu satır değişir — canonical, OG, sitemap, JSON-LD hepsi buradan okur
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://novellajewell.com',
   name: 'NOVELLA',
-  tagline: 'Kararmayan Çelik, Eskimeyen Zarafet',
+  tagline: 'Özgün Tasarımlar, Zamansız Işıltı',
   whatsapp: '905451125059',
   instagram: 'https://www.instagram.com/novellajewellofficial/',
+  threads: 'https://www.threads.com/@novellajewellofficial',
 } as const;
 
 /**

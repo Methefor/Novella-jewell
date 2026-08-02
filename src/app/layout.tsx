@@ -39,11 +39,11 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: {
-    default: 'NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet',
+    default: 'NOVELLA — Özgün 316L Çelik Takılar',
     template: '%s | NOVELLA',
   },
   description:
-    '316L paslanmaz çelik takılar. El seçimi bilezik, küpe ve yüzük koleksiyonları. Suya dayanıklı, alerji yapmaz, hediye kutusunda.',
+    'Özgün tasarımlı 316L paslanmaz çelik yüzük, küpe ve bileklikler. Suya dayanıklı, modern ve ulaşılabilir takı koleksiyonları.',
   keywords: [
     'paslanmaz çelik takı',
     '316L çelik takı',
@@ -51,7 +51,6 @@ export const metadata: Metadata = {
     'küpe',
     'yüzük',
     'suya dayanıklı takı',
-    'alerji yapmaz takı',
     'novella takı',
     'butik takı',
     'takı koleksiyonu',
@@ -74,9 +73,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'tr_TR',
     url: SITE.url,
-    title: 'NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet',
+    title: 'NOVELLA — Özgün 316L Çelik Takılar',
     description:
-      '316L paslanmaz çelik takılar. El seçimi bilezik, küpe ve yüzük koleksiyonları. Suya dayanıklı, alerji yapmaz.',
+      'Özgün tasarımlı 316L paslanmaz çelik yüzük, küpe ve bileklikler. Suya dayanıklı, modern ve ulaşılabilir.',
     siteName: 'NOVELLA',
     // images YOK — src/app/opengraph-image.tsx zaten dinamik OG görseli üretiyor
     // ve dosya konvansiyonu bu alanı otomatik doldurur. Buraya elle
@@ -84,9 +83,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NOVELLA — Kararmayan Çelik, Eskimeyen Zarafet',
+    title: 'NOVELLA — Özgün 316L Çelik Takılar',
     description:
-      '316L paslanmaz çelik takılar. Suya dayanıklı, alerji yapmaz, hediye kutusunda.',
+      'Özgün tasarımlı 316L paslanmaz çelik takılar. Suya dayanıklı, modern ve ulaşılabilir.',
     // images YOK — aynı sebep. Elle verilen değer dosya konvansiyonunu ezip
     // 404'e gidiyordu.
   },
@@ -106,8 +105,13 @@ export const metadata: Metadata = {
     shortcut: '/favicon-16x16.png',
   },
   manifest: '/site.webmanifest',
-  // verification: Search Console'a kaydolunca gerçek kodu buraya ekle.
-  // Placeholder ('your-google-verification-code') sahte meta tag basıyordu.
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        verification: {
+          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+        },
+      }
+    : {}),
 };
 
 /**
@@ -132,8 +136,8 @@ const orgJsonLd = {
   image: `${SITE.url}/opengraph-image`,
   slogan: SITE.tagline,
   description:
-    '316L cerrahi çelikten üretilen, kararmayan ve alerji yapmayan el seçimi takılar.',
-  sameAs: [SITE.instagram],
+    'Özgün tasarımlı, suya dayanıklı 316L paslanmaz çelik takılar.',
+  sameAs: [SITE.instagram, SITE.threads],
   // Marka renkleri — makine tarafından okunabilir kimlik sinyali
   brand: {
     '@type': 'Brand',
