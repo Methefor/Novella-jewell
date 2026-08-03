@@ -117,7 +117,7 @@ export const metadata: Metadata = {
     ? {
         other: {
           'facebook-domain-verification':
-            process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION,
+            process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION.trim(),
         },
       }
     : {}),
