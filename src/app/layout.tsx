@@ -113,6 +113,14 @@ export const metadata: Metadata = {
         },
       }
     : {}),
+  ...(process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION
+    ? {
+        other: {
+          'facebook-domain-verification':
+            process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION,
+        },
+      }
+    : {}),
 };
 
 /**
