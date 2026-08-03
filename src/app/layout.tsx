@@ -1,4 +1,5 @@
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
+import MetaPixel from '@/components/analytics/MetaPixel';
 import FirstPartyAnalytics from '@/components/analytics/FirstPartyAnalytics';
 import SepetHatirlatici from '@/components/cart/SepetHatirlatici';
 import StoreHydration from '@/components/common/StoreHydration';
@@ -189,6 +190,7 @@ export default function RootLayout({
         {/* KVKK çerez onayı — GA yalnızca burada "Kabul et" seçilirse yüklenir. */}
         <CookieBanner />
         <GoogleAnalytics />
+        <MetaPixel />
         <FirstPartyAnalytics />
       </body>
     </html>

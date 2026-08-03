@@ -20,7 +20,7 @@ Bu depo yalnızca bir mağaza arayüzünü değil; katalog yönetimi, güvenli �
 - Ürün oluşturma, düzenleme, yayından kaldırma ve görsel yönetimi
 - Reklama hazırlık puanı ve eksik içerik kontrolü
 - Instagram ve Threads kampanya panosu
-- Google Analytics uyumlu dönüşüm olayları
+- Google Analytics ve Meta Pixel uyumlu dönüşüm olayları
 - Resend ile işlem e-postaları
 - Vercel üzerinde üretim dağıtımı
 
@@ -61,7 +61,7 @@ Başlıca entegrasyonlar:
 - `DATABASE_URL`
 - `PAYTR_MERCHANT_ID`, `PAYTR_MERCHANT_KEY`, `PAYTR_MERCHANT_SALT`
 - `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_REPLY_TO`
-- `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_GA_ID`
+- `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_META_PIXEL_ID`
 - Clerk ve Vercel Blob tarafından sağlanan kimlik bilgileri
 
 ## Komutlar

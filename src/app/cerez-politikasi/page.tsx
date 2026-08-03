@@ -55,6 +55,24 @@ export default function CerezPolitikasiPage() {
         sadece pasif kalmaz, script hiç çalışmaz.
       </p>
 
+      <h3>Pazarlama çerezleri (izne bağlı)</h3>
+      <p>
+        Yalnızca <strong>onay verirseniz</strong> Meta Pixel yüklenir. Bu araç;
+        görüntülenen ürün, sepete ekleme, ödeme başlangıcı ve doğrulanmış satın
+        alma gibi dönüşümleri ölçmemize ve reklam performansını anlamamıza yardım
+        eder.
+      </p>
+      <ul>
+        <li>
+          <strong>Meta Pixel</strong> — Instagram ve Facebook reklam dönüşüm
+          ölçümü. Meta tarafından belirlenen saklama süreleri geçerlidir.
+        </li>
+      </ul>
+      <p>
+        Onay vermezseniz Meta Pixel scripti yüklenmez ve bu tarayıcıdan Meta'ya
+        dönüşüm olayı gönderilmez.
+      </p>
+
       <h2>Üçüncü taraf çerezleri</h2>
       <p>
         Ödeme sırasında PayTR&apos;nin güvenli ödeme ekranı açıldığında, PayTR

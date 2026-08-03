@@ -14,7 +14,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 /**
  * KVKK çerez onay banner'ı.
- * Analitik çerezler yalnızca "Kabul et" seçilirse çalışır (bkz. GoogleAnalytics).
+ * Analitik ve pazarlama çerezleri yalnızca açık izin verilirse çalışır.
  *
  * Mobil öncelikli: dar ekranda butonlar tam genişlik ve alt alta,
  * dokunma hedefleri 44px+.
@@ -59,8 +59,9 @@ export default function CookieBanner() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
               <p className="font-sans font-light text-[13px] leading-relaxed text-black/70 flex-1">
                 Sepetin çalışması için zorunlu çerezler kullanıyoruz. Ziyaret
-                istatistiklerini görmemizi sağlayan analitik çerezler ise
-                yalnızca izin verirsen çalışır.{' '}
+                istatistiklerini ve reklam dönüşümlerini ölçmemizi sağlayan
+                analitik ve pazarlama çerezleri ise yalnızca izin verirsen
+                çalışır.{' '}
                 <Link
                   href="/cerez-politikasi"
                   className="text-black underline underline-offset-2 hover:text-gold-dark whitespace-nowrap"
@@ -82,7 +83,7 @@ export default function CookieBanner() {
                   onClick={() => choose('accepted')}
                   className="flex-1 sm:flex-none min-h-[44px] px-5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-gold transition-colors"
                 >
-                  Kabul et
+                  Tümüne izin ver
                 </button>
               </div>
             </div>

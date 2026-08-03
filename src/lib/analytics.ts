@@ -26,6 +26,19 @@ function gtag(...args: GtagArgs): void {
   w.gtag(...args);
 }
 
+function metaTrack(
+  eventName: 'ViewContent' | 'AddToCart' | 'InitiateCheckout' | 'Purchase',
+  parameters: Record<string, unknown>
+): boolean {
+  if (typeof window === 'undefined' || getConsent() !== 'accepted') return false;
+  const fbq = (window as typeof window & {
+    fbq?: (...args: unknown[]) => void;
+  }).fbq;
+  if (typeof fbq !== 'function') return false;
+  fbq('track', eventName, parameters);
+  return true;
+}
+
 type FirstPartyEventName =
   | 'page_view'
   | 'view_item'
@@ -107,6 +120,14 @@ export function trackViewItem(product: Product): void {
     value: product.price,
     items: [toItem(product)],
   });
+  metaTrack('ViewContent', {
+    content_ids: [product.id],
+    content_name: product.name,
+    content_category: product.category,
+    content_type: 'product',
+    currency: 'TRY',
+    value: product.price,
+  });
 }
 
 /** Sepete eklendiğinde. */
@@ -120,6 +141,15 @@ export function trackAddToCart(product: Product, quantity = 1): void {
     currency: 'TRY',
     value: product.price * quantity,
     items: [toItem(product, quantity)],
+  });
+  metaTrack('AddToCart', {
+    content_ids: [product.id],
+    content_name: product.name,
+    content_category: product.category,
+    content_type: 'product',
+    currency: 'TRY',
+    value: product.price * quantity,
+    num_items: quantity,
   });
 }
 
@@ -164,6 +194,13 @@ export function trackBeginCheckout(value: number, items: Product[]): void {
     value,
     items: items.map((p) => toItem(p)),
   });
+  metaTrack('InitiateCheckout', {
+    content_ids: items.map((product) => product.id),
+    content_type: 'product',
+    currency: 'TRY',
+    value,
+    num_items: items.length,
+  });
 }
 
 /**
@@ -179,4 +216,16 @@ export function trackPurchase(
     currency: 'TRY',
     value,
   });
+
+  if (typeof window === 'undefined') return;
+  const storageKey = `novella_meta_purchase_${transactionId}`;
+  if (window.localStorage.getItem(storageKey)) return;
+  const sentToMeta = metaTrack('Purchase', {
+    currency: 'TRY',
+    value,
+    order_id: transactionId,
+  });
+  if (sentToMeta) {
+    window.localStorage.setItem(storageKey, '1');
+  }
 }
