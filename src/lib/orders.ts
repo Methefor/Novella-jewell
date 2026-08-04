@@ -20,8 +20,8 @@ import type { Order } from './checkout/types';
 
 /**
  * Ödeme başlamadan ÖNCE pending sipariş yaratır.
- * order_no DB tarafında otomatik üretilir (NJ-2026-0001) ve döndürülür —
- * bu değer Shopier'e platform_order_id olarak gider.
+ * order_no DB tarafında otomatik üretilir (NJ-2026-0001) ve döndürülür;
+ * PayTR merchant_oid değeri bu sipariş numarasından üretilir.
  */
 export async function createPendingOrder(
   order: Order,
@@ -104,7 +104,7 @@ export async function createPendingOrder(
  */
 export async function markOrderPaid(
   orderNo: string,
-  shopierPaymentId?: string
+  paymentProviderId?: string
 ): Promise<
   | { ok: true; zatenPaid: boolean; order: typeof orders.$inferSelect | null }
   | { ok: false }
@@ -202,7 +202,7 @@ export async function markOrderPaid(
       .update(orders)
       .set({
         status: 'paid',
-        shopierPaymentId: shopierPaymentId ?? null,
+        paymentProviderId: paymentProviderId ?? null,
         paidAt: new Date(),
       })
       .where(and(eq(orders.orderNo, orderNo), eq(orders.status, 'pending')))

@@ -110,6 +110,9 @@ export default function Footer() {
             >
               +90 545 112 50 59
             </a>
+            <p className="mt-2 font-sans font-light text-sm text-white/55">
+              Tekirdağ / Süleymanpaşa
+            </p>
           </div>
         </div>
 

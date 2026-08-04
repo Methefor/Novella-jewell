@@ -69,7 +69,7 @@ export default function CerezPolitikasiPage() {
         </li>
       </ul>
       <p>
-        Onay vermezseniz Meta Pixel scripti yüklenmez ve bu tarayıcıdan Meta'ya
+        Onay vermezseniz Meta Pixel scripti yüklenmez ve bu tarayıcıdan Meta&apos;ya
         dönüşüm olayı gönderilmez.
       </p>
 

@@ -10,8 +10,7 @@ export const SHIPPING = {
  * göründüğünde işe yarar; her üründe çıkarsa anlamını yitirir.
  *
  * ⚠️ Gösterilen sayı GERÇEK stok — uydurma sayaç değil. Stok verisi
- * src/data/products.ts'te sabit; Supabase'e geçince oradan okunmalı ve
- * satış sonrası düşmeli, yoksa "son 3 adet" yalan olur.
+ * Değer aktif katalogdan gelir; dinamik ürünlerde Neon DB stok kaynağıdır.
  */
 export const LOW_STOCK_THRESHOLD = 8;
 
@@ -28,15 +27,13 @@ export const SITE = {
 /**
  * E-posta gönderici adresi (Resend).
  *
- * ⚠️ Şu an domain doğrulaması YOK. Resend'in test göndericisi
- * 'onboarding@resend.dev' yalnızca Resend hesabının SAHİBİ e-postasına teslim
- * eder — gerçek müşterilere gitmez. Domain (ör. novella.com) Resend'de
- * doğrulanınca bu satırı 'NOVELLA <siparis@novella.com>' yap, başka yeri
- * değiştirmene gerek yok.
+ * novellajewell.com için Resend DKIM, SPF ve MX kayıtları yapılandırılmıştır.
+ * Production ortamında değer Vercel üzerinden yönetilir; marka adresi güvenli
+ * varsayılan olarak yalnızca yapılandırma eksikliğine karşı korunur.
  */
 export const EMAIL = {
   from:
-    process.env.RESEND_FROM_EMAIL ?? 'NOVELLA <onboarding@resend.dev>',
+    process.env.RESEND_FROM_EMAIL ?? 'NOVELLA <siparis@novellajewell.com>',
   replyTo:
     process.env.RESEND_REPLY_TO ?? 'novella.jewellery.tr@gmail.com',
 } as const;

@@ -52,8 +52,6 @@ Sipariş oluşturur, veritabanına `pending` kaydeder ve PayTR iFrame ödeme for
 }
 ```
 
-(Eski Shopier entegrasyonu `redirect` veya `form` da dönebilir; `OdemeClient` üçünü de destekler.)
-
 **Olası hata yanıtları:**
 
 | Durum Kodu | Anlamı                                                |
@@ -85,7 +83,6 @@ PayTR, ödeme sonucunu bu adrese (Bildirim URL) `POST` olarak bildirir. İmza do
 - `hash`: PayTR'den gelen HMAC-SHA256 imzası.
 - `payment_type`: Ödeme şekli (`card` veya `eft`).
 - `failed_reason_code` / `failed_reason_msg`: Başarısız işlemde neden (opsiyonel).
-- Eski Shopier akışında `platform_order_id`, `payment_id`, `random_nr` gibi alanlar da desteklenir.
 
 **İş akışı:**
 
@@ -93,7 +90,7 @@ PayTR, ödeme sonucunu bu adrese (Bildirim URL) `POST` olarak bildirir. İmza do
 2. `provider.verifyCallback(params)` ile HMAC-SHA256 imzası kontrol edilir; başarısızsa imza hatası loglanır.
 3. `status` değerine göre `markOrderPaid` veya `markOrderFailed` çalıştırılır.
 4. `paid` durumuna ilk kez geçtiyse `sendOrderConfirmationEmail` çağrılır (hata olsa bile sipariş akışı kırılmaz).
-5. PayTR sağlayıcısı aktifse düz `OK` metni döner; eski Shopier akışında `/odeme/sonuc` sayfasına yönlendirme yapılır.
+5. PayTR Bildirim URL gereksinimine uygun olarak düz `OK` metni döner.
 
 **Olası yanıtlar / yönlendirmeler:**
 
@@ -101,7 +98,7 @@ PayTR, ödeme sonucunu bu adrese (Bildirim URL) `POST` olarak bildirir. İmza do
 | --------------- | ------------------------------------------------------------------------ |
 | PayTR başarılı  | `OK` metni (Bildirim URL yanıtı)                                         |
 | PayTR başarısız | `OK` metni (sipariş `failed` yapılır)                                    |
-| İmza hatası     | PayTR: `OK` döner, Shopier: `/odeme/sonuc?status=error&reason=signature` |
+| İmza hatası     | HTTP 400, `PAYTR notification failed: bad hash`                         |
 
 **Yetkilendirme:**
 

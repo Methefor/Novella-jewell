@@ -60,7 +60,8 @@ export const orders = pgTable('orders', {
   total: numeric('total', { precision: 10, scale: 2 }).notNull(),
   customer: jsonb('customer').$type<OrderCustomerRow>().notNull(),
 
-  shopierPaymentId: text('shopier_payment_id'),
+  // Fiziksel sütun adı eski migration ile uyumluluk için korunur.
+  paymentProviderId: text('shopier_payment_id'),
   randomNr: text('random_nr').notNull(),
 
   createdAt: timestamp('created_at', { withTimezone: true })

@@ -131,7 +131,8 @@ export async function POST(request: Request) {
 
   if (action === 'restore') {
     for (const row of rows) {
-      const { deletedAt: _deletedAt, ...restoredData } = row.data;
+      const restoredData = { ...row.data };
+      delete restoredData.deletedAt;
       await db
         .update(catalogProducts)
         .set({

@@ -1,5 +1,5 @@
 // Tek veri erişim noktası.
-// Supabase'e geçişte sadece bu dosya değişir — sayfalar dokunulmaz.
+// Ürün erişimi bu modülde merkezileştirilir; kalıcı katalog Neon DB'dedir.
 import { LOW_STOCK_THRESHOLD } from '@/lib/config';
 import type { Product } from '@/types/product';
 

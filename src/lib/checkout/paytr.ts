@@ -67,8 +67,7 @@ export async function refundPayTRPayment(
 /**
  * PayTR iFrame API sağlayıcısı.
  *
- * Shopier, kendi internet sitesinde satış desteğini kaldırdığı için
- * (2026-07 itibarıyla) proje PayTR'e geçiyor. İki adımlı iFrame akışı:
+ * Novella'nın aktif ödeme entegrasyonu iki adımlı PayTR iFrame akışıdır:
  *   1. Sunucu PayTR'den iframe_token ister.
  *   2. Müşterinin önünde iframe açılır, ödeme sonucu Bildirim URL'ye (callback)
  *      POST olarak gelir.
@@ -101,7 +100,6 @@ export class PayTRProvider implements CheckoutProvider {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createPayment(order: Order, randomNr: string): Promise<PaymentResult> {
     const userIp = order.userIp?.trim() || '127.0.0.1';
     // DB order_no (NJ-2026-XXXX) → PayTR'nin kabul ettiği alfanumerik biçim

@@ -5,8 +5,8 @@ import type { Order, OrderCustomer, OrderItem } from './types';
 /**
  * GÜVENLİK NOTU — bu dosyanın var olma sebebi.
  *
- * Eskiden client `total` alanını kendisi hesaplayıp /api/checkout'a gönderiyordu,
- * sunucu da onu doğrudan imzalayıp Shopier'e iletiyordu. Yani kullanıcı
+ * Eski akışta client `total` alanını kendisi hesaplayıp /api/checkout'a gönderiyor,
+ * sunucu da bu tutara güveniyordu. Yani kullanıcı
  * {"total": 1} POST ederek 12.000 ₺'lik sepeti 1 ₺'ye alabiliyordu ve imza
  * geçerli oluyordu (çünkü bizim secret'ımızla imzalanıyordu).
  *
@@ -68,8 +68,8 @@ export async function buildOrder(
       return { ok: false, error: `${product.name} için geçersiz seçenek.` };
     }
 
-    // Stok kontrolü — statik veriye dayanıyor. Kalıcı stok takibi
-    // (Supabase) geldiğinde burada DB'den okunmalı ve satış sonrası düşülmeli.
+    // Stok kontrolü aktif katalog katmanından gelir. Dinamik ürünlerde kaynak
+    // Neon DB, yalnızca veritabanı yoksa statik katalog geri dönüşüdür.
     if (variant.stock < quantity) {
       return {
         ok: false,

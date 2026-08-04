@@ -1,95 +1,80 @@
-# Mimari Karar Kayıtları (ADR)
+# Novella Jewell — Teknik ve Ticari Kararlar
 
-Bu dosya, projedeki önemli teknik kararları nedenleri ve sonuçlarıyla birlikte kaydeder. Yeni bir önemli mimari seçim yapıldığında buraya ekleme yapılır.
+Bu kayıt yalnızca mevcut kaynak kodunda veya Git geçmişinde uygulanmış olduğu doğrulanan kararları içerir.
 
-## ADR Şablonu
+## ADR-001 — Fiyat, kargo ve toplam sunucuda hesaplanır
 
-```markdown
-### ADR-XXX: [Kısa başlık]
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/lib/checkout/buildOrder.ts`, `src/app/api/checkout/route.ts`
+- **Karar:** Client yalnızca ürün, varyant ve adet gönderir. Ürün fiyatı, stok, kargo ve toplam sunucudaki katalogdan yeniden hesaplanır.
+- **Sonuç:** Client tarafından fiyat değiştirilerek düşük tutarlı ödeme başlatılması engellenir.
 
-- **Tarih:** YYYY-AA-GG
-- **Durum:** taslak / önerildi / kabul edildi / reddedildi / kullanımdan kaldırıldı
-- **Bağlam:** [Kararın alındığı ortam ve problem]
-- **Karar:** [Seçilen çözüm]
-- **Sonuçlar:** [Olumlu/olumsuz etkiler, kabul edilen riskler]
-- **Alternatifler:** [Düşünülen ve reddedilen seçenekler]
-```
+## ADR-002 — Varsayılan ödeme sağlayıcısı PayTR iFrame API'dir
 
----
+- **Durum:** Kabul edildi; aktif ve tek sağlayıcı PayTR'dir.
+- **Kanıt:** `src/lib/checkout/index.ts`, `src/lib/checkout/paytr.ts`, `src/app/api/odeme/callback/route.ts`
+- **Karar:** Checkout doğrudan `PayTRProvider` kullanır. Ödeme sonucu doğrulanmış PayTR callback'i ile işlenir; Shopier sağlayıcı yolu kaldırılmıştır.
+- **Sonuç:** Ödeme ekranı site içinde açılır; canlı çalışma için production merchant ayarları zorunludur.
 
-## ADR-001: Fiyat ve stok hesaplaması sunucuda yapılır
+## ADR-003 — Kalıcı veri katmanı Neon Postgres ve Drizzle ORM'dir
 
-- **Tarih:** 2026-07-22
-- **Durum:** kabul edildi
-- **Bağlam:** Ödeme akışında client'tan gelen `total` alanı doğrudan imzalanıyordu. Bu, `{ "total": 1 }` gönderilerek yüksek tutarlı bir sepetin düşük fiyata satın alınmasına olanak tanıyordu.
-- **Karar:** `/api/checkout` yalnızca `productId`, `variantId` ve `quantity` kabul eder. Fiyat, stok ve toplam `src/lib/checkout/buildOrder.ts` içinde sunucudaki `PRODUCTS` verisinden yeniden hesaplanır. Client'tan gelen hiçbir fiyat alanına güvenilmez.
-- **Sonuçlar:**
-  - Güvenlik açısından kritik bir hata kapatıldı.
-  - Sipariş akışı tek kaynak (sunucu) üzerinden yönetilir.
-  - Ürün verisi değiştiğinde client tarafında ekstra senkronizasyon gerekmez.
-- **Alternatifler:**
-  - Client'tan gelen fiyatın sunucuda doğrulanması: daha fazla karmaşıklık getirir ve hâlâ manipülasyona açıktır.
-  - Ürün başına hash/imza: ek yük getirir ve gerekli değildir.
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/db/index.ts`, `src/db/schema.ts`, `drizzle/0000`–`0014`
+- **Karar:** Sipariş, stok, dinamik katalog, kampanya, medya, analitik ve audit kayıtları Neon Postgres'te; şema Drizzle migration'larıyla tutulur.
+- **Sonuç:** Production şema değişiklikleri migration ile sürümlenir.
 
----
+## ADR-004 — Katalog dinamik veritabanı ve statik geri dönüşü birlikte kullanır
 
-## ADR-002: Ödeme sağlayıcısı olarak Shopier kullanılır ve soyutlanır
+- **Durum:** Kabul edildi; eski “yalnızca statik katalog” kararı bununla değiştirilmiştir.
+- **Kanıt:** `src/lib/catalog.ts`, `drizzle/0004_catalog_products.sql`
+- **Karar:** Veritabanı varsa yayınlanmış dinamik ürünler kullanılır; veritabanı yoksa `src/data/products.ts` geri dönüş kaynağıdır. Dinamik taslak/yayından kaldırılmış kayıt, aynı kimlikli statik ürünü gizler.
+- **Sonuç:** Admin paneli ürün yayınını yönetebilir; veritabanı erişilemezse statik katalog servis vermeyi sürdürebilir.
 
-- **Tarih:** 2026-07-22
-- **Durum:** kullanımdan kaldırıldı
-- **Bağlam:** Projenin ilk fazında Türkiye'de yaygın ve hızlı entegre edilebilir bir ödeme çözümüne ihtiyaç vardı. İleride iyzico veya PayTR'ye geçiş ihtimali de göz önünde bulunduruldu.
-- **Karar:** `CheckoutProvider` arayüzü (`src/lib/checkout/types.ts`) tanımlandı. `getCheckoutProvider()` (`src/lib/checkout/index.ts`) `CHECKOUT_PROVIDER` ortam değişkenine göre sağlayıcı döner. İlk uygulama `ShopierProvider` (`src/lib/checkout/shopier.ts`)'dır.
-- **Sonuçlar:**
-  - Sağlayıcı değişikliği rota ve iş mantığı kodlarını değiştirmeden yapılabilir.
-  - İmza doğrulama ve form/redirect üretme her sağlayıcının kendi sorumluluğundadır.
-- **Değişiklik (2026-07-22):** Shopier, kendi web sitesinde satış desteğini kaldırdı. Bkz. ADR-005.
-- **Alternatifler:**
-  - Doğrudan Shopier kodunun route handler'a gömülmesi: ileride geçişte yüksek refactor maliyeti doğurur.
+## ADR-005 — Satış sonrası stok yalnızca doğrulanmış ödeme ile düşer
 
----
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/lib/orders.ts`, `src/app/api/odeme/callback/route.ts`
+- **Karar:** Pending sipariş ödeme öncesi oluşturulur; `paid` geçişi ve stok düşümü aynı veritabanı işlemi içinde, yeterli stok koşuluyla yapılır. Tekrarlanan callback idempotent no-op olur.
+- **Sonuç:** Başarısız ödeme stok azaltmaz; tekrar callback çift stok düşmez.
 
-## ADR-003: Ürün kataloğu statik dosyada tutulur ve tek erişim noktası sağlanır
+## ADR-006 — Sipariş operasyonu tek yönlü durum makinesiyle yönetilir
 
-- **Tarih:** 2026-07-22
-- **Durum:** kabul edildi
-- **Bağlam:** Site açılışında envanter küçüktü ve sık değişmiyordu; Supabase/Product CMS geçişi ileriye bırakıldı.
-- **Karar:** Ürün verisi `src/data/products.ts` içinde tek kaynak olarak tutulur. Dışa aktarım `src/lib/products.ts` üzerinden yapılır; böylece Supabase/CMS geçişinde yalnızca bu dosya değişir.
-- **Sonuçlar:**
-  - Sayfalar ve API'ler ürün verisinin nereden geldiğini bilmez.
-  - Stok değişiklikleri ve fiyat güncellemeleri tek yerden yapılır.
-  - CMS/Supabase'e geçişte `src/data/products.ts` yerine yeni veri erişim katmanı yazmak yeterlidir.
-- **Alternatifler:**
-  - Her sayfada doğrudan `PRODUCTS` içe aktarımı: geçişte çok sayıda dosya değişir.
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/lib/order-status.ts`, `src/app/admin/actions.ts`
+- **Karar:** `new → preparing → shipped → delivered` ana akışıdır; yalnızca tanımlı iptal geçişleri mümkündür. `shipped` için kargo firması ve takip numarası gerekir.
+- **Sonuç:** Yönetici geçmiş bir duruma keyfî dönüş yapamaz; değişiklikler order event ve admin audit kayıtlarına yazılır.
 
----
+## ADR-007 — Yönetim erişimi tek ve doğrulanmış Clerk e-postasıyla sınırlandırılır
 
-## ADR-004: Neon Postgres + Drizzle ORM kullanılır
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/lib/admin-auth.ts` ve admin/API rotalarındaki `getAdminAuth()` kontrolleri
+- **Karar:** Ayrı rol tablosu yerine kodda belirlenmiş yönetici e-postası ve Clerk `verified` durumu kullanılır.
+- **Sonuç:** Mevcut tek yönetici işletimi basittir; çok kullanıcılı rol yönetimi uygulanmış değildir.
 
-- **Tarih:** 2026-07-22
-- **Durum:** kabul edildi
-- **Bağlam:** Sipariş kayıtları kalıcı tutulmalıydı; Vercel Storage/Neon kolay entegrasyon sundu. Supabase ile ilişkisel veritabanı ihtiyacı aynı anda değerlendirildi.
-- **Karar:** `DATABASE_URL` ile Neon Postgres bağlantısı kurulur; ORM olarak Drizzle kullanılır. Göçler `drizzle-kit` ile `drizzle/` klasörüne yazılır ve depoya dahil edilir.
-- **Sonuçlar:**
-  - `neon-http` driver'ı her sorguyu tek HTTP isteğiyle çalıştırır; Vercel serverless ortamında kalıcı bağlantı havuzu gerekmez.
-  - Drizzle tip güvenliği `src/db/schema.ts` üzerinden sağlar.
-  - Üretimde şema migration dışında değiştirilmez.
-- **Alternatifler:**
-  - Supabase PostgREST: istemci tarafı erişim riski taşır; server-side kullanım gerekir.
-  - Prisma: daha büyük paket ve ek çalışma zamanı gereksinimi.
+## ADR-008 — Analitik ve reklam etiketleri açık çerez onayından sonra çalışır
 
----
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/components/analytics/GoogleAnalytics.tsx`, `MetaPixel.tsx`, `FirstPartyAnalytics.tsx`, `src/components/legal/CookieBanner.tsx`
+- **Karar:** Google Analytics, Meta Pixel ve birinci taraf analitik yalnızca `accepted` onayı sonrası ölçüm yapar. Google reklam depolaması kapalı tutulur.
+- **Sonuç:** Onay verilmezse analitik olay gönderimi yapılmaz; ölçüm kapsamı onay veren ziyaretçilerle sınırlıdır.
 
-## ADR-005: Shopier desteği kalkınca PayTR iFrame API'ye geçilir
+## ADR-009 — Sosyal medya içerikleri taslak ve manuel onay akışında tutulur
 
-- **Tarih:** 2026-07-22
-- **Durum:** kabul edildi
-- **Bağlam:** Shopier, "ürün listelemeden kendi internet sitenizde satış" desteğini kaldırdığını bildirdi. Kendi sitesinde mağaza açma veya listeleme dışında bir entegrasyon yolu sunmuyor.
-- **Karar:** Mevcut `CheckoutProvider` soyutlaması korunarak yeni sağlayıcı `PayTRProvider` (`src/lib/checkout/paytr.ts`) yazıldı. Varsayılan sağlayıcı `paytr` olarak değiştirildi. `/api/checkout` PayTR'den `iframe_token` alıp `/odeme` sayfasında iframe açar; `/api/odeme/callback` PayTR Bildirim URL'sinden gelen POST'u doğrulayıp siparişi `paid`/`failed` yapar ve `OK` yanıtı döner.
-- **Sonuçlar:**
-  - Kredi kartı / havale ödemeleri Türkiye içinde yasal altyapıda kabul edilir.
-  - iFrame akışı müşteriyi siteden çıkarmadan ödeme yapmasını sağlar.
-  - PayTR komisyon oranları ve onay süreci mağaza bazında değişebilir.
-- **Alternatifler:**
-  - iyzico: Daha kapsamlı ama entegrasyonu daha karmaşık; daha sonra gerekirse yine `CheckoutProvider` arayüzüne eklenebilir.
-  - Stripe: Türkiye'de yerel merchant hesabı desteği yoktur.
-  - Shopier mağazasına yönlendirme: Marka deneyimi ve site kontrolünü kaybetme riski taşır.
+- **Durum:** Kabul edildi
+- **Kanıt:** `campaign_items`, `campaign_media_assets`, `/admin/kampanyalar`, `/admin/icerik-takvimi`
+- **Karar:** Instagram ve Threads metinleri, medya durumları ve yayın tarihleri admin panelinde hazırlanır. Kod tabanında Instagram/Threads'e otomatik yayın yapan bir rota veya istemci bulunmaz.
+- **Sonuç:** Takvimde “yayına hazır” olmak paylaşım yapıldığı anlamına gelmez; son yayın harici platformda manuel yapılır.
+
+## ADR-010 — Video üretimi production sunucusunda değil yerel Remotion köprüsünde yapılır
+
+- **Durum:** Kabul edildi
+- **Kanıt:** `studio/`, `studio/scripts/render-bridge.mjs`, `src/app/admin/icerik-uret/ContentStudioClient.tsx`
+- **Karar:** Render köprüsü yalnızca `127.0.0.1:4317` üzerinde çalışır. Admin paneli üç görsel ve metin paketini yerel köprüye gönderir; üretilen MP4 ayrıca kampanya kütüphanesine yüklenir.
+- **Sonuç:** Vercel deployment'ı Remotion render yükünü taşımaz; video üretmek için yönetici bilgisayarında köprünün açık olması gerekir.
+
+## ADR-011 — Reklama hazır durumu on maddelik ürün kontrolüyle belirlenir
+
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/lib/product-readiness.ts`
+- **Karar:** En az üç görsel, açıklama, hikâye, özellikler, fiyat, stok ve dört manuel reklam onayı tamamlanmadan ürün `ready` olmaz.
+- **Sonuç:** Ürünün yayında olması, reklama hazır olduğu anlamına gelmez.

@@ -4,7 +4,8 @@ import { sendOrderConfirmationEmail } from '@/lib/email';
 import { markOrderFailed, markOrderPaid } from '@/lib/orders';
 import { NextRequest, NextResponse } from 'next/server';
 
-// PayTR/Shopier callback: GET veya POST olarak gelebilir.
+// PayTR callback'i production'da POST gelir. GET desteği güvenli tanılama ve
+// geriye dönük callback testleri için aynı doğrulama yolunu kullanır.
 export async function GET(req: NextRequest) {
   return handleCallback(req);
 }
@@ -14,9 +15,6 @@ export async function POST(req: NextRequest) {
 }
 
 async function handleCallback(req: NextRequest) {
-  const siteUrl = (await import('@/lib/config')).SITE.url;
-  const providerName = process.env.CHECKOUT_PROVIDER ?? 'paytr';
-
   // Parametre toplama (query string + form body)
   const url = new URL(req.url);
   const params: Record<string, string> = {};
@@ -36,11 +34,8 @@ async function handleCallback(req: NextRequest) {
     // body okuma opsiyonel
   }
 
-  // PayTR: merchant_oid (alfanumerik, NJ20260001) → DB formatına geri çevrilir;
-  // eski Shopier: platform_order_id (olduğu gibi).
-  const orderNo =
-    params.platform_order_id ??
-    (params.merchant_oid ? fromPayTROid(params.merchant_oid) : '');
+  // PayTR merchant_oid (alfanumerik, NJ20260001) DB formatına geri çevrilir.
+  const orderNo = params.merchant_oid ? fromPayTROid(params.merchant_oid) : '';
 
   // İmza doğrulama — başarısız → hata sayfası (kayda dokunma)
   const provider = getCheckoutProvider();
@@ -51,10 +46,7 @@ async function handleCallback(req: NextRequest) {
     });
   }
 
-  // PayTR status: success | failed; eski Shopier: status=success veya payment_status=1.
-  const isPaid = params.status === 'success' || params.payment_status === '1';
-
-  let total = '';
+  const isPaid = params.status === 'success';
 
   if (isPaid) {
     // IDEMPOTENT: aynı callback iki kez gelirse ikinci sefer no-op olur.
@@ -63,7 +55,6 @@ async function handleCallback(req: NextRequest) {
     // E-posta YALNIZCA ilk paid geçişinde ve kayıt varsa gönderilir.
     // Gönderim başarısız olsa bile sipariş akışı KIRILMAZ (try/catch içinde).
     if (sonuc.ok && !sonuc.zatenPaid && sonuc.order) {
-      total = sonuc.order.total;
       try {
         await sendOrderConfirmationEmail(sonuc.order);
       } catch (e) {
@@ -84,15 +75,5 @@ async function handleCallback(req: NextRequest) {
   // PayTR Bildirim URL'sine (callback) dönülmesi gereken yanıt düz "OK" metnidir.
   // Müşterinin gördüğü başarı/hata sayfası merchant_ok_url / merchant_fail_url ile
   // ayrıca ayarlanır; o yüzden burada redirect dönmeyiz.
-  if (providerName === 'paytr') {
-    return new NextResponse('OK');
-  }
-
-  // Eski Shopier akışı: callback doğrudan müşteriyi sonuç sayfasına yönlendirir.
-  const status = isPaid ? 'success' : 'error';
-  return NextResponse.redirect(
-    `${siteUrl}/odeme/sonuc?status=${status}&orderNo=${encodeURIComponent(
-      orderNo
-    )}${total ? `&total=${encodeURIComponent(total)}` : ''}`
-  );
+  return new NextResponse('OK');
 }

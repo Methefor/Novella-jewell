@@ -70,7 +70,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
    * Çok Satanlar — isBestSeller işaretine göre.
    * Eskiden ürün ID'leri elle yazılıydı (kupe-11, allBilezik[3]…); katalog
    * değişince kırılmaya açıktı ve gerçek satışla ilgisi yoktu.
-   * Gerçek satış verisi (Supabase) gelince burası sipariş sayısına göre
+   * Satış verisi Neon DB'den vitrine bağlandığında burası sipariş sayısına göre
    * hesaplanmalı; şimdilik işaretlenen ürünlerden en yenileri gösteriliyor.
    */
   const bestSellers = products

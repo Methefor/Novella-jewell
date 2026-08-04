@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
 
     const { items, customer } = parsed.data;
 
-    // random_nr'ı burada üretiyoruz: aynı değer hem DB pending siparişe
-    // kaydedilecek hem de (eski Shopier akışında) imzada kullanılacak.
+    // random_nr güvenli sipariş doğrulama bağlantısında kullanılmak üzere
+    // pending siparişle birlikte kaydedilir.
     const randomNr = crypto.randomBytes(24).toString('hex');
 
     // Fiyat, kargo ve stok burada yeniden hesaplanır. id geçici — birazdan

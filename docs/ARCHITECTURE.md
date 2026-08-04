@@ -13,8 +13,8 @@ Bu belge, Novella Jewell e-ticaret uygulamasının yüksek düzeyli yapısını,
 | Durum yönetimi | Zustand                                                                              | Sepet, favoriler, filtreler ve son bakılanlar gibi istemci durumları için.                      |
 | İkonlar        | Lucide React                                                                         | —                                                                                               |
 | Yazı tipleri   | Cormorant Garamond (başlık) + Inter (gövde)                                          | `next/font/google` ile optimize edilmiş.                                                        |
-| Ödeme          | PayTR iFrame API (Shopier, 2026-07 itibarıyla kendi sitede satış desteğini kaldırdı) | `src/lib/checkout/paytr.ts`; `CheckoutProvider` arayüzü sayesinde sağlayıcı değiştirilebilir.   |
-| Veritabanı     | Neon Postgres + Drizzle ORM                                                          | `src/db/index.ts` neon-http driver; `src/db/schema.ts` tek tablo: `orders`.                     |
+| Ödeme          | PayTR iFrame API                                                                      | Aktif ve tek sağlayıcı; `src/lib/checkout/paytr.ts`.                                             |
+| Veritabanı     | Neon Postgres + Drizzle ORM                                                           | `src/db/index.ts` neon-http driver; sipariş, katalog, analitik ve admin tabloları.                |
 | E-posta        | Resend                                                                               | `src/lib/email.ts`, `RESEND_API_KEY` opsiyonel.                                                 |
 | Analitik       | Google Analytics 4                                                                   | `src/lib/analytics.ts`, çerez onayına bağlı.                                                    |
 | Dağıtım        | Vercel                                                                               | `vercel.json` ve `next.config.ts` içinde yönlendirmeler tanımlı.                                |
@@ -56,7 +56,7 @@ c:\Projects\Novella-Jewell
 │   ├── hooks/                # useProductFilters, useProductSearch, useToast vb.
 │   ├── lib/                  # İş mantığı ve yardımcılar
 │   │   ├── analytics.ts      # GA4 e-ticaret olayları
-│   │   ├── checkout/         # Sağlayıcı arayüzü, buildOrder, PayTR (eski Shopier)
+│   │   ├── checkout/         # Sunucu fiyatlandırması ve PayTR ödeme entegrasyonu
 │   │   ├── config.ts         # SITE, SHIPPING, LOW_STOCK_THRESHOLD, EMAIL
 │   │   ├── cookies.ts        # Çerez onay yönetimi
 │   │   ├── email.ts          # Resend sipariş onay e-postası
@@ -110,8 +110,8 @@ c:\Projects\Novella-Jewell
 | `items`              | `jsonb`                    | `OrderItemRow[]`: slug, ad, adet, birimFiyat.                                     |
 | `total`              | `numeric(10,2)`            | Sipariş toplamı.                                                                  |
 | `customer`           | `jsonb`                    | `OrderCustomerRow`: adSoyad, email, telefon, adres, il, ilce, not.                |
-| `shopier_payment_id` | `text`                     | Ödeme sağlayıcı tarafından dönen ödeme ID'si.                                     |
-| `random_nr`          | `text`                     | Shopier imzasında kullanılan rastgele sayı.                                       |
+| `shopier_payment_id` | `text`                     | PayTR ödeme kimliği; fiziksel kolon adı eski migration uyumluluğu için korunur.   |
+| `random_nr`          | `text`                     | Güvenli sipariş doğrulama bağlantısında kullanılan rastgele değer.                |
 | `created_at`         | `timestamp with time zone` | Sipariş oluşturulma zamanı.                                                       |
 | `paid_at`            | `timestamp with time zone` | Ödeme onaylanma zamanı (nullable).                                                |
 
@@ -126,7 +126,6 @@ Açıklamalar ve değer örnekleri için `.env.example` dosyasına bak. Gerçek 
 - `PAYTR_MERCHANT_KEY`
 - `PAYTR_MERCHANT_SALT`
 - `PAYTR_TEST_MODE`
-- `CHECKOUT_PROVIDER` (varsayılan: `paytr`)
 - `DATABASE_URL`
 - `RESEND_API_KEY`
 - `NEXT_PUBLIC_GA_ID`
