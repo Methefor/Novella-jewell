@@ -1,5 +1,6 @@
 import { Instagram, MessageCircle } from 'lucide-react';
 import { SITE } from '@/lib/config';
+import { COMPANY } from '@/lib/legal';
 import Link from 'next/link';
 
 const quickLinks = [
@@ -104,15 +105,38 @@ export default function Footer() {
               ))}
             </ul>
             <p className="section-label text-white/35 mb-3">İletişim</p>
-            <a
-              href="https://api.whatsapp.com/send?phone=905451125059"
-              className="font-sans font-light text-sm text-white/55 hover:text-white transition-colors duration-200"
-            >
-              +90 545 112 50 59
-            </a>
-            <p className="mt-2 font-sans font-light text-sm text-white/55">
-              Tekirdağ / Süleymanpaşa
-            </p>
+            <address className="not-italic space-y-2 font-sans font-light text-sm text-white/55">
+              <p>
+                <span className="text-white/35">Telefon: </span>
+                <a
+                  href={`tel:+90${COMPANY.telefon.replace(/\D/g, '').replace(/^0/, '')}`}
+                  className="hover:text-white transition-colors duration-200"
+                >
+                  {COMPANY.telefon}
+                </a>
+              </p>
+              <p>
+                <span className="text-white/35">E-posta: </span>
+                <a
+                  href={`mailto:${COMPANY.email}`}
+                  className="hover:text-white transition-colors duration-200 break-all"
+                >
+                  {COMPANY.email}
+                </a>
+              </p>
+              <p className="leading-relaxed">
+                <span className="text-white/35">Adres: </span>
+                {COMPANY.adres}
+              </p>
+              <a
+                href="https://api.whatsapp.com/send?phone=905451125059"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block hover:text-white transition-colors duration-200"
+              >
+                WhatsApp destek
+              </a>
+            </address>
           </div>
         </div>
 
