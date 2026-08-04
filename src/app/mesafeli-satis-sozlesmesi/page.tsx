@@ -36,11 +36,8 @@ export default function MesafeliSatisPage() {
           <dd>{alan(COMPANY.unvan, 'ticaret unvanı')}</dd>
           <dt>Adres</dt>
           <dd>{alan(COMPANY.adres, 'açık adres')}</dd>
-          <dt>Vergi dairesi / no</dt>
-          <dd>
-            {alan(COMPANY.vergiDairesi, 'vergi dairesi')} /{' '}
-            {alan(COMPANY.vergiNo, 'vergi no')}
-          </dd>
+          <dt>Vergi dairesi</dt>
+          <dd>{alan(COMPANY.vergiDairesi, 'vergi dairesi')}</dd>
           <dt>E-posta</dt>
           <dd>{alan(COMPANY.email, 'e-posta')}</dd>
           <dt>Telefon</dt>

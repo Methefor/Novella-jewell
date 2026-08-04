@@ -29,9 +29,6 @@ export const COMPANY = {
   /** Vergi dairesi — örn. "Süleymanpaşa" */
   vergiDairesi: 'Süleymanpaşa',
 
-  /** Vergi kimlik no veya TC kimlik no (şahıs şirketi) */
-  vergiNo: '31460457134',
-
   /** MERSİS numarası — şahıs şirketiyse boş bırakılabilir */
   mersisNo: '',
 

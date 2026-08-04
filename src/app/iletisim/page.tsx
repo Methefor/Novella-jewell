@@ -72,9 +72,6 @@ export default function IletisimPage() {
           <dt>Vergi dairesi</dt>
           <dd>{alan(COMPANY.vergiDairesi, 'vergi dairesi')}</dd>
 
-          <dt>Vergi / TC kimlik no</dt>
-          <dd>{alan(COMPANY.vergiNo, 'vergi no')}</dd>
-
           {COMPANY.mersisNo && (
             <>
               <dt>MERSİS no</dt>
@@ -82,8 +79,6 @@ export default function IletisimPage() {
             </>
           )}
 
-          <dt>Web sitesi</dt>
-          <dd>{SITE.url}</dd>
         </dl>
       </div>
 
