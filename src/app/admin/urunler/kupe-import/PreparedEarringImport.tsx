@@ -26,7 +26,6 @@ export default function PreparedEarringImport({ manifest }: { manifest: Prepared
 
   async function upload() {
     if (readyCount !== manifest.length || busy) return;
-    if (!window.confirm('112 görsel Vercel Blob’a yüklenecek ve 29 ürün fiyat/stok bekleyen taslak olarak oluşturulacak. Devam edilsin mi?')) return;
     setBusy(true);
     setResult('');
     try {
