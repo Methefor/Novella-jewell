@@ -4,7 +4,7 @@ import { db, dbYok } from '@/db';
 import { catalogProducts } from '@/db/schema';
 import { PRODUCTS } from '@/data/products';
 import type { Product } from '@/types/product';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 function hydrate(data: typeof catalogProducts.$inferSelect.data): Product {
   return {
@@ -32,14 +32,8 @@ export async function getCatalogProducts(options?: {
   const dynamicProducts = rows
     .filter(({ published }) => published)
     .map(({ data }) => hydrate(data));
-  // Taslak kaydı statik ürünü de bastırır; aksi halde "yayından kaldırılan"
-  // statik ürün PRODUCTS listesinden tekrar görünürdü.
-  const dynamicIds = new Set(rows.map(({ data }) => data.id));
-
-  return [
-    ...dynamicProducts,
-    ...staticProducts.filter((product) => !dynamicIds.has(product.id)),
-  ];
+  if (rows.length > 0) return dynamicProducts;
+  return staticProducts;
 }
 
 export async function getCatalogProductBySlug(
@@ -55,6 +49,8 @@ export async function getCatalogProductBySlug(
       .where(eq(catalogProducts.slug, slug))
       .limit(1);
     if (row) return row.published ? hydrate(row.data) : undefined;
+    const [{ count }] = await db.select({ count: sql<number>`count(*)::int` }).from(catalogProducts);
+    if (count > 0) return undefined;
   }
   return PRODUCTS.find((product) => product.slug === slug);
 }
@@ -72,6 +68,8 @@ export async function getCatalogProductById(
       .where(eq(catalogProducts.id, id))
       .limit(1);
     if (row) return row.published ? hydrate(row.data) : undefined;
+    const [{ count }] = await db.select({ count: sql<number>`count(*)::int` }).from(catalogProducts);
+    if (count > 0) return undefined;
   }
   return PRODUCTS.find((product) => product.id === id);
 }

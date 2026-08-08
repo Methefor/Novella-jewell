@@ -4,6 +4,9 @@ import {
   campaignItems,
   catalogProducts,
   contentCampaigns,
+  inventory,
+  productMediaAssets,
+  stockMovements,
   type CampaignChannel,
 } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -11,13 +14,15 @@ import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { getProductReadiness } from '@/lib/product-readiness';
 import type { Product } from '@/types/product';
 import { eq, inArray } from 'drizzle-orm';
+import { del } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const schema = z.object({
-  action: z.enum(['approve-copy', 'queue', 'publish', 'unpublish', 'trash', 'restore']),
+  action: z.enum(['approve-copy', 'queue', 'publish', 'unpublish', 'trash', 'restore', 'purge']),
   ids: z.array(z.string().min(1)).min(1).max(200),
+  confirmation: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -26,7 +31,7 @@ export async function POST(request: Request) {
   if (dbYok) return NextResponse.json({ error: 'Veritabanı bağlantısı yok.' }, { status: 503 });
   const parsed = schema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: 'Geçersiz toplu işlem.' }, { status: 400 });
-  const { action, ids } = parsed.data;
+  const { action, ids, confirmation } = parsed.data;
 
   // Eski statik katalog ürünleri ilk toplu işlemde veritabanına taşınır.
   // Böylece yayından kaldırma geri alınabilir olur; ürün verisi silinmez.
@@ -67,6 +72,39 @@ export async function POST(request: Request) {
     .from(catalogProducts)
     .where(inArray(catalogProducts.id, ids));
   if (rows.length !== ids.length) return NextResponse.json({ error: 'Ürünlerden biri bulunamadı.' }, { status: 404 });
+
+  if (action === 'purge') {
+    if (confirmation !== 'KALICI SİL') {
+      return NextResponse.json({ error: 'Kalıcı silme onayı geçersiz.' }, { status: 400 });
+    }
+    if (rows.some((row) => !row.data.deletedAt)) {
+      return NextResponse.json(
+        { error: 'Kalıcı olarak silmeden önce ürünleri çöp kutusuna taşıyın.' },
+        { status: 409 }
+      );
+    }
+
+    const imageUrls = Array.from(new Set(rows.flatMap((row) => [
+      ...(row.data.images ?? []),
+      ...row.data.variants.flatMap((variant) => variant.images ?? []),
+    ]))).filter((url) => /^https:\/\/[^/]*\.public\.blob\.vercel-storage\.com\//.test(url));
+
+    await db.transaction(async (tx) => {
+      await tx.delete(campaignItems).where(inArray(campaignItems.productId, ids));
+      await tx.delete(productMediaAssets).where(inArray(productMediaAssets.productId, ids));
+      await tx.delete(inventory).where(inArray(inventory.productId, ids));
+      await tx.delete(stockMovements).where(inArray(stockMovements.productId, ids));
+      await tx.delete(catalogProducts).where(inArray(catalogProducts.id, ids));
+    });
+
+    if (imageUrls.length) {
+      try {
+        await del(imageUrls);
+      } catch (error) {
+        console.error('Kalıcı silme sonrasında Blob temizliği tamamlanamadı.', error);
+      }
+    }
+  }
 
   if (action === 'approve-copy') {
     for (const row of rows) {
@@ -173,7 +211,7 @@ export async function POST(request: Request) {
     summary: `${ids.length} ürüne ${action} işlemi uygulandı.`,
     metadata: { count: ids.length, campaignId: campaignId ?? null },
   });
-  if (['publish', 'unpublish', 'trash', 'restore'].includes(action)) {
+  if (['publish', 'unpublish', 'trash', 'restore', 'purge'].includes(action)) {
     revalidatePath('/');
     revalidatePath('/urunler');
     revalidatePath('/koleksiyonlar');

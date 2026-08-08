@@ -51,10 +51,7 @@ export default async function ProductsAdminPage({
     createdAt: new Date(row.data.createdAt),
     updatedAt: new Date(row.data.updatedAt),
   }));
-  const products = [
-    ...dynamicProducts,
-    ...PRODUCTS.filter((product) => !rowById.has(product.id)),
-  ];
+  const products = rows.length > 0 ? dynamicProducts : PRODUCTS;
   const activeProducts = products.filter((product) => !product.deletedAt);
   const readyCount = activeProducts.filter((product) => getProductReadiness(product).ready).length;
   const publishedCount = activeProducts.filter((product) => {
@@ -126,6 +123,9 @@ export default async function ProductsAdminPage({
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Link href="/admin/urunler/kupe-import" className="rounded-xl border border-[#b69b5e] bg-[#fffaf0] px-5 py-3 text-sm font-medium text-[#6f5b2f]">
+              29 küpeyi aktar
+            </Link>
             <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d8cdbb] bg-white px-5 py-3 text-sm font-medium">
               Reklam hazırlığı
             </Link>

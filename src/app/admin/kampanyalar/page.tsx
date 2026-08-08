@@ -97,15 +97,12 @@ export default async function CampaignsPage({
           .orderBy(desc(campaignMediaAssets.createdAt))
       : [];
 
-  const catalogById = new Map(catalogRows.map((row) => [row.id, row]));
-  const products: Product[] = [
-    ...catalogRows.map((row) => ({
+  const dynamicProducts: Product[] = catalogRows.map((row) => ({
       ...row.data,
       createdAt: new Date(row.data.createdAt),
       updatedAt: new Date(row.data.updatedAt),
-    })),
-    ...PRODUCTS.filter((product) => !catalogById.has(product.id)),
-  ];
+    }));
+  const products: Product[] = catalogRows.length > 0 ? dynamicProducts : PRODUCTS;
   const productById = new Map(products.map((product) => [product.id, product]));
   const selectedProductIds = new Set(selectedItems.map((item) => item.productId));
   const availableProducts = products

@@ -2,7 +2,7 @@ import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
-import { eq } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import ProductForm, { type ProductFormInitial } from '../ProductForm';
@@ -24,7 +24,12 @@ export default async function EditProductPage({
         .from(catalogProducts)
         .where(eq(catalogProducts.id, id))
         .limit(1);
-  const staticProduct = PRODUCTS.find((product) => product.id === id);
+  const [{ value: databaseProductCount } = { value: 0 }] = dbYok
+    ? []
+    : await db.select({ value: count() }).from(catalogProducts);
+  const staticProduct = databaseProductCount === 0
+    ? PRODUCTS.find((product) => product.id === id)
+    : undefined;
   const data = row?.data ?? staticProduct;
   if (!data) notFound();
   const variant = data.variants.find((item) => item.id === data.defaultVariant) ?? data.variants[0];

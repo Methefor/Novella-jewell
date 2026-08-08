@@ -32,10 +32,7 @@ export default async function AdReadinessPage({
     createdAt: new Date(row.data.createdAt),
     updatedAt: new Date(row.data.updatedAt),
   }));
-  const products = [
-    ...dynamicProducts,
-    ...PRODUCTS.filter((product) => !rowById.has(product.id)),
-  ];
+  const products = rows.length > 0 ? dynamicProducts : PRODUCTS;
 
   const productStates = products.map((product) => {
     const readiness = getProductReadiness(product);

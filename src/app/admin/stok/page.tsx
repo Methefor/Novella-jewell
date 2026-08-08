@@ -35,15 +35,12 @@ export default async function StockPage({
         db.select().from(inventory),
         db.select().from(stockMovements).orderBy(desc(stockMovements.createdAt)).limit(100),
       ]);
-  const catalogIds = new Set(catalogRows.map((row) => row.id));
-  const products: Product[] = [
-    ...catalogRows.map((row) => ({
+  const dynamicProducts: Product[] = catalogRows.map((row) => ({
       ...row.data,
       createdAt: new Date(row.data.createdAt),
       updatedAt: new Date(row.data.updatedAt),
-    })),
-    ...PRODUCTS.filter((product) => !catalogIds.has(product.id)),
-  ];
+    }));
+  const products: Product[] = catalogRows.length > 0 ? dynamicProducts : PRODUCTS;
   const productById = new Map(products.map((product) => [product.id, product]));
   const inventoryByVariant = new Map(
     inventoryRows.map((row) => [`${row.productId}:${row.variantId}`, row])

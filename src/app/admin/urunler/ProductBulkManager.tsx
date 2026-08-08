@@ -44,7 +44,7 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
   }
 
   async function run(
-    action: 'publish' | 'unpublish' | 'trash' | 'restore',
+    action: 'publish' | 'unpublish' | 'trash' | 'restore' | 'purge',
     ids = selectedIds
   ) {
     if (!ids.length || busy) return;
@@ -55,7 +55,9 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
           ? 'yayından kaldırmak'
           : action === 'trash'
             ? 'çöp kutusuna taşımak'
-            : 'geri yüklemek';
+            : action === 'restore'
+              ? 'geri yüklemek'
+              : 'kalıcı olarak silmek';
     const detail =
       action === 'unpublish'
         ? '\n\nÜrünler mağazada görünmeyecek, ancak silinmeyecek ve daha sonra yeniden yayınlanabilecek.'
@@ -63,8 +65,18 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
           ? '\n\nYalnızca görsel ve kalite kontrolleri tamamlanmış ürünler yayınlanabilir.'
           : action === 'trash'
             ? '\n\nÜrünler mağazadan ve normal yönetim listesinden kaldırılacak. Çöp kutusundan geri yüklenebilir.'
-            : '\n\nÜrünler taslak durumunda geri yüklenecek.';
+            : action === 'restore'
+              ? '\n\nÜrünler taslak durumunda geri yüklenecek.'
+              : '\n\nÜrün kayıtları, stok geçmişi ve ürüne ait Vercel Blob görselleri kalıcı olarak silinecek. Bu işlem geri alınamaz.';
     if (!window.confirm(`${ids.length} ürünü ${verb} istediğinize emin misiniz?${detail}`)) return;
+    let confirmation: string | undefined;
+    if (action === 'purge') {
+      confirmation = window.prompt('Onaylamak için KALICI SİL yazın:') ?? undefined;
+      if (confirmation !== 'KALICI SİL') {
+        setMessage('Kalıcı silme iptal edildi.');
+        return;
+      }
+    }
 
     setBusy(true);
     setMessage('');
@@ -72,7 +84,7 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
       const response = await fetch('/api/admin/products/bulk/workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, ids }),
+        body: JSON.stringify({ action, ids, confirmation }),
       });
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error || 'İşlem tamamlanamadı.');
@@ -84,7 +96,9 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
             ? 'yayından kaldırıldı'
             : action === 'trash'
               ? 'çöp kutusuna taşındı'
-              : 'taslak olarak geri yüklendi';
+              : action === 'restore'
+                ? 'taslak olarak geri yüklendi'
+                : 'kalıcı olarak silindi';
       setMessage(`${ids.length} ürün ${resultLabel}.`);
       router.refresh();
     } catch (error) {
@@ -159,6 +173,19 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
                 Seçilenleri sil
               </button>
             )}
+            {selectedIds.length > 0 &&
+              products
+                .filter((product) => selected.has(product.id))
+                .every((product) => product.deleted) && (
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => run('purge')}
+                  className="rounded-lg bg-red-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+                >
+                  Kalıcı olarak sil
+                </button>
+              )}
           </div>
         </div>
         {message && (
@@ -218,14 +245,24 @@ export function ProductBulkManager({ products }: { products: ProductListItem[] }
                   </Link>
                 )}
                 {product.deleted ? (
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => run('restore', [product.id])}
-                    className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-40"
-                  >
-                    Geri yükle
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => run('restore', [product.id])}
+                      className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-40"
+                    >
+                      Geri yükle
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => run('purge', [product.id])}
+                      className="rounded-lg bg-red-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+                    >
+                      Kalıcı sil
+                    </button>
+                  </>
                 ) : (
                   <>
                     <button

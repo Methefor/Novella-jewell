@@ -51,14 +51,12 @@ export default async function AdminPage() {
         db.select().from(catalogProducts),
       ]);
   const catalogById = new Map(catalogRows.map((row) => [row.id, row]));
-  const adminProducts = [
-    ...catalogRows.map((row) => ({
+  const dynamicProducts = catalogRows.map((row) => ({
       ...row.data,
       createdAt: new Date(row.data.createdAt),
       updatedAt: new Date(row.data.updatedAt),
-    })),
-    ...PRODUCTS.filter((product) => !catalogById.has(product.id)),
-  ];
+    }));
+  const adminProducts = catalogRows.length > 0 ? dynamicProducts : PRODUCTS;
   const draftProductIds = adminProducts
     .filter((product) => {
       const row = catalogById.get(product.id);
