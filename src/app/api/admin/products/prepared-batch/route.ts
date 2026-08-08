@@ -74,10 +74,11 @@ export async function POST(request: Request) {
     };
   });
 
-  await db.transaction(async (tx) => {
-    await tx.insert(catalogProducts).values(records.map((record) => ({ ...record, published: false })));
-    await tx.insert(inventory).values(records.map((record) => ({ productId: record.id, variantId: 'v1', stock: 0 })));
-    await tx.insert(stockMovements).values(records.map((record) => ({
+  // neon-http sürücüsü etkileşimli transaction callback'ini desteklemez.
+  // Her tabloya tek bir toplu sorgu göndererek serverless zaman aşımını önlüyoruz.
+  await db.insert(catalogProducts).values(records.map((record) => ({ ...record, published: false })));
+  await db.insert(inventory).values(records.map((record) => ({ productId: record.id, variantId: 'v1', stock: 0 })));
+  await db.insert(stockMovements).values(records.map((record) => ({
       productId: record.id,
       variantId: 'v1',
       delta: 0,
@@ -87,7 +88,6 @@ export async function POST(request: Request) {
       reason: 'Fiyat ve stok onayı bekleyen küpe taslağı',
       createdBy: admin.email,
     })));
-  });
 
   await writeAdminAuditLog({
     actorId: admin.userId,

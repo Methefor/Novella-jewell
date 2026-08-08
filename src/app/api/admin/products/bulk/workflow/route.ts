@@ -89,13 +89,11 @@ export async function POST(request: Request) {
       ...row.data.variants.flatMap((variant) => variant.images ?? []),
     ]))).filter((url) => /^https:\/\/[^/]*\.public\.blob\.vercel-storage\.com\//.test(url));
 
-    await db.transaction(async (tx) => {
-      await tx.delete(campaignItems).where(inArray(campaignItems.productId, ids));
-      await tx.delete(productMediaAssets).where(inArray(productMediaAssets.productId, ids));
-      await tx.delete(inventory).where(inArray(inventory.productId, ids));
-      await tx.delete(stockMovements).where(inArray(stockMovements.productId, ids));
-      await tx.delete(catalogProducts).where(inArray(catalogProducts.id, ids));
-    });
+    await db.delete(campaignItems).where(inArray(campaignItems.productId, ids));
+    await db.delete(productMediaAssets).where(inArray(productMediaAssets.productId, ids));
+    await db.delete(inventory).where(inArray(inventory.productId, ids));
+    await db.delete(stockMovements).where(inArray(stockMovements.productId, ids));
+    await db.delete(catalogProducts).where(inArray(catalogProducts.id, ids));
 
     if (imageUrls.length) {
       try {
