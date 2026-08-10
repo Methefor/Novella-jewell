@@ -123,8 +123,11 @@ export default async function ProductsAdminPage({
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Link href="/admin/urunler/kupe-import-0810" className="rounded-xl border border-[#b69b5e] bg-[#fffaf0] px-5 py-3 text-sm font-medium text-[#6f5b2f]">
+              Yeni 17 küpeyi aktar
+            </Link>
             <Link href="/admin/urunler/kupe-import" className="rounded-xl border border-[#b69b5e] bg-[#fffaf0] px-5 py-3 text-sm font-medium text-[#6f5b2f]">
-              29 küpeyi aktar
+              Önceki 29 küpe aktarımı
             </Link>
             <Link href="/admin/reklam-hazirlik" className="rounded-xl border border-[#d8cdbb] bg-white px-5 py-3 text-sm font-medium">
               Reklam hazırlığı

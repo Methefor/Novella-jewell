@@ -23,6 +23,7 @@ export default function PreparedEarringImport({ manifest }: { manifest: Prepared
     files.filter((file) => file.name.startsWith(`${item.slug}-`)).sort((a, b) => a.name.localeCompare(b.name)),
   ])), [files, manifest]);
   const readyCount = manifest.filter((item) => (grouped.get(item.slug)?.length ?? 0) >= 3).length;
+  const expectedImageCount = manifest.length * 4;
 
   async function upload() {
     if (readyCount !== manifest.length || busy) return;
@@ -68,7 +69,7 @@ export default function PreparedEarringImport({ manifest }: { manifest: Prepared
     <div className="mt-8 space-y-5">
       <section className="rounded-2xl border border-[#e3d9c8] bg-white p-5">
         <label className="grid gap-2 text-sm font-semibold">
-          Hazırlanan 112 PNG görselini seçin
+          Hazırlanan {expectedImageCount} PNG görselini seçin
           <input
             type="file"
             multiple
@@ -80,7 +81,7 @@ export default function PreparedEarringImport({ manifest }: { manifest: Prepared
         </label>
         <div className="mt-4 flex flex-wrap gap-3 text-sm">
           <span className="rounded-full bg-[#f4efe5] px-3 py-1.5">{files.length} görsel seçildi</span>
-          <span className="rounded-full bg-[#f4efe5] px-3 py-1.5">{readyCount}/29 ürün eşleşti</span>
+          <span className="rounded-full bg-[#f4efe5] px-3 py-1.5">{readyCount}/{manifest.length} ürün eşleşti</span>
           <span className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-800">Fiyat ve stok bekleyecek</span>
         </div>
         <button
@@ -89,7 +90,7 @@ export default function PreparedEarringImport({ manifest }: { manifest: Prepared
           disabled={busy || readyCount !== manifest.length}
           className="mt-5 rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {busy ? 'Aktarılıyor…' : 'Görselleri yükle ve 29 taslağı oluştur'}
+          {busy ? 'Aktarılıyor…' : `Görselleri yükle ve ${manifest.length} taslağı oluştur`}
         </button>
         {progress && <p className="mt-3 text-sm text-neutral-600" role="status">{progress}</p>}
         {result && <p className="mt-3 text-sm font-semibold text-neutral-800" role="alert">{result}</p>}
