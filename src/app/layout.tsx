@@ -9,7 +9,6 @@ import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import PageTransition from '@/components/layout/PageTransition';
 import { SITE } from '@/lib/config';
-import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
 import {
   Cormorant_Garamond,
@@ -168,7 +167,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
     <html lang="tr" className={`${cormorant.variable} ${instrumentSans.variable} ${instrumentSerif.variable}`}>
       <body className="font-body antialiased">
         <script
@@ -202,6 +200,5 @@ export default function RootLayout({
         <FirstPartyAnalytics />
       </body>
     </html>
-    </ClerkProvider>
   );
 }
