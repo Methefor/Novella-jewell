@@ -3,10 +3,12 @@ import MetaPixel from '@/components/analytics/MetaPixel';
 import FirstPartyAnalytics from '@/components/analytics/FirstPartyAnalytics';
 import SepetHatirlatici from '@/components/cart/SepetHatirlatici';
 import StoreHydration from '@/components/common/StoreHydration';
+import MobileSupport from '@/components/common/MobileSupport';
 import ToastContainer from '@/components/common/Toast';
 import CookieBanner from '@/components/legal/CookieBanner';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
+import MobileTabBar from '@/components/layout/MobileTabBar';
 import PageTransition from '@/components/layout/PageTransition';
 import { SITE } from '@/lib/config';
 import type { Metadata, Viewport } from 'next';
@@ -190,6 +192,10 @@ export default function RootLayout({
           <PageTransition>{children}</PageTransition>
         </div>
         <Footer />
+        {/* Mobil alt gezinme çubuğu için footer'ın altında pay bırak */}
+        <div aria-hidden className="h-24 lg:hidden" />
+        <MobileTabBar />
+        <MobileSupport />
         <ToastContainer />
         {/* Terk edilmiş sepet hatırlatıcısı — saatler sonra dönen ziyaretçiye */}
         <SepetHatirlatici />
