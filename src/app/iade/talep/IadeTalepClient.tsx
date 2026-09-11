@@ -1,6 +1,7 @@
 'use client';
 
 import { SITE } from '@/lib/config';
+import { RETURN_POLICY } from '@/lib/return-policy';
 import { motion } from 'framer-motion';
 import { AlertCircle, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -54,7 +55,7 @@ export default function IadeTalepClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="section-label mb-3">14 gün içinde koşulsuz</p>
+          <p className="section-label mb-3">Cayma ve iade talebi</p>
           <h1
             className="font-serif font-light text-3xl md:text-4xl text-black mb-3"
             style={{ letterSpacing: '-0.02em' }}
@@ -62,17 +63,14 @@ export default function IadeTalepClient() {
             İade Talebi
           </h1>
           <p className="text-sm text-black/50 mb-6">
-            Formu doldurun, talebiniz WhatsApp üzerinden bize ulaşsın — iade
-            kargo kodunuzu aynı gün iletelim.
+            Formu doldurduktan sonra WhatsApp&apos;ta açılan mesajı gönderin.
+            İade gönderim bilgilerini talebinize yanıt olarak paylaşacağız.
           </p>
 
           <div className="flex items-start gap-3 rounded-xl border border-gold/25 bg-champagne/50 p-4 mb-8">
             <AlertCircle className="w-4 h-4 text-gold-dark flex-shrink-0 mt-0.5" />
             <p className="text-xs text-black/60 leading-relaxed">
-              Küpeler hijyen nedeniyle yalnızca <strong>ambalajı açılmamışsa</strong>{' '}
-              iade edilebilir. Kişiye özel (isim baskılı) ürünler iade
-              kapsamı dışındadır. Hatalı veya yanlış gelen ürünlerde bu
-              istisnalar geçerli değildir — detaylar için{' '}
+              {RETURN_POLICY.hygiene} Ayrıntılar için{' '}
               <Link href="/iade" className="text-gold-dark underline">
                 iade koşulları
               </Link>

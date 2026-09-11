@@ -1,5 +1,7 @@
 'use client';
 
+import { COOKIE_CONSENT_EVENT } from '@/lib/cookies';
+import type { VerifiedPurchase } from '@/lib/purchase-event';
 import { trackPurchase } from '@/lib/analytics';
 import { SITE } from '@/lib/config';
 import { CAYMA_SURESI_GUN, TESLIMAT_SURESI_GUN } from '@/lib/legal';
@@ -41,17 +43,17 @@ export default function SonucClient() {
 
   const [copied, setCopied] = useState(false);
   const [verification, setVerification] = useState<
-    'checking' | 'paid' | 'failed'
+    'checking' | 'paid' | 'failed' | 'pending'
   >(status === 'success' ? 'checking' : 'failed');
   const [verifiedTotal, setVerifiedTotal] = useState(0);
+  const [purchase, setPurchase] = useState<VerifiedPurchase | null>(null);
 
   const isSuccess = verification === 'paid';
 
   // Sepet YALNIZCA ödeme başarılıysa temizlenir.
-  // Aynı anda GA4 purchase olayı gönderilir. transaction_id sayesinde sayfa
-  // yenilenirse GA çift saymaz. value: total URL'den; yoksa 0.
+  // Tutar ve ürünler URL'den değil, doğrulanmış ödeme kaydından alınır.
   useEffect(() => {
-    if (status !== 'success' || !orderNo || !verify) {
+    if (status !== 'success' || !orderNo) {
       setVerification('failed');
       return;
     }
@@ -65,17 +67,19 @@ export default function SonucClient() {
         const response = await fetch(
           `/api/odeme/dogrula?orderNo=${encodeURIComponent(
             orderNo
-          )}&verify=${encodeURIComponent(verify)}`,
+          )}${verify ? `&verify=${encodeURIComponent(verify)}` : ''}`,
           { cache: 'no-store' }
         );
         const result = (await response.json()) as {
           status?: string;
           total?: string | null;
+          items?: VerifiedPurchase['items'];
         };
         if (cancelled) return;
 
         if (response.ok && result.status === 'paid') {
           setVerifiedTotal(Number(result.total) || 0);
+          setPurchase({ total: Number(result.total), items: result.items ?? [] });
           setVerification('paid');
           return;
         }
@@ -90,7 +94,7 @@ export default function SonucClient() {
       if (!cancelled && attempt < 10) {
         window.setTimeout(verifyOrder, 1200);
       } else if (!cancelled) {
-        setVerification('failed');
+        setVerification('pending');
       }
     };
 
@@ -103,8 +107,19 @@ export default function SonucClient() {
   useEffect(() => {
     if (!isSuccess || !orderNo) return;
     clearCart();
-    trackPurchase(orderNo, verifiedTotal);
-  }, [isSuccess, clearCart, orderNo, verifiedTotal]);
+  }, [isSuccess, clearCart, orderNo]);
+
+  useEffect(() => {
+    if (!isSuccess || !purchase || !orderNo) return;
+    const send = () => trackPurchase(orderNo, purchase);
+    send();
+    window.addEventListener(COOKIE_CONSENT_EVENT, send);
+    window.addEventListener('novella:analytics-ready', send);
+    return () => {
+      window.removeEventListener(COOKIE_CONSENT_EVENT, send);
+      window.removeEventListener('novella:analytics-ready', send);
+    };
+  }, [isSuccess, purchase, orderNo]);
 
   const copyOrderNo = async () => {
     if (!orderNo) return;
@@ -123,6 +138,7 @@ export default function SonucClient() {
 
   return (
     <main className="min-h-[80vh] flex items-center justify-center px-6 py-16">
+      {verification === 'pending' ? <div className="max-w-md text-center"><h1 className="font-serif text-3xl">Ödeme sonucu bekleniyor</h1><p className="mt-5 text-sm text-black/65">Banka sonucu henüz doğrulanamadı. Bu durum ödemenizin başarısız olduğu anlamına gelmez. Yeni ödeme başlatmadan sipariş durumunu kontrol edin.</p><p className="mt-4 text-sm">{orderNo}</p><button className="btn-primary mt-6" onClick={() => window.location.reload()}>Durumu yeniden kontrol et</button><Link href="/iletisim" className="block underline mt-5 text-sm">Bize ulaşın</Link></div> : <>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -145,6 +161,7 @@ export default function SonucClient() {
           />
         )}
       </motion.div>
+      </>}
     </main>
   );
 }

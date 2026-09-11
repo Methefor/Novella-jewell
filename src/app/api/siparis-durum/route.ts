@@ -94,6 +94,10 @@ export async function POST(req: Request) {
       customer: orders.customer,
       createdAt: orders.createdAt,
       paidAt: orders.paidAt,
+      carrier: orders.carrier,
+      trackingNumber: orders.trackingNumber,
+      refundStatus: orders.refundStatus,
+      refundAmount: orders.refundAmount,
     })
     .from(orders)
     .where(eq(orders.orderNo, orderNo))
@@ -122,5 +126,8 @@ export async function POST(req: Request) {
     total: row.total,
     createdAt: row.createdAt,
     paidAt: row.paidAt,
-  });
+    carrier: row.status === 'paid' ? row.carrier : null,
+    trackingNumber: row.status === 'paid' ? row.trackingNumber : null,
+    refund: row.refundStatus === 'success' ? `${Number(row.refundAmount).toLocaleString('tr-TR')} TL iadenizin banka işlemi onaylandı. Hesabınıza yansıma süresi bankanıza bağlıdır.` : row.refundStatus === 'submitted' ? 'İade talebiniz kabul edildi. Banka işlemi tamamlandığında e-posta ile bilgi verilecek.' : null,
+  }, { headers: { 'Cache-Control': 'no-store, private' } });
 }

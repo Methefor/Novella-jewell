@@ -1,8 +1,10 @@
 import { getCheckoutProvider } from '@/lib/checkout';
 import { fromPayTROid } from '@/lib/checkout/paytr';
-import { sendOrderConfirmationEmail } from '@/lib/email';
+import { drainEmailOutbox } from '@/lib/email-outbox';
 import { markOrderFailed, markOrderPaid } from '@/lib/orders';
-import { NextRequest, NextResponse } from 'next/server';
+import { after, NextRequest, NextResponse } from 'next/server';
+
+export const maxDuration = 60;
 
 // PayTR callback'i production'da POST gelir. GET desteği güvenli tanılama ve
 // geriye dönük callback testleri için aynı doğrulama yolunu kullanır.
@@ -39,7 +41,7 @@ async function handleCallback(req: NextRequest) {
 
   // İmza doğrulama — başarısız → hata sayfası (kayda dokunma)
   const provider = getCheckoutProvider();
-  if (!provider.verifyCallback(params)) {
+  if (!['success', 'failed'].includes(params.status) || !provider.verifyCallback(params)) {
     console.error('[callback] İmza doğrulama başarısız', { orderNo });
     return new NextResponse('PAYTR notification failed: bad hash', {
       status: 400,
@@ -51,23 +53,15 @@ async function handleCallback(req: NextRequest) {
   if (isPaid) {
     // IDEMPOTENT: aynı callback iki kez gelirse ikinci sefer no-op olur.
     const sonuc = await markOrderPaid(orderNo, params.payment_id);
-
-    // E-posta YALNIZCA ilk paid geçişinde ve kayıt varsa gönderilir.
-    // Gönderim başarısız olsa bile sipariş akışı KIRILMAZ (try/catch içinde).
-    if (sonuc.ok && !sonuc.zatenPaid && sonuc.order) {
-      try {
-        await sendOrderConfirmationEmail(sonuc.order);
-      } catch (e) {
-        console.error('[callback] Onay e-postası gönderilemedi', {
-          orderNo,
-          err: e,
-        });
-      }
-    } else if (sonuc.ok && sonuc.zatenPaid) {
-      console.warn('[callback] Tekrar gelen paid callback (idempotent no-op)', {
-        orderNo,
-      });
+    if (!sonuc.ok) {
+      // Do not acknowledge an unrecorded success; the provider must retry it.
+      console.error('[callback] Paid outcome was not recorded', { orderNo });
+      return new NextResponse('Payment outcome pending reconciliation', { status: 503 });
     }
+
+    // The immutable email was queued in the same transaction as payment + stock.
+    // Callback retries can drain that record but never create another email.
+    after(async () => { await drainEmailOutbox(3, sonuc.order?.id); });
   } else {
     await markOrderFailed(orderNo);
   }

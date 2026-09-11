@@ -1,3 +1,5 @@
+import { RETURN_POLICY } from '@/lib/return-policy';
+import { PRODUCT_CARE } from '@/lib/product-care';
 import { SHIPPING } from '@/lib/config';
 import { CAYMA_SURESI_GUN, TESLIMAT_SURESI_GUN } from '@/lib/legal';
 
@@ -10,8 +12,8 @@ import { CAYMA_SURESI_GUN, TESLIMAT_SURESI_GUN } from '@/lib/legal';
  * ⚠️ Cevaplar sitedeki gerçek politikalarla tutarlı olmalı. Kargo eşiği,
  * cayma süresi vb. config'ten okunur; elle sayı yazılırsa çelişir.
  *
- * SEO notu: FAQPage schema, Google'da soruların açılır cevaplarla zengin
- * sonuç olarak görünmesini sağlayabilir — tıklama oranını artırır.
+ * Google'ın SSS zengin sonucu uygunluk koşulları ayrıdır; bu işaretleme
+ * bir e-ticaret sitesi için açılır SSS sonucu garantisi vermez.
  */
 
 export interface SSSKalem {
@@ -36,22 +38,22 @@ export const SSS: SSSGrup[] = [
       {
         soru: 'Çelik takı kararır mı?',
         cevap:
-          'Hayır. Ürünlerimiz 316L cerrahi çelikten üretilir; gümüş gibi kararmaz, kaplama takılar gibi birkaç ayda rengini bırakmaz. İlk günkü tonunu korur.',
+          PRODUCT_CARE.finish,
       },
       {
         soru: 'Alerji yapar mı?',
         cevap:
-          '316L çelik, nikel salınımı çok düşük olan bir alaşımdır ve ameliyat aletlerinde kullanılır. Bu sayede hassas ciltlerde bile genellikle kızarıklık yapmaz. Yine de bilinen bir metal alerjiniz varsa ilk kullanımda dikkatli olmanızı öneririz.',
+          PRODUCT_CARE.allergy,
       },
       {
         soru: 'Suyla temas eder mi, duşta çıkarmam gerekir mi?',
         cevap:
-          'Çıkarmanıza gerek yok. Duşta, denizde ve havuzda takabilirsiniz; çeliğin krom oksit tabakası oksitlenmeye karşı korur. Yine de parfüm ve sert kimyasallardan uzak tutmak, parlaklığını daha uzun korur.',
+          PRODUCT_CARE.water,
       },
       {
         soru: 'Altın/gümüş kaplama dökülür mü?',
         cevap:
-          'Kaplamalı modellerimizde kaplama, günlük kullanıma uygun kalınlıktadır. Parfüm, deniz suyu ve sürtünmeden uzak tutulduğunda uzun ömürlüdür. Kaplamasız 316L çelik modellerimizde ise dökülecek bir kaplama yoktur.',
+          PRODUCT_CARE.finish,
       },
     ],
   },
@@ -69,12 +71,12 @@ export const SSS: SSSGrup[] = [
       {
         soru: 'Kargomu nasıl takip ederim?',
         cevap:
-          'Siparişiniz kargoya verildiğinde takip numaranız WhatsApp üzerinden paylaşılır. Sipariş numaranızla bize her zaman WhatsApp’tan ulaşıp durumunu sorabilirsiniz.',
+          'Siparişiniz kargoya verildiğinde takip bilgileri e-posta ile gönderilir. Sipariş Takibi sayfasından sipariş numaranız ve e-posta adresinizle durumunu görüntüleyebilir, destek için bize ulaşabilirsiniz.',
       },
       {
         soru: 'Siparişimi hediye olarak gönderebilir miyim?',
         cevap:
-          'Evet. Her sipariş, üzerine not yazabileceğiniz özel kutusunda ve keten kesesinde gelir. Hediye olarak gönderiyorsanız sipariş notuna yazmanız yeterli; fatura tutarını görünmeyecek şekilde ayarlıyoruz.',
+          'Seçtiğiniz ürünü hediye edebilirsiniz. Her sipariş, ürün ve Novella kartvizitiyle birlikte özel kutusunda hazırlanır. Şu anda kişisel hediye notu veya el yazısı kart hizmetimiz bulunmuyor.',
       },
     ],
   },
@@ -83,12 +85,12 @@ export const SSS: SSSGrup[] = [
     kalemler: [
       {
         soru: 'İade edebilir miyim?',
-        cevap: `Evet. Ürünü teslim aldığınız tarihten itibaren ${CAYMA_SURESI_GUN} gün içinde, sebep belirtmeden iade edebilirsiniz. Ürünün kullanılmamış ve orijinal kutusuyla birlikte olması gerekir.`,
+        cevap: `Evet. Ürünü teslim aldığınız tarihten itibaren ${CAYMA_SURESI_GUN} gün içinde, sebep belirtmeden iade edebilirsiniz. ${RETURN_POLICY.condition}`,
       },
       {
         soru: 'Hangi ürünler iade edilemez?',
         cevap:
-          'Kişiye özel üretilen (isim baskılı) ürünler ve ambalajı açılmış küpeler, hijyen ve kişiselleştirme nedeniyle iade alınamaz. Bu istisnalar hatalı, kusurlu veya yanlış gönderilen ürünler için geçerli değildir.',
+          RETURN_POLICY.hygiene,
       },
       {
         soru: 'Beden değişimi yapabilir miyim?',
@@ -98,7 +100,7 @@ export const SSS: SSSGrup[] = [
       {
         soru: 'Param ne zaman iade edilir?',
         cevap:
-          'İadeniz onaylandıktan sonra ödemeniz en geç 14 gün içinde, ödemeyi yaptığınız kartın bağlı olduğu hesaba iade edilir. Bankanızın işleme süresine göre hesabınıza yansıması birkaç iş günü daha sürebilir.',
+          RETURN_POLICY.refund,
       },
     ],
   },

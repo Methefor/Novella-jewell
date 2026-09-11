@@ -1,24 +1,25 @@
 import { getCollectionBySlug } from '@/data/collections';
 import { SITE } from '@/lib/config';
-import { getAllProducts } from '@/lib/products';
-import { getCatalogProductBySlug } from '@/lib/catalog';
+import { getCatalogProductBySlug, getCatalogProducts } from '@/lib/catalog';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProductPageClient from './ProductPageClient';
+
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return getAllProducts().map((p) => ({ slug: p.slug }));
+  return (await getCatalogProducts()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getCatalogProductBySlug(slug);
-  if (!product) return {};
-  const title = `${product.name} — NOVELLA`;
+  if (!product) notFound();
+  const title = product.name;
   const description = product.metaDescription ?? product.description;
   const pageUrl = `${SITE.url}/urun/${slug}`;
   const coverImage = product.variants[0]?.images[0];
@@ -38,6 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: pageUrl },
+    twitter: { card: 'summary_large_image', title, description, ...(ogImage ? { images: ogImage } : {}) },
     openGraph: {
       title,
       description,
@@ -53,6 +55,9 @@ export default async function UrunPage({ params }: Props) {
   const product = await getCatalogProductBySlug(slug);
   if (!product) notFound();
 
+  const catalog = await getCatalogProducts();
+  const related = catalog.filter((p) => p.id !== product.id)
+    .sort((a, b) => Number(b.collection === product.collection) - Number(a.collection === product.collection)).slice(0, 4);
   const collection = getCollectionBySlug(product.collection);
   const pageUrl = `${SITE.url}/urun/${slug}`;
   const coverImage = product.variants[0]?.images[0];
@@ -82,10 +87,12 @@ export default async function UrunPage({ params }: Props) {
       priceCurrency: 'TRY',
       price: product.price.toFixed(2),
       url: pageUrl,
-      // Google tüm offer'larda priceValidUntil bekler (sadece indirimlilerde değil).
-      priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split('T')[0],
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy', applicableCountry: 'TR',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 14, returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn', merchantReturnLink: `${SITE.url}/iade`,
+      },
       availability: product.variants.some((v) => v.stock > 0)
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
@@ -133,7 +140,7 @@ export default async function UrunPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <ProductPageClient product={product} collection={collection} />
+      <ProductPageClient product={product} collection={collection} related={related} />
     </>
   );
 }

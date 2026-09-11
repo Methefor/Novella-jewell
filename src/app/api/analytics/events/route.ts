@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 const eventSchema = z.object({
   sessionId: z.string().uuid(),
-  eventName: z.enum(['page_view', 'view_item', 'add_to_cart', 'begin_checkout']),
+  eventName: z.enum(['page_view', 'view_item', 'add_to_cart', 'view_cart', 'remove_from_cart', 'begin_checkout']),
   productId: z.string().max(160).nullable().optional(),
   value: z.number().min(0).max(1_000_000).nullable().optional(),
   path: z.string().startsWith('/').max(500),

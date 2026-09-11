@@ -5,12 +5,12 @@ import HikayemizClient from './HikayemizClient';
 export const metadata: Metadata = {
   title: 'Hikayemiz',
   description:
-    'Novella, İtalyanca "kısa hikaye" demek. 316L cerrahi çelikten üretilen, kararmayan ve alerji yapmayan takılar. Neden çelik seçtiğimizi ve her koleksiyonun hikayesini okuyun.',
+    'Novella, İtalyanca "kısa hikaye" demek. Çelik takı seçimlerimizi, bakım yaklaşımımızı ve her koleksiyonun hikayesini okuyun.',
   alternates: { canonical: `${SITE.url}/hikayemiz` },
   openGraph: {
     title: 'Hikayemiz — NOVELLA',
     description:
-      'Novella, İtalyanca "kısa hikaye" demek. Kararmayan çelikten, eskimeyen zarafet.',
+      'Novella, İtalyanca "kısa hikaye" demek. Şehirlerden ilham alan takı koleksiyonlarımızın hikayesi.',
     url: `${SITE.url}/hikayemiz`,
     type: 'article',
   },

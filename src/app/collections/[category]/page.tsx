@@ -21,7 +21,7 @@ const CATEGORIES: Record<string, { title: string; description: string }> = {
   'yeni-gelenler': {
     title: 'Yeni Gelenler',
     description:
-      'NOVELLA koleksiyonuna en son eklenen 316L çelik takılar. Kararmaz, alerji yapmaz, suya dayanıklı.',
+      'NOVELLA koleksiyonuna en son eklenen yüzük, küpe ve bileklikleri keşfedin. Güncel modeller, fiyatlar ve malzeme bilgileri.',
   },
   'cok-satanlar': {
     title: 'Çok Satanlar',
@@ -35,17 +35,17 @@ const CATEGORIES: Record<string, { title: string; description: string }> = {
   bilezik: {
     title: 'Bileklikler',
     description:
-      'Paslanmaz çelik bileklik modelleri. Duşta çıkarmanız gerekmeyen, kararmayan 316L çelik.',
+      'NOVELLA paslanmaz çelik bileklik modellerini keşfedin. Zincir, taşlı ve geometrik tasarımları karşılaştırın.',
   },
   kupe: {
     title: 'Küpeler',
     description:
-      'Paslanmaz çelik küpe modelleri. Hassas ciltler için hipoalerjenik 316L cerrahi çelik.',
+      'NOVELLA küpe koleksiyonunu keşfedin. Halka, taşlı ve sallantılı modellerin ölçü ve malzeme bilgilerini inceleyin.',
   },
   yuzuk: {
     title: 'Yüzükler',
     description:
-      'Paslanmaz çelik yüzük modelleri. Kararmayan, solmayan, günlük kullanıma uygun 316L çelik.',
+      'NOVELLA yüzük modellerini keşfedin. Günlük stilinize uygun sade, taşlı ve ayarlanabilir tasarımlar.',
   },
 };
 

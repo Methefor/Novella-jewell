@@ -8,6 +8,7 @@ import {
 import Script from 'next/script';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { createGtagQueue } from '@/lib/gtag-queue';
 
 type GtagWindow = typeof window & {
   dataLayer?: unknown[];
@@ -16,20 +17,16 @@ type GtagWindow = typeof window & {
 
 function RouteChangeTracker({ enabled }: { enabled: boolean }) {
   const pathname = usePathname();
-  const firstRender = useRef(true);
+
 
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
     if (!enabled) return;
 
     const w = window as GtagWindow;
     w.gtag?.('event', 'page_view', {
       page_title: document.title,
-      page_location: window.location.href,
-      page_path: `${pathname}${window.location.search}`,
+      page_location: `${window.location.origin}${pathname}`,
+      page_path: pathname,
     });
   }, [enabled, pathname]);
 
@@ -37,9 +34,7 @@ function RouteChangeTracker({ enabled }: { enabled: boolean }) {
 }
 
 /**
- * Google etiketi her zaman bulunabilir durumdadır; ölçüm ise yalnızca açık
- * çerez onayından sonra başlar. Böylece Google kurulum testi etiketi görebilir,
- * onay öncesinde analitik depolama ve sayfa görüntüleme çalışmaz.
+ * Google komut kuyruğu hazırdır; etiket ve ölçüm açık izinden sonra başlar.
  */
 export default function GoogleAnalytics() {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID?.trim();
@@ -52,11 +47,7 @@ export default function GoogleAnalytics() {
 
     const w = window as GtagWindow;
     w.dataLayer = w.dataLayer || [];
-    w.gtag =
-      w.gtag ||
-      function gtag(...args: unknown[]) {
-        w.dataLayer?.push(args);
-      };
+    w.gtag = w.gtag || createGtagQueue(w.dataLayer);
 
     w.gtag('consent', 'default', {
       analytics_storage: 'denied',
@@ -78,7 +69,8 @@ export default function GoogleAnalytics() {
 
       if (accepted && !configured.current) {
         configured.current = true;
-        w.gtag?.('config', GA_ID, { anonymize_ip: true });
+        w.gtag?.('config', GA_ID, { anonymize_ip: true, send_page_view: false, page_location: `${window.location.origin}${window.location.pathname}` });
+        window.dispatchEvent(new Event('novella:analytics-ready'));
       }
     };
 
@@ -101,11 +93,12 @@ export default function GoogleAnalytics() {
   return (
     <>
       <RouteChangeTracker enabled={consent === 'accepted'} />
-      <Script
+      {consent === 'accepted' && <Script
         id="google-tag"
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
         strategy="afterInteractive"
-      />
+        onReady={() => { window.dispatchEvent(new Event('novella:analytics-ready')); }}
+      />}
     </>
   );
 }

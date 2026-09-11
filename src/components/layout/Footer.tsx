@@ -1,6 +1,7 @@
 import { Instagram, MessageCircle } from 'lucide-react';
 import { SITE } from '@/lib/config';
 import { COMPANY } from '@/lib/legal';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const quickLinks = [
@@ -38,10 +39,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 mb-10 md:mb-14">
           {/* Brand column */}
           <div>
-            <Link href="/" className="inline-block mb-5">
-              <span className="font-serif text-2xl font-light tracking-[0.15em]">
-                NOVELLA
-              </span>
+            <Link href="/" className="inline-block mb-5" aria-label="NovellaJewell ana sayfa">
+              <Image
+                src="/brand/novellajewell-logo-white.svg"
+                alt="NovellaJewell"
+                width={512}
+                height={126}
+                className="h-auto w-[190px]"
+              />
             </Link>
             <p className="font-sans font-light leading-relaxed mb-6 text-white/55 text-sm">
               El seçimi 316L paslanmaz çelik takılar.

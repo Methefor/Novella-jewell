@@ -59,12 +59,15 @@ export default function MetaPixel() {
   }, []);
 
   useEffect(() => {
-    if (!validId || !pixelId || consent !== 'accepted') return;
+    if (!validId || !pixelId) return;
+    if (consent !== 'accepted') { window.fbq?.('consent', 'revoke'); return; }
     const fbq = installQueue();
+    fbq('consent', 'grant');
     if (!initialized.current) {
       initialized.current = true;
       fbq('init', pixelId);
       fbq('track', 'PageView');
+      window.dispatchEvent(new Event('novella:analytics-ready'));
     }
   }, [consent, pixelId, validId]);
 
@@ -84,6 +87,7 @@ export default function MetaPixel() {
       id="meta-pixel"
       src="https://connect.facebook.net/en_US/fbevents.js"
       strategy="afterInteractive"
+      onReady={() => { window.dispatchEvent(new Event('novella:analytics-ready')); }}
     />
   );
 }

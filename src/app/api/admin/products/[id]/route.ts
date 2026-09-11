@@ -4,6 +4,7 @@ import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { and, eq, ne } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { NextResponse } from 'next/server';
 import { productSchema } from '../route';
 
@@ -147,6 +148,7 @@ export async function PATCH(
 
   revalidatePath('/');
   revalidatePath('/urunler');
+  revalidateCatalog();
   revalidatePath('/admin');
   revalidatePath('/admin/urunler');
   revalidatePath(`/urun/${input.slug}`);

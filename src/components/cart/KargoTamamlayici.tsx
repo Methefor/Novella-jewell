@@ -1,5 +1,6 @@
 'use client';
 
+import { useCatalogProducts } from '@/hooks/useCatalogProducts';
 import { SHIPPING } from '@/lib/config';
 import { kargoTamamlayicilar } from '@/lib/recommendations';
 import { useCartStore } from '@/store/cartStore';
@@ -19,6 +20,7 @@ interface Props {
  * stratejisinin arayüzdeki karşılığı.
  */
 export default function KargoTamamlayici({ varyant = 'drawer' }: Props) {
+  const { products } = useCatalogProducts();
   const { items, subtotal, addItem } = useCartStore();
 
   const eksik = SHIPPING.freeThreshold - subtotal;
@@ -26,11 +28,12 @@ export default function KargoTamamlayici({ varyant = 'drawer' }: Props) {
   const oneriler = useMemo(
     () =>
       kargoTamamlayicilar(
+        products,
         subtotal,
         items.map((i) => i.product.id),
         varyant === 'drawer' ? 3 : 4
       ),
-    [subtotal, items, varyant]
+    [products, subtotal, items, varyant]
   );
 
   if (eksik <= 0 || oneriler.length === 0) return null;
@@ -59,7 +62,7 @@ export default function KargoTamamlayici({ varyant = 'drawer' }: Props) {
         }
       >
         {oneriler.map((p) => {
-          const varyantUrun = p.variants.find((v) => v.id === p.defaultVariant);
+          const varyantUrun = p.variants.find((v) => v.id === p.defaultVariant && v.stock > 0) ?? p.variants.find((v) => v.stock > 0);
           const gorsel = varyantUrun?.images[0];
           return (
             <div
@@ -93,7 +96,7 @@ export default function KargoTamamlayici({ varyant = 'drawer' }: Props) {
               </div>
               <button
                 type="button"
-                onClick={() => addItem(p, p.defaultVariant)}
+                onClick={() => varyantUrun && addItem(p, varyantUrun.id)}
                 aria-label={`${p.name} sepete ekle`}
                 className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center flex-shrink-0 hover:bg-gold transition-colors duration-300"
               >

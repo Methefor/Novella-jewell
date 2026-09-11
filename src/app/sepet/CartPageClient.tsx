@@ -43,7 +43,7 @@ export default function CartPageClient() {
     sepetIzlendi.current = true;
     trackViewCart(
       subtotal,
-      items.map((item) => item.product)
+      items
     );
   }, [hydrated, items, subtotal]);
 

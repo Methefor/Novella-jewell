@@ -7,8 +7,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSelectableFulfillmentStatuses } from '@/lib/order-status';
 import { refundOrder, updateOrderNote, updateOrderStatus } from '../actions';
+import FollowupNotice from '@/components/admin/FollowupNotice';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
 
 const fulfillmentLabels: Record<string, string> = {
   new: 'Sipariş alındı',
@@ -101,6 +103,7 @@ export default async function OrdersPage({
   return (
     <main className="min-h-screen bg-[#f6f2eb] px-4 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto max-w-7xl">
+        <FollowupNotice />
         <header className="flex flex-wrap items-end justify-between gap-5">
           <div>
             <Link href="/admin" className="text-sm text-neutral-600">
@@ -248,12 +251,22 @@ export default async function OrdersPage({
                       </div>
                     </div>
 
-                    {order.status === 'paid' && order.refundStatus !== 'success' && (
+                    {order.status === 'paid' && ['processing', 'review', 'submitted'].includes(order.refundStatus ?? '') && (
+                      <p role="status" className="mt-5 border-t border-amber-200 pt-4 text-sm text-amber-800">
+                        İade sonucu bekleniyor veya doğrulanması gerekiyor. PayTR panelindeki işlem sonucu kontrol edilmeden ikinci iade başlatılamaz.
+                        {' '}<Link className="underline" href="/admin/takip">İade durumunu kontrol et</Link>
+                      </p>
+                    )}
+                    {order.status === 'paid' && (!order.refundStatus || order.refundStatus === 'failed') && (
                       <details className="mt-5 border-t border-red-100 pt-4">
                         <summary className="cursor-pointer text-sm text-red-700">Tam iade işlemi</summary>
                         <form action={refundOrder} className="mt-3 grid gap-2">
                           <input type="hidden" name="orderNo" value={order.orderNo} />
-                          <p className="text-xs text-neutral-500">{formatTRY(order.total)} iade edilir ve stok geri eklenir.</p>
+                          <p className="text-xs text-neutral-500">{formatTRY(order.total)} ödeme aracına iade edilir. Stok yalnızca aşağıdaki fiziksel kontrolü onaylarsanız geri eklenir.</p>
+                          <label className="flex items-start gap-2 text-xs text-neutral-600">
+                            <input type="checkbox" name="restock" value="yes" className="mt-0.5 rounded border-neutral-300" />
+                            Ürünlerin tamamı elimde ve yeniden satılabilir durumda; stoğa geri ekle.
+                          </label>
                           <input name="confirmation" placeholder={order.orderNo} autoComplete="off" className="rounded-lg border-red-200 text-sm" />
                           <button className="rounded-lg bg-red-700 px-5 py-2 text-sm font-medium text-white">İadeyi gerçekleştir</button>
                         </form>

@@ -11,13 +11,17 @@ import {
 import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { refundPayTRPayment } from '@/lib/checkout/paytr';
-import { sendOrderStatusEmail } from '@/lib/email';
+import { refundClaimCondition, refundFailureStatus } from '@/lib/refund-safety';
+import { buildOrderStatusEmail } from '@/lib/email';
+import { enqueueEmail, drainEmailOutbox } from '@/lib/email-outbox';
+import { after } from 'next/server';
 import {
   canTransitionFulfillmentStatus,
   FULFILLMENT_STATUSES,
 } from '@/lib/order-status';
 import { and, eq, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { z } from 'zod';
 
 const updateSchema = z.object({
@@ -39,11 +43,12 @@ export async function updateOrderStatus(formData: FormData) {
     trackingNumber: formData.get('trackingNumber'),
   });
 
-  const [current] = await db
+  const { current, updated } = await db.transaction(async (tx) => {
+  const [current] = await tx
     .select()
     .from(orders)
     .where(eq(orders.orderNo, parsed.orderNo))
-    .limit(1);
+    .for('update');
   if (!current) throw new Error('Sipariş bulunamadı.');
   if (current.status !== 'paid') {
     throw new Error('Ödemesi tamamlanmamış sipariş ilerletilemez.');
@@ -67,7 +72,10 @@ export async function updateOrderStatus(formData: FormData) {
     );
   }
 
-  const [updated] = await db
+  if (current.refundStatus && current.refundStatus !== 'failed') {
+    throw new Error('İade başlatılmış siparişin sevkiyat durumu değiştirilemez.');
+  }
+  const [updated] = await tx
     .update(orders)
     .set({
       fulfillmentStatus: parsed.fulfillmentStatus,
@@ -80,8 +88,8 @@ export async function updateOrderStatus(formData: FormData) {
     .where(eq(orders.orderNo, parsed.orderNo))
     .returning();
 
-  if (updated && current.fulfillmentStatus !== updated.fulfillmentStatus) {
-    await db.insert(orderEvents).values({
+  if (updated && (current.fulfillmentStatus !== updated.fulfillmentStatus || (updated.fulfillmentStatus === 'shipped' && (updated.carrier !== current.carrier || updated.trackingNumber !== current.trackingNumber)))) {
+    const [event] = await tx.insert(orderEvents).values({
       orderId: updated.id,
       eventType: 'fulfillment_status',
       fromValue: current.fulfillmentStatus,
@@ -91,16 +99,12 @@ export async function updateOrderStatus(formData: FormData) {
           ? [parsed.carrier, parsed.trackingNumber].filter(Boolean).join(' · ')
           : '',
       createdBy: admin.email,
-    });
-    try {
-      await sendOrderStatusEmail(updated);
-    } catch (error) {
-      console.error('[admin] durum e-postası gönderilemedi', {
-        orderNo: updated.orderNo,
-        error,
-      });
-    }
+    }).returning({ id: orderEvents.id });
+    await enqueueEmail(tx, updated.id, 'order_status', `status/${event.id}`, buildOrderStatusEmail(updated));
   }
+  return { current, updated };
+  });
+  if (updated) after(async () => { await drainEmailOutbox(3, updated.id); });
 
   if (updated) {
     await writeAdminAuditLog({
@@ -117,6 +121,7 @@ export async function updateOrderStatus(formData: FormData) {
     });
   }
 
+  revalidateCatalog();
   revalidatePath('/admin');
   revalidatePath('/admin/siparisler');
 }
@@ -179,10 +184,12 @@ export async function refundOrder(formData: FormData) {
     .object({
       orderNo: z.string().regex(/^NJ-\d{4}-\d+$/),
       confirmation: z.string(),
+      restock: z.boolean(),
     })
     .parse({
       orderNo: formData.get('orderNo'),
       confirmation: formData.get('confirmation'),
+      restock: formData.get('restock') === 'yes',
     });
   if (parsed.confirmation.trim() !== parsed.orderNo) {
     throw new Error('Onay için sipariş numarasını eksiksiz yazın.');
@@ -194,27 +201,23 @@ export async function refundOrder(formData: FormData) {
     .where(eq(orders.orderNo, parsed.orderNo))
     .limit(1);
   if (!order || order.status !== 'paid') throw new Error('İade edilebilir ödeme bulunamadı.');
-  if (order.refundStatus === 'processing' || order.refundStatus === 'success') {
-    throw new Error('Bu sipariş için iade daha önce başlatılmış.');
+  if (order.refundStatus && order.refundStatus !== 'failed') {
+    throw new Error('Bu sipariş için iade daha önce başlatılmış. Sonuç belirsizse PayTR panelinden doğrulanmadan yeniden işlem yapılamaz.');
   }
 
   const reference = `NJREF${order.orderNo.replace(/\D/g, '')}`;
   const [claimed] = await db
     .update(orders)
     .set({ refundStatus: 'processing', refundReference: reference, updatedAt: new Date() })
-    .where(
-      and(
-        eq(orders.id, order.id),
-        sql`${orders.refundStatus} is null or ${orders.refundStatus} = 'failed'`
-      )
-    )
+    .where(refundClaimCondition(order.id))
     .returning({ id: orders.id });
   if (!claimed) throw new Error('İade işlemi zaten yürütülüyor.');
 
   try {
-    await refundPayTRPayment(order.orderNo, Number(order.total).toFixed(2), reference);
+    const result = await refundPayTRPayment(order.orderNo, Number(order.total).toFixed(2), reference);
+    if (result.isTest && process.env.PAYTR_TEST_MODE !== '1') throw new Error('Canlı sipariş için test iadesi döndü; PayTR panelinden doğrulayın.');
     const refunded = await db.transaction(async (tx) => {
-      for (const item of order.items) {
+      for (const item of parsed.restock ? order.items : []) {
         const [stockRow] = await tx
           .update(inventory)
           .set({
@@ -228,6 +231,7 @@ export async function refundOrder(formData: FormData) {
             )
           )
           .returning({ stock: inventory.stock });
+        if (!stockRow) throw new Error('İade stoğu kaydedilemedi; ödeme sonucu PayTR ile uzlaştırılmalı.');
         if (stockRow) {
           await tx.insert(stockMovements).values({
             productId: item.productId,
@@ -268,48 +272,49 @@ export async function refundOrder(formData: FormData) {
       const [row] = await tx
         .update(orders)
         .set({
-          refundStatus: 'success',
+          refundStatus: 'submitted',
           refundAmount: order.total,
-          refundedAt: new Date(),
+          refundedAt: null,
           fulfillmentStatus: 'returned',
           updatedAt: new Date(),
         })
         .where(and(eq(orders.id, order.id), eq(orders.refundStatus, 'processing')))
         .returning();
-      return row;
-    });
-    if (refunded) {
-      await db.insert(orderEvents).values({
-        orderId: refunded.id,
+      if (!row) throw new Error('İade kaydı tamamlanamadı; ödeme sonucu PayTR ile uzlaştırılmalı.');
+      await tx.insert(orderEvents).values({
+        orderId: row.id,
         eventType: 'refund',
         fromValue: order.fulfillmentStatus,
         toValue: 'returned',
-        note: `${Number(order.total).toFixed(2)} TRY tam iade`,
+        note: `${Number(order.total).toFixed(2)} TRY tam iade; ${parsed.restock ? 'ürünler fiziksel kontrol sonrası stoğa alındı' : 'stok geri eklenmedi'}`,
         createdBy: admin.email,
       });
-      try {
-        await sendOrderStatusEmail(refunded);
-      } catch (error) {
-        console.error('[admin] iade e-postası gönderilemedi', { orderNo: order.orderNo, error });
-      }
+      await enqueueEmail(tx, row.id, 'refund_submitted', `${row.orderNo}/refund-submitted`, buildOrderStatusEmail(row));
+      return row;
+    });
+    if (refunded) {
+      after(async () => { await drainEmailOutbox(3, refunded.id); });
       await writeAdminAuditLog({
         actorId: admin.userId,
         actorEmail: admin.email,
         action: 'order.refund',
         entityType: 'order',
         entityId: order.orderNo,
-        summary: `${Number(order.total).toFixed(2)} TRY tam iade tamamlandı.`,
+        summary: `${Number(order.total).toFixed(2)} TRY tam iade talebi PayTR tarafından kabul edildi; banka sonucu bekleniyor.`,
         metadata: { refundReference: reference },
       });
     }
   } catch (error) {
     await db
       .update(orders)
-      .set({ refundStatus: 'failed', updatedAt: new Date() })
+      // A timeout or a local failure AFTER provider success is uncertain:
+      // keep it blocked until reconciled; never send a second refund blindly.
+      .set({ refundStatus: refundFailureStatus(error), updatedAt: new Date() })
       .where(and(eq(orders.id, order.id), eq(orders.refundStatus, 'processing')));
     throw error;
   }
 
+  revalidateCatalog();
   revalidatePath('/admin');
   revalidatePath('/admin/siparisler');
 }

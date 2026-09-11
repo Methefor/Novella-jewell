@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-09-03T16:50:02.6242050Z",
+  "deployment": "dpl_6zoPJ8RGhqXaZzjdCTigqFzFbWPd",
+  "migration": "0017_order_followup applied",
+  "testsPassed": 30,
+  "lint": "passed",
+  "typecheck": "passed",
+  "build": "passed",
+  "cron": {
+    "path": "/api/cron/order-followup",
+    "schedule": "0 6 * * *",
+    "verifiedInvocationAt": "2026-09-03T16:28:26.34Z",
+    "httpStatus": 200,
+    "fiveMinuteScheduleApproved": false
+  },
+  "paytrReadOnlyRecheck": {
+    "order": "NJ-2026-0009",
+    "paymentVerified": true,
+    "matchingCompletedRefundVerified": true,
+    "newChargeOrRefund": false
+  },
+  "analytics": {
+    "ga4RealtimePageViewVerified": true,
+    "purchaseVerified": false,
+    "metaDatasetAccountAccess": false
+  },
+  "searchConsole": {
+    "sitemapSuccess": true,
+    "discoveredUrls": 119,
+    "removedInvalidSitemapSubmissions": 3
+  },
+  "pendingUser": [
+    "Vercel Pro subscription approval",
+    "invoice/carrier/physical return process confirmation",
+    "physical catalog/business details confirmation",
+    "Meta dataset account login"
+  ],
+  "mobilePageSpeed": {
+    "performance": 91,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "fcpSeconds": 1.4,
+    "lcpSeconds": 3.5,
+    "tbtMilliseconds": 10,
+    "cls": 0
+  }
+}

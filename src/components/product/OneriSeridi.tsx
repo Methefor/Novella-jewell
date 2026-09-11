@@ -1,7 +1,7 @@
 'use client';
 
 import ProductCard from '@/components/product/ProductCard';
-import { getAllProducts } from '@/lib/products';
+import { useCatalogProducts } from '@/hooks/useCatalogProducts';
 import type { Product } from '@/types/product';
 
 interface Props {
@@ -18,7 +18,8 @@ export default function OneriSeridi({
   baslik = 'Belki bunlar ilgini çeker',
   adet = 4,
 }: Props) {
-  const tumu = getAllProducts();
+  const { products: catalogProducts } = useCatalogProducts();
+  const tumu = catalogProducts;
   const yeniler = tumu.filter((p) => p.isNew);
   const havuz: Product[] = (yeniler.length >= adet ? yeniler : tumu)
     .slice(0, adet);

@@ -12,6 +12,7 @@ import { useState } from 'react';
 interface CategoryClientProps {
   category: string;
   products: Product[];
+  searchTerm?: string;
 }
 
 const categoryNames: Record<string, string> = {
@@ -36,7 +37,7 @@ const categoryShortcuts = [
   { label: 'Bileklik', href: '/collections/bilezik', category: 'bilezik' },
 ];
 
-export default function CategoryClient({ category, products }: CategoryClientProps) {
+export default function CategoryClient({ category, products, searchTerm }: CategoryClientProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid-3' | 'grid-4'>('grid-4');
 
@@ -87,10 +88,10 @@ export default function CategoryClient({ category, products }: CategoryClientPro
               Koleksiyonlar
             </p>
             <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-4">
-              {categoryName}
+              {searchTerm !== undefined ? 'Arama Sonuçları' : categoryName}
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              {category === 'tum-urunler'
+              {searchTerm !== undefined ? `“${searchTerm}” için ${products.length} ürün bulundu` : category === 'tum-urunler'
                 ? 'Yüzük, küpe ve bileklik koleksiyonlarımızı tek yerde keşfedin.'
                 : category === 'yeni-gelenler'
                   ? 'Koleksiyona en son eklenen tasarımları keşfedin.'

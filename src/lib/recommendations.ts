@@ -2,7 +2,7 @@
 // 499₺'lik sepeti 500₺ üzerine taşıyacak ürünleri akıllıca seçer.
 
 import { SHIPPING } from '@/lib/config';
-import { getAllProducts, toplamStok } from '@/lib/products';
+import { toplamStok } from '@/lib/products';
 import type { Product } from '@/types/product';
 
 /**
@@ -18,6 +18,7 @@ import type { Product } from '@/types/product';
  * @param sepettekiIdler Sepetteki ürün id'leri (tekrar önerilmez)
  */
 export function kargoTamamlayicilar(
+  products: Product[],
   subtotal: number,
   sepettekiIdler: string[],
   adet = 4
@@ -25,7 +26,7 @@ export function kargoTamamlayicilar(
   const eksik = SHIPPING.freeThreshold - subtotal;
   if (eksik <= 0 || subtotal === 0) return [];
 
-  const adaylar = getAllProducts().filter(
+  const adaylar = products.filter(
     (p) => !sepettekiIdler.includes(p.id) && toplamStok(p) > 0
   );
 

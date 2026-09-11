@@ -2,8 +2,8 @@
  * Çerez onayı — tek kaynak.
  *
  * KVKK: zorunlu olmayan çerezler (analitik/pazarlama) açık rıza olmadan
- * ÇALIŞTIRILAMAZ. Bu yüzden Google Analytics yalnızca burada 'accepted'
- * dönerse yüklenir — pasif kalmaz, script hiç eklenmez.
+ * ÇALIŞTIRILAMAZ. Google etiket dosyası önceden yüklenebilir; yapılandırma,
+ * sayfa görüntüleme ve analitik olay gönderimi yalnızca 'accepted' ile açılır.
  */
 
 export const COOKIE_CONSENT_KEY = 'novella_cookie_consent';

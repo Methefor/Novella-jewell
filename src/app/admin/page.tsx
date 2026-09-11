@@ -1,4 +1,5 @@
 import AdminDashboard from '@/components/admin/AdminDashboard';
+import FollowupNotice from '@/components/admin/FollowupNotice';
 import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts, orders } from '@/db/schema';
@@ -20,6 +21,7 @@ const statusLabels = {
 } as const;
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
 
 function formatTRY(value: string | number | null) {
   return Number(value ?? 0).toLocaleString('tr-TR', {
@@ -68,6 +70,7 @@ export default async function AdminPage() {
   return (
     <main className="min-h-screen bg-[#f6f2eb] px-4 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto max-w-7xl">
+        <FollowupNotice />
         <header className="mb-9 flex flex-wrap items-center justify-between gap-5">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-[#9e8e63]">Novella</p>
@@ -166,7 +169,7 @@ export default async function AdminPage() {
                   <button disabled={order.status !== 'paid'} className="rounded-lg bg-black px-5 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40">Kaydet</button>
                 </form>
 
-                {order.status === 'paid' && order.refundStatus !== 'success' && (
+                {order.status === 'paid' && (!order.refundStatus || order.refundStatus === 'failed') && (
                   <details className="mt-4 border-t border-[#eee7dc] pt-4">
                     <summary className="cursor-pointer text-sm text-red-700">Tam iade işlemi</summary>
                     <form action={refundOrder} className="mt-3 flex flex-wrap items-center gap-3">

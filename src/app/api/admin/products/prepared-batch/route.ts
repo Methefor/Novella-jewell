@@ -5,6 +5,7 @@ import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { NOVELLA_CORE_FEATURES } from '@/lib/product-template';
 import { inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -99,6 +100,7 @@ export async function POST(request: Request) {
     metadata: { count: records.length, imageCount: items.reduce((sum, item) => sum + item.images.length, 0) },
   });
 
+  revalidateCatalog();
   revalidatePath('/admin');
   revalidatePath('/admin/urunler');
   return NextResponse.json({ ok: true, count: records.length, ids: records.map((record) => record.id) }, { status: 201 });

@@ -1,9 +1,10 @@
 import CategoryClient from '@/app/collections/[category]/CategoryClient';
 import { getCatalogProducts } from '@/lib/catalog';
 import type { Metadata } from 'next';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Tüm Ürünler | Novella Jewell',
+  title: 'Tüm Ürünler',
   description:
     'Novella Jewell yüzük, küpe ve bileklik koleksiyonlarını keşfedin. Suya dayanıklı, kararmaya dirençli ve ulaşılabilir premium takılar.',
   alternates: {

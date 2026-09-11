@@ -33,7 +33,7 @@ export default function IletisimPage() {
           <dt>Instagram</dt>
           <dd>
             <a href={SITE.instagram} target="_blank" rel="noopener noreferrer">
-              @novellajewellofficial
+              {SITE.instagramHandle}
             </a>
           </dd>
 

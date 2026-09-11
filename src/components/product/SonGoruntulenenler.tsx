@@ -1,7 +1,7 @@
 'use client';
 
 import ProductCard from '@/components/product/ProductCard';
-import { getAllProducts } from '@/lib/products';
+import { useCatalogProducts } from '@/hooks/useCatalogProducts';
 import { useRecentStore } from '@/store/recentStore';
 import type { Product } from '@/types/product';
 import { motion } from 'framer-motion';
@@ -26,6 +26,7 @@ interface Props {
  * hydration uyuşmazlığı olur.
  */
 export default function SonGoruntulenenler({ currentId }: Props) {
+  const { products: catalogProducts } = useCatalogProducts();
   const [mounted, setMounted] = useState(false);
   const ids = useRecentStore((s) => s.ids);
   const ekle = useRecentStore((s) => s.ekle);
@@ -37,7 +38,7 @@ export default function SonGoruntulenenler({ currentId }: Props) {
 
   if (!mounted) return null;
 
-  const tumProduct = getAllProducts();
+  const tumProduct = catalogProducts;
   const urunler = ids
     .filter((id) => id !== currentId)
     .map((id) => tumProduct.find((p) => p.id === id))

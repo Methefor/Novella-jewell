@@ -4,6 +4,8 @@
  */
 
 import { SHIPPING } from '@/lib/config';
+import { reconcileCart } from '@/lib/cart-catalog';
+import { useToastStore } from '@/hooks/useToast';
 import type { Product, ProductVariant } from '@/types/product';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
@@ -38,6 +40,7 @@ interface CartStore {
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
+  refreshCatalog: (products: Product[]) => void;
 
   // Drawer
   openDrawer: () => void;
@@ -89,10 +92,20 @@ export const useCartStore = create<CartStore>()(
         discount: 0,
         total: 0,
 
+        refreshCatalog: (products) => {
+          const previous = get().items;
+          const items = reconcileCart(previous, products);
+          const changed = items.length !== previous.length || items.some((item, index) =>
+            item.quantity !== previous[index].quantity || item.product.price !== previous[index].product.price);
+          // Legacy demo coupons were never accepted by server checkout.
+          set({ items, discount: 0, ...turetilenler(items, 0) }, false, 'refreshCatalog');
+          if (changed) useToastStore.getState().addToast({ type: 'info', message: 'Sepetiniz güncel fiyat ve stok bilgilerine göre yenilendi. Lütfen sipariş özetini kontrol edin.', duration: 7000 });
+        },
+
         // Add item to cart
         addItem: (product, variantId, quantity = 1, customization) => {
           const variant = product.variants.find((v) => v.id === variantId);
-          if (!variant) return;
+          if (!variant || variant.stock <= 0 || !Number.isInteger(quantity) || quantity < 1) return;
 
           const itemId = `${product.id}-${variantId}${
             customization ? `-${customization}` : ''

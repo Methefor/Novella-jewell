@@ -7,6 +7,7 @@ import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { z } from 'zod';
 
 export async function setProductPublished(formData: FormData) {
@@ -57,6 +58,7 @@ export async function setProductPublished(formData: FormData) {
     summary: published ? 'Ürün yayına alındı.' : 'Ürün yayından kaldırıldı.',
   });
 
+  revalidateCatalog();
   revalidatePath('/admin');
   revalidatePath('/admin/urunler');
   revalidatePath(`/urun/${existing?.slug ?? PRODUCTS.find((item) => item.id === input.id)?.slug ?? ''}`);

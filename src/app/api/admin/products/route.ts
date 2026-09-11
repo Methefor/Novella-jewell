@@ -1,3 +1,4 @@
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { db, dbYok } from '@/db';
 import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -163,5 +164,6 @@ export async function POST(request: Request) {
     metadata: { stock: input.stock, price: input.price, published: input.published },
   });
 
+  revalidateCatalog();
   return NextResponse.json({ ok: true, id, slug: input.slug }, { status: 201 });
 }

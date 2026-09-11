@@ -1,0 +1,49 @@
+{
+  "ga": [],
+  "meta": [],
+  "tagLoaded": true,
+  "failures": [],
+  "beforeConsent": {
+    "ga": 0,
+    "meta": 0
+  },
+  "afterConsent": {
+    "ga": 0,
+    "meta": 0
+  },
+  "queue": [
+    {
+      "type": "[object Array]",
+      "command": "consent"
+    },
+    {
+      "type": "[object Array]",
+      "command": "js"
+    },
+    {
+      "type": "[object Array]",
+      "command": "consent"
+    },
+    {
+      "type": "[object Object]",
+      "command": "gtm.dom"
+    },
+    {
+      "type": "[object Object]",
+      "command": "gtm.load"
+    },
+    {
+      "type": "[object Array]",
+      "command": "consent"
+    },
+    {
+      "type": "[object Array]",
+      "command": "config"
+    },
+    {
+      "type": "[object Array]",
+      "command": "event"
+    }
+  ],
+  "overflow": false
+}

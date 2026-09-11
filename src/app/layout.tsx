@@ -103,8 +103,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
+    icon: '/brand/favicon.ico',
+    shortcut: '/brand/novellajewell-monogram-black-32.png',
+    apple: '/brand/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
   ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
@@ -140,7 +141,7 @@ const orgJsonLd = {
   '@type': 'Organization',
   name: SITE.name,
   url: SITE.url,
-  logo: `${SITE.url}/Yatay%20logo%20banner.png`,
+  logo: `${SITE.url}/brand/novellajewell-logo-black-2048.png`,
   // image: dinamik OG görselini gösterir. Eskiden /og-image.jpg yazıyordu
   // ama o dosya hiç yoktu (404).
   image: `${SITE.url}/opengraph-image`,
@@ -153,7 +154,7 @@ const orgJsonLd = {
     '@type': 'Brand',
     name: SITE.name,
     slogan: SITE.tagline,
-    logo: `${SITE.url}/Yatay%20logo%20banner.png`,
+    logo: `${SITE.url}/brand/novellajewell-logo-black-2048.png`,
   },
   contactPoint: {
     '@type': 'ContactPoint',

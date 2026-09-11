@@ -1,6 +1,8 @@
 'use client';
+import { PRODUCT_CARE } from '@/lib/product-care';
 
 import BedenRehberi from '@/components/product/BedenRehberi';
+import LinkToPackaging from '@/components/product/LinkToPackaging';
 import FavoriButton from '@/components/product/FavoriButton';
 import Lightbox from '@/components/product/Lightbox';
 import ProductCard from '@/components/product/ProductCard';
@@ -8,14 +10,16 @@ import SonGoruntulenenler from '@/components/product/SonGoruntulenenler';
 import Yorumlar from '@/components/product/Yorumlar';
 import type { Collection } from '@/data/collections';
 import { trackAddToCart, trackViewItem } from '@/lib/analytics';
-import { SHIPPING } from '@/lib/config';
+import { SHIPPING, SITE } from '@/lib/config';
 import { CAYMA_SURESI_GUN } from '@/lib/legal';
-import { dusukStok, getRelatedProducts } from '@/lib/products';
+import { dusukStok, getPurchasableVariant, OUT_OF_STOCK_LABEL } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Droplets,
   Gift,
   MessageCircle,
@@ -30,6 +34,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props {
   product: Product;
+  related: Product[];
   collection: Collection | undefined;
 }
 
@@ -46,10 +51,9 @@ const accordionItems = [
     id: 'malzeme',
     title: 'Malzeme & Özellikler',
     content: [
-      '316L paslanmaz çelik — tuz suyu, havuz, tere dayanıklı',
-      'Nikel içermez, alerji yapmaz',
-      'Renk solmaz, kararma yaşanmaz',
-      'Zararlı kimyasal içermez',
+      PRODUCT_CARE.material,
+      PRODUCT_CARE.allergy,
+      PRODUCT_CARE.finish,
     ],
   },
   {
@@ -61,7 +65,7 @@ const accordionItems = [
       // gerçek hesapla çelişir ve yanıltıcı ticari uygulama olur.
       `${SHIPPING.freeThreshold.toLocaleString('tr-TR')} ₺ üzeri siparişlerde kargo ücretsiz`,
       `${CAYMA_SURESI_GUN} gün içinde cayma hakkı`,
-      'Özenle paketlenir, hediye kutusunda gönderilir',
+      'Seçtiğiniz ürün, Novella kartvizitiyle birlikte özel kutusunda gönderilir',
     ],
   },
   {
@@ -71,12 +75,12 @@ const accordionItems = [
       'Parfüm ve kimyasallardan uzak tutun',
       'Kullanım sonrası yumuşak bir bezle silin',
       'Kapalı kutuda, karanlıkta saklayın',
-      'Suyla temas sorun değil — çıkarmanız gerekmez',
+      PRODUCT_CARE.water,
     ],
   },
 ];
 
-export default function ProductPageClient({ product, collection }: Props) {
+export default function ProductPageClient({ product, collection, related }: Props) {
   const addToCart = useCartStore((state) => state.addItem);
 
   const defaultVariant =
@@ -89,8 +93,10 @@ export default function ProductPageClient({ product, collection }: Props) {
   const [zoomAcik, setZoomAcik] = useState(false);
   const [mobilSabitCta, setMobilSabitCta] = useState(false);
   const anaSepetButonu = useRef<HTMLButtonElement>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   const stokBilgi = dusukStok(product);
+  const purchaseVariant = getPurchasableVariant(product);
 
   // GA4 view_item — ürün sayfası açıldığında bir kez.
   useEffect(() => {
@@ -108,10 +114,6 @@ export default function ProductPageClient({ product, collection }: Props) {
     observer.observe(button);
     return () => observer.disconnect();
   }, []);
-
-  // Hareket azaltma tercihi açıksa yakınlaşma yapılmaz; geçiş yine de
-  // çapraz söner (sert kesme rahatsız edici olurdu), sadece hareket kalkar.
-  const galeriHareket = !useReducedMotion();
 
   /**
    * Galeri gezinmesi — kaydırma, klavye ve küçük resimler aynı mantığı kullanır.
@@ -138,10 +140,11 @@ export default function ProductPageClient({ product, collection }: Props) {
   const hasDiscount =
     product.compareAtPrice && product.compareAtPrice > product.price;
 
-  const related = getRelatedProducts(product.id, product.collection);
+
 
   const sepeteEkle = () => {
-    addToCart(product, product.defaultVariant, 1);
+    if (!purchaseVariant) return;
+    addToCart(product, purchaseVariant.id, 1);
     trackAddToCart(product, 1);
   };
 
@@ -152,6 +155,7 @@ export default function ProductPageClient({ product, collection }: Props) {
   return (
     <main className="min-h-screen bg-white pb-24 lg:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-24 pb-20">
+        <nav aria-label="Sayfa yolu" className="mb-7 text-xs text-black/60"><ol className="flex flex-wrap items-center gap-x-2 gap-y-1"><li><Link className="hover:underline" href="/">Ana sayfa</Link></li><li aria-hidden="true">/</li><li><Link className="hover:underline" href={`/collections/${product.category}`}>{categoryLabel[product.category] ?? 'Ürünler'}</Link></li><li aria-hidden="true">/</li><li aria-current="page" className="text-black/80">{product.name}</li></ol></nav>
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-20">
           {/* ── Gallery (sol) ── */}
           <motion.div
@@ -193,35 +197,25 @@ export default function ProductPageClient({ product, collection }: Props) {
             )}
 
             {/* Main image */}
-            <motion.div
-              className="relative flex-1 overflow-hidden bg-[#F6F6F4] rounded-lg touch-pan-y cursor-zoom-in"
+            <div
+              className="relative flex-1 overflow-hidden bg-[#F6F6F4] rounded-lg touch-pan-y"
               style={{ aspectRatio: '1/1' }}
-              /*
-                onTap büyüteci açar. framer-motion'un onTap'i, bir sürükleme
-                gerçekleştiyse ATEŞLENMEZ — yani kaydırınca yanlışlıkla zoom
-                açılmaz, sadece gerçek tıklama/dokunma açar. onClick ile ayrı
-                bir "sürükledi mi?" bayrağı tutmaya gerek kalmıyor.
-              */
-              onTap={() => setZoomAcik(true)}
-              /*
-                Parmakla kaydırma. Trafiğin çoğu mobil olacak ve şu an tek
-                gezinme yolu 64px'lik küçük resimlere dokunmak.
-
-                touch-pan-y ŞART: yatay sürüklemeyi biz alırız ama dikey
-                kaydırma tarayıcıda kalır. Olmazsa kullanıcı galeri üzerinde
-                sayfayı aşağı kaydıramaz — parmağı galeriye takılır.
-              */
-              drag={gallery.length > 1 ? 'x' : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.18}
-              dragMomentum={false}
-              onDragEnd={(_, info) => {
-                // Hem mesafe hem hız: yavaş uzun sürükleme de, hızlı kısa
-                // fiske de çalışsın.
-                const mesafe = info.offset.x;
-                const hiz = info.velocity.x;
-                if (mesafe < -60 || hiz < -450) gorselGec(1);
-                else if (mesafe > 60 || hiz > 450) gorselGec(-1);
+              onTouchStart={(event) => {
+                const touch = event.touches[0];
+                touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+              }}
+              onTouchEnd={(event) => {
+                const start = touchStart.current;
+                const touch = event.changedTouches[0];
+                touchStart.current = null;
+                if (!start || !touch || gallery.length < 2) return;
+                const deltaX = touch.clientX - start.x;
+                const deltaY = touch.clientY - start.y;
+                if (Math.abs(deltaX) < 44 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.15) return;
+                gorselGec(deltaX < 0 ? 1 : -1);
+              }}
+              onTouchCancel={() => {
+                touchStart.current = null;
               }}
             >
               {/*
@@ -235,10 +229,8 @@ export default function ProductPageClient({ product, collection }: Props) {
               <AnimatePresence initial={false}>
                 <motion.div
                   key={activeImg}
-                  initial={
-                    galeriHareket ? { opacity: 0, scale: 1.06 } : { opacity: 0 }
-                  }
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   /*
                     Çıkan görsel TAM OPAK kalır, sonra bir anda kaldırılır.
                     Sebep: ikisi aynı anda yarı saydam olursa arkadaki gri
@@ -253,10 +245,7 @@ export default function ProductPageClient({ product, collection }: Props) {
                     transition: { duration: 0.01, delay: 0.5 },
                   }}
                   transition={{
-                    opacity: { duration: 0.5, ease: 'easeInOut' },
-                    // Yakınlaşma sönümlemeden uzun sürer: görsel yerine
-                    // oturmaya devam ederken geçiş çoktan bitmiş olur.
-                    scale: { duration: 1.1, ease },
+                    opacity: { duration: 0.32, ease: 'easeInOut' },
                   }}
                   className="absolute inset-0"
                 >
@@ -287,10 +276,36 @@ export default function ProductPageClient({ product, collection }: Props) {
                 )}
               </div>
 
-              {/* Büyüteç ipucu — görsele tıklanabileceğini belli eder. */}
-              <div className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/70 backdrop-blur-sm text-black/60 pointer-events-none">
+              {/* Zoom yalnızca bu düğmeyle açılır; yatay kaydırmayla çakışmaz. */}
+              <button
+                type="button"
+                onClick={() => setZoomAcik(true)}
+                aria-label="Ürün görselini büyüt"
+                className="absolute top-3 right-3 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-black/65 shadow-sm transition-colors hover:bg-white"
+              >
                 <ZoomIn className="w-4 h-4" />
-              </div>
+              </button>
+
+              {gallery.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => gorselGec(-1)}
+                    aria-label="Önceki ürün görseli"
+                    className="absolute left-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/80 text-black/65 shadow-sm backdrop-blur-sm sm:hidden"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => gorselGec(1)}
+                    aria-label="Sonraki ürün görseli"
+                    className="absolute right-3 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/80 text-black/65 shadow-sm backdrop-blur-sm sm:hidden"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </>
+              )}
 
               {/* Kaydırma ipucu — yalnızca mobilde ve birden fazla görsel varsa.
                   Kullanıcı kaydırılabildiğini bilmezse özellik yok sayılır. */}
@@ -309,7 +324,7 @@ export default function ProductPageClient({ product, collection }: Props) {
                   ))}
                 </div>
               )}
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* ── Product info (sağ) ── */}
@@ -348,6 +363,8 @@ export default function ProductPageClient({ product, collection }: Props) {
             </div>
 
             {/* Fiyat */}
+            <p className="text-sm leading-relaxed text-black/65">{product.description}</p>
+
             <div className="flex items-baseline gap-3">
               <span className="text-2xl font-semibold text-black">
                 {product.price.toLocaleString('tr-TR')} ₺
@@ -360,6 +377,11 @@ export default function ProductPageClient({ product, collection }: Props) {
             </div>
 
             {/* Düşük stok — yalnızca gerçekten az kaldıysa. Sayı GERÇEK stok. */}
+            {!purchaseVariant && (
+              <p className="rounded-xl border border-gold/25 bg-cream px-4 py-3 text-sm font-medium text-black/70">
+                {OUT_OF_STOCK_LABEL}
+              </p>
+            )}
             {stokBilgi.goster && (
               <div className="flex items-center gap-2 text-sm">
                 <span className="relative flex h-2 w-2">
@@ -377,15 +399,16 @@ export default function ProductPageClient({ product, collection }: Props) {
               <button
                 ref={anaSepetButonu}
                 onClick={sepeteEkle}
-                className="btn-primary w-full flex items-center justify-center gap-2"
+                disabled={!purchaseVariant}
+                className="btn-primary w-full flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ShoppingBag className="w-4 h-4" />
-                Sepete Ekle
+                {purchaseVariant ? 'Sepete Ekle' : 'Stokta yok'}
               </button>
 
               <div className="flex gap-3">
                 <a
-                  href={`https://wa.me/905451125059?text=${waText}`}
+                  href={`https://wa.me/${SITE.whatsapp}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-ghost flex-1 flex items-center justify-center gap-2"
@@ -397,6 +420,8 @@ export default function ProductPageClient({ product, collection }: Props) {
                   <FavoriButton product={product} variant="detail" />
                 </div>
               </div>
+
+              <LinkToPackaging />
 
               {/* Beden rehberi — yalnızca yüzükte. Online takıda en büyük
                   iade sebebi ölçü tutmaması; rehber iadeyi düşürür. */}
@@ -460,7 +485,7 @@ export default function ProductPageClient({ product, collection }: Props) {
               </span>
               <span className="pill pill-light">316L Paslanmaz Çelik</span>
               <span className="pill pill-light">Suya Dayanıklı</span>
-              <span className="pill pill-light">Alerji Yapmaz</span>
+              <span className="pill pill-light">Bakım Bilgileri</span>
             </div>
 
             {/* Güvence şeridi — premium marka hissi */}
@@ -595,10 +620,11 @@ export default function ProductPageClient({ product, collection }: Props) {
           <button
             type="button"
             onClick={sepeteEkle}
-            className="inline-flex min-h-12 flex-shrink-0 items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-semibold text-white transition-colors hover:bg-gold-dark"
+            disabled={!purchaseVariant}
+            className="inline-flex min-h-12 flex-shrink-0 items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-semibold text-white transition-colors hover:bg-gold-dark disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ShoppingBag className="h-4 w-4" />
-            Sepete Ekle
+            {purchaseVariant ? 'Sepete Ekle' : 'Stokta yok'}
           </button>
         </div>
       </div>

@@ -9,6 +9,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import { MARKA, RENK, YAZI } from './brand';
+import { BrandLogo } from './BrandLogo';
 
 export type YuzukLansmaniProps = {
   gorseller: [string, string, string];
@@ -56,7 +57,7 @@ export const YuzukLansmani: React.FC<YuzukLansmaniProps> = ({
       <AbsoluteFill style={{ opacity: 0.48, backgroundImage: `radial-gradient(circle at 18% 22%, rgba(184,165,116,.16), transparent 40%), radial-gradient(circle at 84% 76%, rgba(143,123,80,.13), transparent 42%)` }} />
 
       <div style={{ position: 'absolute', top: vertical ? 80 : 54, left: 62, right: 62, display: 'flex', alignItems: 'center', justifyContent: 'space-between', opacity: textOpacity }}>
-        <div style={{ fontFamily: YAZI.editorial, fontSize: 40 * scale, color: '#16130F', letterSpacing: 5 }}>NOVELLA</div>
+        <BrandLogo width={210 * scale} />
         <div style={{ fontFamily: YAZI.govde, fontSize: 15 * scale, color: RENK.altinKoyu, letterSpacing: 4, textTransform: 'uppercase' }}>Selected rings · 316L</div>
       </div>
 
@@ -85,7 +86,7 @@ export const YuzukLansmani: React.FC<YuzukLansmaniProps> = ({
 
       <AbsoluteFill style={{ background: '#16130F', opacity: outro }}>
         <div style={{ margin: 'auto', textAlign: 'center', color: 'white' }}>
-          <div style={{ fontFamily: YAZI.editorial, fontSize: 108 * scale, letterSpacing: 8 }}>NOVELLA</div>
+          <BrandLogo tone="white" width={620 * scale} />
           <div style={{ marginTop: 20, fontFamily: YAZI.govde, fontSize: 20 * scale, letterSpacing: 5, textTransform: 'uppercase', color: RENK.altinAcik }}>Özgün parçalar · ulaşılabilir lüks</div>
         </div>
       </AbsoluteFill>
