@@ -51,10 +51,13 @@ export function alan(value: string, etiket: string): string {
 }
 
 /** Yasal sayfaların son güncellenme tarihi — metinleri değiştirirsen güncelle. */
-export const YASAL_GUNCELLEME = '24 Temmuz 2026';
+export const YASAL_GUNCELLEME = '1 Eylül 2026';
 
 /** Cayma hakkı süresi (gün) — Mesafeli Sözleşmeler Yönetmeliği m.9: en az 14 gün. */
 export const CAYMA_SURESI_GUN = 14;
 
 /** Teslimat taahhüdü (gün) — TKHK m.48: en fazla 30 gün. */
 export const TESLIMAT_SURESI_GUN = 30;
+
+/** Change when checkout documents or seller details change. */
+export const LEGAL_VERSION = '2026-09-01.1';

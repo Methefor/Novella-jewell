@@ -1,0 +1,8 @@
+/** Shared wording used in pre-information, contract, returns and FAQ. */
+export const RETURN_POLICY = {
+  notification: 'Cayma bildiriminizi teslimden itibaren 14 gün içinde iade talep formu, e-posta veya WhatsApp üzerinden iletebilirsiniz. Ürünü, cayma bildiriminizden itibaren 14 gün içinde geri göndermelisiniz.',
+  shipping: 'Cayma hakkı kapsamındaki iadelerde bildirdiğimiz taşıyıcıyla gönderim ücretsizdir. Ön bilgilendirmede taşıyıcı belirtilmemişse sizden iade kargo bedeli istenmez. Bildirilen taşıyıcının bulunduğunuz yerde şubesi yoksa ürünü ek masraf almadan teslim aldırırız.',
+  refund: 'Teslim edilmiş üründe geri ödeme süresi, ürünü bildirdiğimiz taşıyıcıya teslim ettiğiniz tarihten itibaren 14 gündür. Farklı taşıyıcı kullanırsanız süre ürünün bize ulaştığı tarihte başlar. Ürün teslim edilmeden cayarsanız süre bildirimin bize ulaştığı tarihte başlar. İlgili teslimat giderleri dâhil iade kapsamındaki ödemeler, kullandığınız ödeme aracına uygun biçimde ve size masraf yüklenmeden tek seferde iade edilir.',
+  hygiene: 'Kişiye özel hazırlanan ürünler ile teslimden sonra koruyucu ambalajı, bandı veya mührü açılan ve sağlık/hijyen açısından iadeye uygun olmayan ürünler cayma hakkı istisnasına girebilir. Her küpe otomatik olarak istisna değildir. Ayıplı, kusurlu veya yanlış gönderilen ürüne ilişkin yasal haklarınız saklıdır.',
+  condition: 'Ürünü işleyişine, teknik özelliklerine ve kullanım talimatlarına uygun biçimde inceleyebilirsiniz. Mümkünse kutusu ve aksesuarlarıyla, taşımada zarar görmeyecek şekilde paketleyin. Yalnızca orijinal kutunun bulunmaması cayma hakkını ortadan kaldırmaz; olağan inceleme dışındaki kullanımdan doğan sorumluluk yasal hükümler çerçevesinde değerlendirilir.',
+} as const;

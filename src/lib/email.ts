@@ -1,32 +1,13 @@
 import type { OrderRow } from '@/db/schema';
 import { EMAIL, SITE } from '@/lib/config';
 import { CAYMA_SURESI_GUN, COMPANY, TESLIMAT_SURESI_GUN } from '@/lib/legal';
-import { getProductBySlug } from '@/lib/products';
-import { Resend } from 'resend';
+import { legalAcceptanceText } from '@/lib/legal-acceptance';
+import type { EmailMessage } from './email-message';
 
-/**
- * Sipariş onay e-postası — Resend.
- *
- * RESEND_API_KEY yoksa sessizce atlar (loglar). Gönderim başarısız olursa
- * hata fırlatır ama ÇAĞIRAN try/catch ile sarar — sipariş akışı e-posta
- * yüzünden asla kırılmaz (Mesafeli Sözleşmeler m.7 gereği kalıcı bildirim
- * hedeflenir ama ödeme akışının bütünlüğü önceliklidir).
- *
- * ⚠️ Domain doğrulaması yokken Resend test göndericisi yalnızca hesap
- * sahibinin e-postasına teslim eder. Bkz. lib/config.ts EMAIL.from
- */
-export async function sendOrderConfirmationEmail(
+/** Render once inside the order transaction; email-outbox persists and delivers it. */
+export function buildOrderConfirmationEmail(
   order: OrderRow
-): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn('[email] RESEND_API_KEY yok — onay e-postası atlandı', {
-      orderNo: order.orderNo,
-    });
-    return;
-  }
-
-  const resend = new Resend(apiKey);
+): EmailMessage {
   const c = order.customer;
 
   const subtotal = order.items.reduce(
@@ -164,7 +145,7 @@ export async function sendOrderConfirmationEmail(
               <p style="margin:0 0 14px;color:#6B6252;font-size:14px">Siparişiniz hakkında güncelleme almak veya bilgi için:</p>
               <a href="${waLink}" style="display:inline-block;background:#0A0A0A;color:#fff;text-decoration:none;padding:13px 26px;border-radius:999px;font-size:14px;font-weight:500;margin-bottom:10px">WhatsApp&apos;tan yazın</a>
               ${supportEmail ? `<p style="margin:10px 0 0;font-size:13px"><a href="mailto:${supportEmail}" style="color:#9E8E63;text-decoration:none">${supportEmail}</a></p>` : ''}
-              <p style="margin:8px 0 0;font-size:13px"><a href="${instagramLink}" style="color:#9E8E63;text-decoration:none">Instagram: @novellajewellofficial</a></p>
+              <p style="margin:8px 0 0;font-size:13px"><a href="${instagramLink}" style="color:#9E8E63;text-decoration:none">Instagram: ${SITE.instagramHandle}</a></p>
             </td>
           </tr>
 
@@ -172,7 +153,7 @@ export async function sendOrderConfirmationEmail(
           <tr>
             <td style="padding-top:28px;border-top:1px solid #E7DFD0">
               <p style="margin:0;color:#9A907D;font-size:12px;line-height:1.6">
-                Cayma hakkınız ${CAYMA_SURESI_GUN} gündür. Tahmini teslimat süresi en fazla ${TESLIMAT_SURESI_GUN} iş günüdür.
+                Cayma hakkınız ${CAYMA_SURESI_GUN} gündür. Tahmini teslimat süresi en fazla ${TESLIMAT_SURESI_GUN} takvim günüdür.
                 Ürün tesliminden sonra iade/değişim taleplerinizi WhatsApp üzerinden iletebilirsiniz.
               </p>
               <p style="margin:14px 0 0;color:#9A907D;font-size:12px">${SITE.name} · ${SITE.tagline}</p>
@@ -186,13 +167,14 @@ export async function sendOrderConfirmationEmail(
 </body>
 </html>`;
 
-  await resend.emails.send({
+  return {
     from: EMAIL.from,
-    replyTo: EMAIL.replyTo,
+    reply_to: EMAIL.replyTo,
     to: c.email,
     subject: `Siparişiniz alındı — ${order.orderNo}`,
     html,
-  });
+    attachments: order.legalAcceptance ? [{ filename: `${order.orderNo}-belgeler.txt`, content: Buffer.from(legalAcceptanceText(order.orderNo, order.legalAcceptance), 'utf8').toString('base64') }] : undefined,
+  };
 }
 
 const STATUS_EMAILS: Record<
@@ -226,10 +208,13 @@ const STATUS_EMAILS: Record<
   },
 };
 
-export async function sendOrderStatusEmail(order: OrderRow): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const content = STATUS_EMAILS[order.fulfillmentStatus];
-  if (!apiKey || !content) return;
+export function buildOrderStatusEmail(order: OrderRow, refundCompleted = false): EmailMessage | null {
+  const content = refundCompleted ? {
+    title: 'Ödeme iadeniz bankaya iletildi',
+    subject: 'Ödeme iadeniz bankaya iletildi',
+    message: `${formatTRY(Number(order.refundAmount))} tutarındaki iadenizin banka işlemi ödeme sağlayıcımız tarafından onaylandı. Hesabınıza yansıma süresi bankanıza bağlıdır.`,
+  } : STATUS_EMAILS[order.fulfillmentStatus];
+  if (!content) return null;
 
   const tracking =
     order.fulfillmentStatus === 'shipped' && order.trackingNumber
@@ -239,11 +224,11 @@ export async function sendOrderStatusEmail(order: OrderRow): Promise<void> {
           <div style="margin-top:4px">${escapeHtml(order.trackingNumber)}</div>
         </div>`
       : '';
+  const support = buildOrderSupport(order.orderNo);
 
-  const resend = new Resend(apiKey);
-  await resend.emails.send({
+  return {
     from: EMAIL.from,
-    replyTo: EMAIL.replyTo,
+    reply_to: EMAIL.replyTo,
     to: order.customer.email,
     subject: `${content.subject} — ${order.orderNo}`,
     html: `<!doctype html><html lang="tr"><body style="margin:0;background:#FAF8F5;font-family:Inter,-apple-system,Segoe UI,sans-serif;color:#1A1712">
@@ -255,9 +240,27 @@ export async function sendOrderStatusEmail(order: OrderRow): Promise<void> {
           <p style="color:#6B6252;line-height:1.7;margin:0">${content.message}</p>
           ${tracking}
         </div>
+        <div style="padding:22px 8px 0;text-align:center;color:#6B6252;font-size:13px;line-height:1.7">
+          <p style="margin:0 0 8px">Siparişiniz hakkında bize ulaşabilirsiniz.</p>
+          <p style="margin:0">
+            <a href="${support.waLink}" style="color:#1A1712;text-decoration:none;font-weight:600">WhatsApp</a>
+            &nbsp;·&nbsp;
+            <a href="mailto:${support.email}" style="color:#9E8E63;text-decoration:none">${support.email}</a>
+          </p>
+          <p style="margin:6px 0 0"><a href="${SITE.instagram}" style="color:#9E8E63;text-decoration:none">Instagram: ${SITE.instagramHandle}</a></p>
+        </div>
       </div>
     </body></html>`,
-  });
+  };
+}
+
+function buildOrderSupport(orderNo: string) {
+  return {
+    email: COMPANY.email.trim(),
+    waLink: `https://api.whatsapp.com/send?phone=${SITE.whatsapp}&text=${encodeURIComponent(
+      `Merhaba! Siparişim hakkında bilgi almak istiyorum. Sipariş no: ${orderNo}`
+    )}`,
+  };
 }
 
 function buildItemRow(item: {
@@ -265,10 +268,9 @@ function buildItemRow(item: {
   ad: string;
   adet: number;
   birimFiyat: number;
+  image?: string;
 }): string {
-  const product = getProductBySlug(item.slug);
-  const imagePath =
-    product?.images?.[0] ?? product?.variants[0]?.images?.[0] ?? '';
+  const imagePath = item.image ?? '';
   const imageUrl = imagePath ? absoluteUrl(imagePath) : '';
   const productUrl = `${SITE.url}/urun/${item.slug}`;
   const lineTotal = item.birimFiyat * item.adet;

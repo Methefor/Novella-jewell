@@ -6,6 +6,9 @@ const TOKEN_ENDPOINT = 'https://www.paytr.com/odeme/api/get-token';
 const IFRAME_BASE = 'https://www.paytr.com/odeme/guvenli/';
 const REFUND_ENDPOINT = 'https://www.paytr.com/odeme/iade';
 
+/** Only an explicit provider rejection is safe to retry automatically. */
+export class PayTRRefundRejectedError extends Error {}
+
 /**
  * PayTR merchant_oid YALNIZCA harf ve rakam kabul eder (çizgi/özel karakter
  * gönderilirse token isteği reddedilir). DB'deki insan-okur sipariş numarası
@@ -58,8 +61,11 @@ export async function refundPayTRPayment(
     is_test?: string | number;
     err_msg?: string;
   };
+  if (result.status === 'failed' || (result.status === 'error' && result.err_msg)) {
+    throw new PayTRRefundRejectedError(result.err_msg || 'PayTR iade isteğini reddetti.');
+  }
   if (!response.ok || result.status !== 'success') {
-    throw new Error(result.err_msg || `PayTR iade hatası: HTTP ${response.status}`);
+    throw new Error(`PayTR iade sonucu doğrulanamadı: HTTP ${response.status}`);
   }
   return { isTest: String(result.is_test) === '1' };
 }
@@ -144,7 +150,7 @@ export class PayTRProvider implements CheckoutProvider {
     // Sonuç sayfasında müşteriye insan-okur numara (NJ-2026-XXXX) ve sunucuda
     // hesaplanan gerçek toplam gösterilir. PayTR merchant_ok_url'i ayrı açtığı
     // için callback'te hesaplanan toplam bu yönlendirmeye eklenemez.
-    const merchantOkUrl = `${baseUrl}/odeme/sonuc?status=success&orderNo=${encodeURIComponent(
+    const merchantOkUrl = `${baseUrl}/api/odeme/return?orderNo=${encodeURIComponent(
       order.id
     )}&verify=${encodeURIComponent(randomNr)}`;
     const merchantFailUrl = `${baseUrl}/odeme/sonuc?status=error&orderNo=${encodeURIComponent(
@@ -177,6 +183,7 @@ export class PayTRProvider implements CheckoutProvider {
     const res = await fetch(TOKEN_ENDPOINT, {
       method: 'POST',
       body,
+      signal: AbortSignal.timeout(20_000),
     });
 
     let data: unknown;

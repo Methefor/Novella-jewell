@@ -25,6 +25,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     setQuery,
     results,
     isSearching,
+    catalogError,
+    retryCatalog,
     recentSearches,
     saveSearch,
     clearRecentSearches,
@@ -259,7 +261,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                           {results.length > 6 && (
                             <Link
-                              href={`/collections?search=${encodeURIComponent(
+                              href={`/arama?q=${encodeURIComponent(
                                 query
                               )}`}
                               onClick={handleProductClick}
@@ -273,7 +275,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     )}
 
                     {/* No Results */}
-                    {!isSearching && results.length === 0 && (
+                    {catalogError && <p role="alert" className="py-6 text-sm text-center">Ürünler yüklenemedi. <button onClick={() => void retryCatalog()} className="underline">Tekrar dene</button></p>}
+                    {!catalogError && !isSearching && results.length === 0 && (
                       <div className="text-center py-12">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-black/5 flex items-center justify-center">
                           <Search className="w-8 h-8 text-black/30" />

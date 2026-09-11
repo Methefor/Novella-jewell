@@ -1,18 +1,18 @@
 # Novella Jewell — Lansman Kontrol Listesi
 
-Son kontrol: 4 Ağustos 2026.
+Son kontrol: 4 Eylül 2026. Ayrıntılı güncel kanıt ve açık işler: [satışa hazırlık](audits/2026-09-03-satisa-hazirlik.md).
 `[x]` yalnızca kaynak kodu, Git/Vercel çıktısı veya çalıştırılmış kontrolle doğrulanan maddeleri gösterir. Production ayarı ya da gerçek işlem gerektiren ve doğrulanmayan maddeler `[ ]` bırakılmıştır.
 
 ## Kod ve dağıtım
 
-- [x] Git deposu `main` branch'inde ve `origin/main` ile aynı commit'te.
+- [ ] Son çalışma ağacı değişikliklerinin Git commit/push kaydı. Canlıya çalışma ağacından dağıtıldı.
 - [x] Vercel projesi `novella-jewell` production deployment'ı `Ready`.
 - [x] `novellajewell.com` HTTP 200 döndürüyor.
 - [x] `www.novellajewell.com` kök domaine HTTP 308 ile yönleniyor.
 - [x] `npm run build` başarıyla tamamlanıyor.
 - [x] `npm run type-check` başarıyla tamamlanıyor.
 - [x] `npm run lint` hatasız tamamlanıyor.
-- [ ] Otomatik birim/entegrasyon/uçtan uca test paketi mevcut ve geçiyor.
+- [x] 30 otomatik test mevcut ve geçiyor (kritik sipariş, stok, kuyruk, ödeme ve analitik kuralları). Tüm kullanıcı akışlarının uçtan uca testi anlamına gelmez.
 - [x] `.env.example` kullanılan bütün zorunlu production değişkenlerini listeliyor.
 
 ## Katalog ve mağaza
@@ -38,12 +38,12 @@ Son kontrol: 4 Ağustos 2026.
 - [x] Sipariş durum geçişleri kodda sınırlandırılmış.
 - [x] Kargoya geçişte kargo firması ve takip numarası zorunlu.
 - [x] PayTR tam iade kodu ve stok geri ekleme işlemi mevcut.
-- [ ] Production `PAYTR_TEST_MODE=0` doğrulandı.
+- [x] Production `PAYTR_TEST_MODE=0` doğrulandı.
 - [x] Production PayTR merchant bilgileri ve panel entegrasyon testi doğrulandı.
-- [ ] Gerçek kartla başarılı ödeme testi tamamlandı.
-- [ ] Gerçek başarısız/iptal ödeme testi tamamlandı.
-- [ ] Gerçek ödemede stok düşümü ve sipariş kaydı birlikte doğrulandı.
-- [ ] Gerçek ödenmiş siparişte tam iade testi tamamlandı.
+- [x] Gerçek kartla başarılı ödeme testi tamamlandı.
+- [x] Gerçek başarısız/iptal ödeme testi tamamlandı.
+- [x] Gerçek ödemede stok düşümü ve sipariş kaydı birlikte doğrulandı.
+- [x] Gerçek ödenmiş siparişte tam iade testi tamamlandı.
 
 ## E-posta ve operasyon
 
@@ -52,7 +52,8 @@ Son kontrol: 4 Ağustos 2026.
 - [x] Müşteri sipariş takip rotası mevcut.
 - [x] Resend gönderici domaini doğrulandı.
 - [x] Production `RESEND_FROM_EMAIL` doğrulanmış marka adresini kullanıyor.
-- [ ] Sipariş onay e-postası gerçek müşteri adresine ulaştı.
+- [x] Production yanıt adresi PayTR yetkili e-postasıyla eşleşiyor; durum e-postaları merkezi destek ve sosyal bağlantıları kullanıyor.
+- [x] Sipariş onay e-postası gerçek müşteri adresine ulaştı.
 - [ ] Hazırlanıyor, kargoda, teslim ve iade e-postaları gerçek alıcıda doğrulandı.
 - [ ] Gerçek kargo firması ve takip bağlantısı operasyon testi tamamlandı.
 
@@ -65,9 +66,9 @@ Son kontrol: 4 Ağustos 2026.
 - [x] `robots.txt` canlıda HTTP 200.
 - [x] Dinamik `sitemap.xml` canlıda HTTP 200.
 - [x] Ürün ve organizasyon yapılandırılmış verileri uygulanmış.
-- [ ] Production GA olaylarının gerçek zamanlı rapora ulaştığı bu denetimde doğrulandı.
+- [x] Production GA olaylarının gerçek zamanlı rapora ulaştığı bu denetimde doğrulandı.
 - [ ] Production Meta Purchase olayının gerçek ödeme üzerinden ulaştığı doğrulandı.
-- [ ] Search Console indeks kapsamı ve hata raporu bu denetimde doğrulandı.
+- [x] Search Console indeks kapsamı ve hata raporu bu denetimde doğrulandı.
 
 ## Güvenlik ve hukuk
 
@@ -76,6 +77,8 @@ Son kontrol: 4 Ağustos 2026.
 - [x] Checkout müşteri verisi Zod şemasıyla doğrulanıyor.
 - [x] KVKK ve mesafeli satış onayları checkout API'sinde zorunlu.
 - [x] Gizlilik, KVKK, çerez, iade, ön bilgilendirme ve mesafeli satış sayfaları kodda mevcut.
+- [x] Destek telefonu ve yasal merkez adresi işletme sahibi tarafından doğrulandı; adres yalnızca İletişim ve zorunlu işlem metinlerinde gösteriliyor.
+- [ ] İşletme statüsüne göre VKN/MERSİS, KEP ve meslek odası bilgileri İletişim sayfasına eklendi.
 - [ ] Hukuki metinlerin güncel işletme bilgileriyle uzman kontrolü tamamlandı.
 - [ ] Production güvenlik başlıkları bağımsız taramayla doğrulandı.
 - [ ] Bağımlılık güvenlik taraması tamamlandı ve açık bulgu yok.
@@ -85,9 +88,22 @@ Son kontrol: 4 Ağustos 2026.
 - [x] Kampanya, ürün ve kanal bazlı içerik taslakları destekleniyor.
 - [x] Medya inceleme/onay/red/yayına hazır durumları mevcut.
 - [x] Instagram ve Threads için ayrı metin alanları mevcut.
+- [x] Canlı Instagram ve Threads profilleri `@novellajewellofficial` olarak doğrulandı ve site bağlantıları merkezi ayara bağlandı.
 - [x] İçerik tarih-saat ve kanal planı mevcut.
 - [x] Remotion Story/Feed/Square kompozisyonları mevcut.
 - [x] Sistem sosyal medyada otomatik paylaşım yapmıyor.
 - [ ] Onaylı kampanya medya dosyaları admin medya kütüphanesine yüklendi.
 - [ ] İlk 7 günlük içeriklerin tamamı görsel ve metin olarak son onay aldı.
 - [ ] Instagram ve Threads ilk yayınları gerçekleştirildi.
+
+## 3 Eylül iyileştirmeleri ve açık onaylar
+
+- [x] Kalıcı e-posta kuyruğu ve PayTR sonuç uzlaştırması üretimde.
+- [x] Yönetici takip ekranı ve günlük görev canlıda çalıştırıldı.
+- [x] Ödeme sonuç adresindeki özel anahtar güvenli çereze taşındı.
+- [x] Mobil breadcrumb/destek, görünür ilk içerik ve görsel önceliği iyileştirildi.
+- [x] Hatalı Search Console sitemap gönderimleri temizlendi.
+- [ ] Vercel Pro 20 USD/ay aboneliği için kullanıcı onayı ve 5 dakikalık görev.
+- [ ] Fatura sistemi, kargo/iade yöntemi ve fiziksel stok işletme teyidi.
+- [ ] Meta veri setini yöneten hesaba erişim ve gerçek Purchase kabulü.
+- [ ] Yeni kuyruktan ilk gerçek kargo/banka iade tamamlanma e-postası teslimi.

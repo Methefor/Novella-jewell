@@ -78,3 +78,10 @@ Bu kayıt yalnızca mevcut kaynak kodunda veya Git geçmişinde uygulanmış old
 - **Kanıt:** `src/lib/product-readiness.ts`
 - **Karar:** En az üç görsel, açıklama, hikâye, özellikler, fiyat, stok ve dört manuel reklam onayı tamamlanmadan ürün `ready` olmaz.
 - **Sonuç:** Ürünün yayında olması, reklama hazır olduğu anlamına gelmez.
+
+## ADR-012 — Kimlik, ürün verisi, yayın medyası ve arşiv ayrı sorumluluklardır
+
+- **Durum:** Kabul edildi
+- **Kanıt:** `src/lib/admin-auth.ts`, `src/db/schema.ts`, `src/app/api/admin/media-assets/upload/route.ts`, `/admin/icerik-uret`
+- **Karar:** Clerk yalnızca admin kimlik doğrulamasını yapar. Ürün ve medya kayıtları Neon Postgres'te, sitede kullanılacak gerçek dosyalar Vercel Blob'da tutulur. Google Drive site çalışma zamanının parçası değildir; ham/orijinal çekimler için işletme arşivi olarak kullanılabilir.
+- **Sonuç:** Drive veya Clerk ürün kataloğunun ikinci kopyası yapılmaz. İçerik Üret ekranı katalog ve AI medya kütüphanesindeki görselleri yeniden kullanır; AI çıktıları mağazada otomatik yayınlanmadan ürüne geri bağlanır.

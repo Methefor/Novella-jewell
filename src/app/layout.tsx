@@ -3,13 +3,14 @@ import MetaPixel from '@/components/analytics/MetaPixel';
 import FirstPartyAnalytics from '@/components/analytics/FirstPartyAnalytics';
 import SepetHatirlatici from '@/components/cart/SepetHatirlatici';
 import StoreHydration from '@/components/common/StoreHydration';
+import MobileSupport from '@/components/common/MobileSupport';
 import ToastContainer from '@/components/common/Toast';
 import CookieBanner from '@/components/legal/CookieBanner';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
+import MobileTabBar from '@/components/layout/MobileTabBar';
 import PageTransition from '@/components/layout/PageTransition';
 import { SITE } from '@/lib/config';
-import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
 import {
   Cormorant_Garamond,
@@ -102,8 +103,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
+    icon: '/brand/favicon.ico',
+    shortcut: '/brand/novellajewell-monogram-black-32.png',
+    apple: '/brand/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
   ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
@@ -139,7 +141,7 @@ const orgJsonLd = {
   '@type': 'Organization',
   name: SITE.name,
   url: SITE.url,
-  logo: `${SITE.url}/Yatay%20logo%20banner.png`,
+  logo: `${SITE.url}/brand/novellajewell-logo-black-2048.png`,
   // image: dinamik OG görselini gösterir. Eskiden /og-image.jpg yazıyordu
   // ama o dosya hiç yoktu (404).
   image: `${SITE.url}/opengraph-image`,
@@ -152,7 +154,7 @@ const orgJsonLd = {
     '@type': 'Brand',
     name: SITE.name,
     slogan: SITE.tagline,
-    logo: `${SITE.url}/Yatay%20logo%20banner.png`,
+    logo: `${SITE.url}/brand/novellajewell-logo-black-2048.png`,
   },
   contactPoint: {
     '@type': 'ContactPoint',
@@ -168,7 +170,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
     <html lang="tr" className={`${cormorant.variable} ${instrumentSans.variable} ${instrumentSerif.variable}`}>
       <body className="font-body antialiased">
         <script
@@ -192,6 +193,10 @@ export default function RootLayout({
           <PageTransition>{children}</PageTransition>
         </div>
         <Footer />
+        {/* Mobil alt gezinme çubuğu için footer'ın altında pay bırak */}
+        <div aria-hidden className="h-24 lg:hidden" />
+        <MobileTabBar />
+        <MobileSupport />
         <ToastContainer />
         {/* Terk edilmiş sepet hatırlatıcısı — saatler sonra dönen ziyaretçiye */}
         <SepetHatirlatici />
@@ -202,6 +207,5 @@ export default function RootLayout({
         <FirstPartyAnalytics />
       </body>
     </html>
-    </ClerkProvider>
   );
 }

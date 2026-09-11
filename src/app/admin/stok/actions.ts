@@ -7,6 +7,7 @@ import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
 import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { z } from 'zod';
 
 export async function adjustStock(formData: FormData) {
@@ -138,6 +139,7 @@ export async function adjustStock(formData: FormData) {
     },
   });
 
+  revalidateCatalog();
   revalidatePath('/admin');
   revalidatePath('/admin/stok');
   revalidatePath('/admin/urunler');

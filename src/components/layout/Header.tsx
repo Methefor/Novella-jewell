@@ -2,7 +2,9 @@
 
 import CartDrawer from '@/components/cart/CartDrawer';
 import SearchModal from '@/components/search/SearchModal';
+import { useCatalogProducts } from '@/hooks/useCatalogProducts';
 import { SITE } from '@/lib/config';
+import { getDiscoveryCategories } from '@/lib/home-categories';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import {
@@ -26,13 +28,6 @@ const navLinks = [
   { label: 'İletişim', href: '/#iletisim' },
 ];
 
-const menuCategories = [
-  { label: 'Yüzükler', note: 'Özgün formlar', href: '/collections/yuzuk', image: '/media/yuzuk/yuzuk-16c.jpg' },
-  { label: 'Yeni gelenler', note: 'Son seçkiler', href: '/collections/yeni-gelenler', image: '/media/yuzuk/yuzuk-15.jpg' },
-  { label: 'Küpeler', note: 'Zarif detaylar', href: '/collections/kupe', image: '/media/kupe/kupe-1.jpg' },
-  { label: 'Bileklikler', note: 'Günlük ışıltı', href: '/collections/bilezik', image: '/media/bileklik/bileklik-1.jpg' },
-] as const;
-
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -42,6 +37,8 @@ export default function Header() {
   const openDrawer = useCartStore((s) => s.openDrawer);
   const closeDrawer = useCartStore((s) => s.closeDrawer);
   const wishlistCount = useWishlistStore((s) => s.items.length);
+  const { products } = useCatalogProducts();
+  const menuCategories = getDiscoveryCategories(products);
 
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 40));
@@ -49,7 +46,7 @@ export default function Header() {
   return (
     <>
       <motion.header
-        initial={{ y: -16, opacity: 0 }}
+        initial={false}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease }}
         style={{ height: 'var(--navbar-h)' }}
@@ -65,9 +62,17 @@ export default function Header() {
             {/* Logotype */}
             <Link
               href="/"
-              className="font-serif text-[22px] font-medium tracking-[0.15em] text-black leading-none"
+              className="block shrink-0"
+              aria-label="NovellaJewell ana sayfa"
             >
-              NOVELLA
+              <Image
+                src="/brand/novellajewell-logo-black.svg"
+                alt="NovellaJewell"
+                width={512}
+                height={126}
+                className="h-auto w-[118px] sm:w-[138px]"
+                priority
+              />
             </Link>
 
             {/* Editorial discovery trigger */}
@@ -179,10 +184,10 @@ export default function Header() {
                 {menuCategories.map((category, index) => (
                   <motion.div key={category.href} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .16 + index * .06, ease }}>
                     <Link href={category.href} onClick={() => setMenuOpen(false)} className="group relative block aspect-[4/5] overflow-hidden bg-[#e6ded2]">
-                      <Image src={category.image} alt="" fill sizes="(max-width: 640px) 50vw, 280px" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+                      <Image src={category.image} alt={category.alt} fill sizes="(max-width: 640px) 50vw, 280px" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
                       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-4 text-white">
-                        <div><p className="text-[9px] uppercase tracking-[.18em] text-white/65">{category.note}</p><p className="mt-1 font-editorial text-[clamp(1.35rem,4vw,2rem)] leading-none">{category.label}</p></div>
+                        <div><p className="text-[9px] uppercase tracking-[.18em] text-white/65">{category.eyebrow}</p><p className="mt-1 font-editorial text-[clamp(1.35rem,4vw,2rem)] leading-none">{category.title}</p></div>
                         <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                       </div>
                     </Link>

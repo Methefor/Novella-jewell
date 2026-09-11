@@ -30,7 +30,7 @@ export async function getCatalogProducts(options?: {
     })
     .from(catalogProducts);
   const dynamicProducts = rows
-    .filter(({ published }) => published)
+    .filter(({ published, data }) => published && !data.deletedAt && (options?.includeHidden || !data.hidden))
     .map(({ data }) => hydrate(data));
   if (rows.length > 0) return dynamicProducts;
   return staticProducts;
@@ -48,7 +48,7 @@ export async function getCatalogProductBySlug(
       .from(catalogProducts)
       .where(eq(catalogProducts.slug, slug))
       .limit(1);
-    if (row) return row.published ? hydrate(row.data) : undefined;
+    if (row) return row.published && !row.data.deletedAt ? hydrate(row.data) : undefined;
     const [{ count }] = await db.select({ count: sql<number>`count(*)::int` }).from(catalogProducts);
     if (count > 0) return undefined;
   }
@@ -67,7 +67,7 @@ export async function getCatalogProductById(
       .from(catalogProducts)
       .where(eq(catalogProducts.id, id))
       .limit(1);
-    if (row) return row.published ? hydrate(row.data) : undefined;
+    if (row) return row.published && !row.data.deletedAt ? hydrate(row.data) : undefined;
     const [{ count }] = await db.select({ count: sql<number>`count(*)::int` }).from(catalogProducts);
     if (count > 0) return undefined;
   }

@@ -4,10 +4,11 @@ import ProductCard from '@/components/product/ProductCard';
 import type { Collection } from '@/data/collections';
 import type { Product, ProductCategory } from '@/types/product';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 
-const ease = [0.16, 1, 0.3, 1] as const;
+
 
 const CATEGORIES: { value: ProductCategory; label: string }[] = [
   { value: 'bilezik', label: 'Bileklik' },
@@ -95,40 +96,30 @@ export default function CollectionPageClient({ collection, products }: Props) {
     });
   }, [products, selectedCategories, priceRange]);
 
-  const title = collection.sehir || 'Klasikler';
+  if (collection.slug === 'klasikler' && products.length === 0) {
+    return (
+      <section className="px-6 py-16 md:px-12 md:py-24">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-gold/20 bg-[#f7f1e7] px-6 py-14 text-center md:px-12">
+          <p className="section-label mb-4">Yakında</p>
+          <h2 className="font-serif text-3xl font-light tracking-[-0.025em] md:text-5xl">
+            Yeni klasikler hazırlanıyor.
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-black/60 md:text-base">
+            Zamansız formlardan oluşan ilk Klasikler seçkisi için son dokunuşları yapıyoruz.
+          </p>
+          <Link
+            href="/collections/yeni-gelenler"
+            className="mt-7 inline-flex rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-dark"
+          >
+            Yeni gelenleri keşfet
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* Story hero */}
-      <section className="px-6 md:px-16 lg:px-24 pt-24 pb-16 border-b border-black/8 max-w-5xl">
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease }}
-          className="section-label mb-6"
-        >
-          Koleksiyon · {collection.ton}
-        </motion.p>
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease, delay: 0.08 }}
-          className="font-serif font-light text-5xl md:text-7xl text-black mb-8"
-          style={{ letterSpacing: '-0.03em', lineHeight: 1.0 }}
-        >
-          {title}
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease, delay: 0.18 }}
-          className="font-serif font-light text-xl md:text-2xl text-black/70 leading-relaxed max-w-2xl"
-          style={{ letterSpacing: '0.01em' }}
-        >
-          {collection.hikaye}
-        </motion.p>
-      </section>
-
+    <div>
       {/* Filter + grid */}
       <section className="px-6 md:px-12 py-10">
         {/* Filter bar */}
@@ -213,6 +204,6 @@ export default function CollectionPageClient({ collection, products }: Props) {
           </div>
         )}
       </section>
-    </main>
+    </div>
   );
 }

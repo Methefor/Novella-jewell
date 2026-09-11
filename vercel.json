@@ -4,6 +4,9 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["iad1"],
+  "crons": [
+    { "path": "/api/cron/order-followup", "schedule": "0 6 * * *" }
+  ],
   "git": {
     "deploymentEnabled": {
       "main": true,

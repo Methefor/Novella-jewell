@@ -1,119 +1,46 @@
-// Bakım ve bilgi rehberi — SEO odaklı içerik.
-// "çelik takı kararır mı" gibi aramalardan organik trafik hedefler.
+import { PRODUCT_CARE } from '@/lib/product-care';
+import { RETURN_POLICY } from '@/lib/return-policy';
 
 export interface RehberYazisi {
-  slug: string;
-  baslik: string;
-  ozet: string;
-  /** Her eleman bir bölüm: başlık + paragraflar */
+  slug: string; baslik: string; ozet: string;
   bolumler: { baslik: string; paragraflar: string[] }[];
-  tarih: string; // ISO
+  tarih: string;
 }
 
 export const REHBER_YAZILARI: RehberYazisi[] = [
   {
-    slug: 'celik-taki-kararir-mi',
-    baslik: 'Çelik Takı Kararır mı? 316L Paslanmaz Çelik Gerçeği',
-    ozet:
-      'Çelik takıların kararıp kararmadığı, 316L cerrahi çeliğin diğer metallerden farkı ve neden ömür boyu parlak kaldığı.',
-    tarih: '2026-07-22',
+    slug: 'celik-taki-kararir-mi', baslik: 'Çelik Takı Kararır mı? Malzeme ve Kaplama Farkı',
+    ozet: 'Paslanmaz çeliğin dayanıklılığı, kaplamanın görünümü ve kullanım koşullarının takı üzerindeki etkisi.', tarih: '2026-09-01',
     bolumler: [
-      {
-        baslik: 'Kısa cevap: Hayır, 316L çelik kararmaz',
-        paragraflar: [
-          '316L paslanmaz çelik, yüzeyinde kendiliğinden oluşan görünmez bir krom oksit tabakası taşır. Bu tabaka metali havayla, suyla ve terle temastan korur — gümüşün kararmasına yol açan oksitlenme 316L çelikte gerçekleşmez.',
-          'Bu yüzden 316L çelik, "cerrahi çelik" olarak da bilinir: vücut piercingleri ve tıbbi implantlarda kullanılan malzemeyle aynı ailedendir.',
-        ],
-      },
-      {
-        baslik: 'Gümüş ve kaplama takılarla farkı',
-        paragraflar: [
-          'Gümüş takılar havadaki kükürtle tepkimeye girip zamanla sararır ve kararır; düzenli parlatma ister. Ucuz kaplama takılarda ise ince kaplama tabakası aşındıkça altındaki metal ortaya çıkar ve cildi yeşile boyayabilir.',
-          '316L çelik masif bir malzemedir — kaplamanın altında "ortaya çıkacak" başka bir metal yoktur. Denizde, duşta ve sporda takılı kalabilir.',
-        ],
-      },
-      {
-        baslik: 'Alerji yapar mı?',
-        paragraflar: [
-          '316L çeliğin nikel salınımı Avrupa standartlarının çok altındadır; bu nedenle hassas ciltlerde ve yeni delinmiş kulaklarda güvenle kullanılır. Bilinen ağır nikel alerjiniz varsa yine de ilk günlerde cildinizi gözlemlemenizi öneririz.',
-        ],
-      },
+      { baslik: 'Dayanıklılık sınırsız koruma değildir', paragraflar: ['Paslanmaz çeliğin yüzeyindeki koruyucu tabaka korozyona direncine katkı sağlar. Ancak takının kaplaması, taşları ve birleştirme noktaları farklı bakım ihtiyaçlarına sahip olabilir.', PRODUCT_CARE.finish] },
+      { baslik: 'Malzeme ile kaplamayı ayrı değerlendirin', paragraflar: ['Çelik tabanlı bir takı altın veya gümüş tonlu bir kaplamaya sahip olabilir. Tabanın çelik olması, kaplamanın aşınmayacağı anlamına gelmez. Ürüne özel malzeme ve kaplama bilgilerini açıklamasında kontrol edin.', PRODUCT_CARE.water] },
+      { baslik: 'Metal hassasiyeti', paragraflar: [PRODUCT_CARE.allergy, 'Malzeme adı tek başına bitmiş ürünün nikel salınımı veya kişisel uygunluğu hakkında test sonucu değildir.'] },
     ],
   },
   {
-    slug: 'taki-bakim-rehberi',
-    baslik: 'Takı Bakım Rehberi: Parlaklığı Ömür Boyu Koruyun',
-    ozet:
-      'Çelik takılarınızı ilk günkü gibi tutmanın basit yolları: temizlik, saklama ve kaçınmanız gerekenler.',
-    tarih: '2026-07-22',
+    slug: 'taki-bakim-rehberi', baslik: 'Takı Bakım Rehberi: Temizlik ve Saklama',
+    ozet: 'Takılarınızın yüzeyini korumak için günlük kullanım, nazik temizlik ve saklama önerileri.', tarih: '2026-09-01',
     bolumler: [
-      {
-        baslik: 'Günlük kullanım',
-        paragraflar: [
-          '316L çelik takılarınızı çıkarmanıza gerek yok: duş, deniz, havuz ve spor sorun değildir. Yine de parfüm, saç spreyi ve ağartıcı gibi yoğun kimyasalları doğrudan takının üzerine sıkmamaya özen gösterin.',
-        ],
-      },
-      {
-        baslik: 'Temizlik',
-        paragraflar: [
-          'Ayda bir, ılık sabunlu suda birkaç dakika bekletip yumuşak bir bezle kurulamanız yeterli. Diş fırçası gibi sert fırçalar ve aşındırıcı temizleyiciler mat iz bırakabilir — kullanmayın.',
-        ],
-      },
-      {
-        baslik: 'Saklama',
-        paragraflar: [
-          'Takılarınızı geldiği kutuda veya kumaş kesede, birbirine sürtmeyecek şekilde saklayın. Bu, yüzey çizilmelerini önlemenin en kolay yoludur.',
-        ],
-      },
+      { baslik: 'Günlük kullanım', paragraflar: [PRODUCT_CARE.water, 'Parfüm, saç spreyi ve temizlik ürünlerini takının üzerine uygulamayın. Takınızı sürtünme ve darbelerden koruyun.'] },
+      { baslik: 'Temizlik', paragraflar: ['Yumuşak, aşındırıcı olmayan bir bez kullanın. Taşlı, yapıştırmalı veya kaplamalı ürünleri uzun süre suda bekletmeyin; ürüne özel bakım bilgilerini izleyin. Sert fırça ve aşındırıcı temizleyiciler yüzeyi çizebilir.'] },
+      { baslik: 'Saklama', paragraflar: ['Takılarınızı kuru bir kutuda veya kumaş kesede, birbirine sürtünmeyecek şekilde saklayın. Kullanım sonrası nemini gidermek ve parçaları ayrı tutmak yüzeyin korunmasına yardımcı olur.'] },
     ],
   },
   {
-    slug: '316l-celik-nedir',
-    baslik: '316L Çelik Nedir? Takıda Cerrahi Çeliğin Avantajları',
-    ozet:
-      '316L (cerrahi) çeliğin bileşimi, neden takı için ideal olduğu ve satın alırken nelere dikkat etmeniz gerektiği.',
-    tarih: '2026-07-22',
+    slug: '316l-celik-nedir', baslik: '316L Çelik Nedir? Takı Alırken Nelere Bakılmalı?',
+    ozet: '316L paslanmaz çelik, kaplama bilgisi ve ürün seçerken kontrol edebileceğiniz özellikler.', tarih: '2026-09-01',
     bolumler: [
-      {
-        baslik: '316L bileşimi',
-        paragraflar: [
-          '316L, düşük karbonlu bir östenitik paslanmaz çelik alaşımıdır: yaklaşık %16-18 krom, %10-14 nikel ve %2-3 molibden içerir. Sondaki "L" (low carbon), düşük karbon oranını belirtir — bu, korozyon direncini daha da artırır.',
-          'Molibden katkısı, 316L\'yi tuzlu suya karşı özellikle dirençli yapar. Deniz tutkunları için takıda 316L tercih edilmesinin nedeni budur.',
-        ],
-      },
-      {
-        baslik: 'Neden takı için ideal?',
-        paragraflar: [
-          'Kararmaz, paslanmaz, rengi solmaz. Hipoalerjeniktir. Altın görünümü isteyenler için PVD kaplama ile altın tonu verilir — PVD, klasik kaplamalardan kat kat dayanıklıdır.',
-          'Satın alırken "çelik" ifadesi yeterli değildir; 201 veya 304 gibi daha düşük alaşımlar da "çelik" olarak satılabilir. Ürün açıklamasında "316L" ibaresini arayın.',
-        ],
-      },
+      { baslik: 'Malzeme adı ne anlatır?', paragraflar: ['316L, düşük karbonlu bir paslanmaz çelik sınıfıdır. Krom, nikel ve molibden içeren bir alaşımdır. L düşük karbonu ifade eder; nikel içermediği anlamına gelmez.', PRODUCT_CARE.allergy] },
+      { baslik: 'Bitmiş ürünü değerlendirin', paragraflar: ['Cerrahi çelik veya 316L ifadesi tek başına takının steril, implant kullanımına uygun veya her cilt için güvenli olduğunu göstermez. Kaplama, taş, ölçü ve bakım bilgilerini ürün bazında değerlendirin.', 'Bir ürün hakkında belirtilmeyen malzeme veya ölçü bilgisi varsa sipariş vermeden önce iletişim sayfamızdan bize sorabilirsiniz.'] },
     ],
   },
   {
-    slug: 'kupe-hijyeni-ve-yeni-delinmis-kulak',
-    baslik: 'Küpe Hijyeni: Yeni Delinmiş Kulaklar İçin Doğru Küpe Seçimi',
-    ozet:
-      'Yeni delinmiş kulaklarda hangi küpeler güvenli, hijyen kuralları ve iyileşme döneminde dikkat edilmesi gerekenler.',
-    tarih: '2026-07-22',
+    slug: 'kupe-hijyeni-ve-yeni-delinmis-kulak', baslik: 'Küpe Seçimi: Hijyen ve Malzeme Bilgisi',
+    ozet: 'Küpe alırken malzeme, koruyucu ambalaj ve kullanım amacını nasıl değerlendirebilirsiniz?', tarih: '2026-09-01',
     bolumler: [
-      {
-        baslik: 'Yeni delinmiş kulakta malzeme seçimi',
-        paragraflar: [
-          'İyileşme dönemindeki kulak deliği açık bir yara gibidir; bu dönemde nikel salınımı yüksek metaller kızarıklık ve kaşıntıya yol açabilir. 316L cerrahi çelik ve titanyum, bu dönem için en güvenli seçeneklerdir.',
-        ],
-      },
-      {
-        baslik: 'Hijyen kuralları',
-        paragraflar: [
-          'Küpeyi takmadan önce ellerinizi yıkayın, küpe çubuğunu alkollü mendille silin. Başkasıyla küpe paylaşmayın. Yeni aldığınız küpeleri de ilk kullanımdan önce silmeniz iyi bir alışkanlıktır.',
-          'Bu nedenle ambalajı açılmış küpeler hijyen gereği iade edilemez — tüm mağazalarda olduğu gibi NOVELLA\'da da bu kural, sizden önce kimsenin küpenize dokunmadığının güvencesidir.',
-        ],
-      },
+      { baslik: 'Kullanım amacı', paragraflar: ['NOVELLA moda takıları için sterilite veya implant uygunluğu taahhüdü verilmez. Yeni delinmiş kulak ve iyileşme sürecindeki kullanım için ürün adından tıbbi uygunluk sonucu çıkarmayın; işlemi yapan yetkin uzmanın bakım ve ürün seçimi yönlendirmesini izleyin.', PRODUCT_CARE.allergy] },
+      { baslik: 'Ambalaj ve iade', paragraflar: [RETURN_POLICY.hygiene, 'Ürün veya ambalajıyla ilgili sorun fark ederseniz sipariş numaranızla bize ulaşın. Ayrıntılı koşullar İade ve Cayma Hakkı sayfasındadır.'] },
     ],
   },
 ];
-
-export function getRehberYazisi(slug: string): RehberYazisi | undefined {
-  return REHBER_YAZILARI.find((y) => y.slug === slug);
-}
+export function getRehberYazisi(slug: string): RehberYazisi | undefined { return REHBER_YAZILARI.find((y) => y.slug === slug); }

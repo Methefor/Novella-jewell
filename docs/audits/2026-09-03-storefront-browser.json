@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-09-03T16:48:54.975Z",
+  "base": "https://novellajewell.com",
+  "pages": [
+    {
+      "javaScriptEnabled": false,
+      "h1": "Özgün\nparçalar.\nUlaşılabilir bir lüks.",
+      "visibleBeforeHydration": true,
+      "ctaVisible": true,
+      "overflow": false,
+      "highPriorityImages": 1,
+      "authRequests": [],
+      "errors": []
+    },
+    {
+      "javaScriptEnabled": true,
+      "h1": "Özgün\nparçalar.\nUlaşılabilir bir lüks.",
+      "visibleBeforeHydration": true,
+      "ctaVisible": true,
+      "overflow": false,
+      "highPriorityImages": 1,
+      "authRequests": [],
+      "errors": []
+    }
+  ],
+  "anonymousAdmin": {
+    "status": 200,
+    "location": "/",
+    "showsSignIn": true,
+    "exposesTrackingPanel": false
+  }
+}

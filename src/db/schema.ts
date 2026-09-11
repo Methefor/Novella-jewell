@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm';
 import {
   boolean,
   integer,
+  index,
   jsonb,
   numeric,
   primaryKey,
@@ -11,6 +12,8 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import type { Product } from '@/types/product';
+import type { LegalAcceptance } from '@/lib/legal-acceptance';
+import type { EmailMessage } from '@/lib/email-message';
 
 /** Sipariş kalemi — kalıcı kayıt için sadeleştirilmiş. */
 export interface OrderItemRow {
@@ -20,6 +23,8 @@ export interface OrderItemRow {
   ad: string;
   adet: number;
   birimFiyat: number;
+  image?: string;
+  customization?: string;
 }
 
 /** Müşteri bilgisi — kargo/iletişim için. */
@@ -59,6 +64,10 @@ export const orders = pgTable('orders', {
   items: jsonb('items').$type<OrderItemRow[]>().notNull(),
   total: numeric('total', { precision: 10, scale: 2 }).notNull(),
   customer: jsonb('customer').$type<OrderCustomerRow>().notNull(),
+  // Nullable only for orders created before versioned acceptance was introduced.
+  legalAcceptance: jsonb('legal_acceptance').$type<LegalAcceptance>(),
+  checkoutReserved: boolean('checkout_reserved').notNull().default(false),
+  paymentReadyAt: timestamp('payment_ready_at', { withTimezone: true }),
 
   // Fiziksel sütun adı eski migration ile uyumluluk için korunur.
   paymentProviderId: text('shopier_payment_id'),
@@ -76,7 +85,27 @@ export const orders = pgTable('orders', {
   refundAmount: numeric('refund_amount', { precision: 10, scale: 2 }),
   refundStatus: text('refund_status'),
   refundReference: text('refund_reference'),
-});
+  providerCheckedAt: timestamp('provider_checked_at', { withTimezone: true }),
+  providerCheckNote: text('provider_check_note'),
+}, (table) => [index('orders_pending_stock_idx').on(table.status).where(sql`${table.status} = 'pending'`)]);
+
+export const emailOutbox = pgTable('email_outbox', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  orderId: uuid('order_id').notNull().references(() => orders.id),
+  dedupeKey: text('dedupe_key').notNull().unique(),
+  kind: text('kind').notNull(),
+  payload: jsonb('payload').$type<EmailMessage>().notNull(),
+  status: text('status').notNull().default('pending'),
+  attempts: integer('attempts').notNull().default(0),
+  firstAttemptAt: timestamp('first_attempt_at', { withTimezone: true }),
+  nextAttemptAt: timestamp('next_attempt_at', { withTimezone: true }).notNull().defaultNow(),
+  lockedUntil: timestamp('locked_until', { withTimezone: true }),
+  lease: uuid('lease'),
+  providerId: text('provider_id'),
+  lastError: text('last_error'),
+  sentAt: timestamp('sent_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [index('email_outbox_due_idx').on(table.status, table.nextAttemptAt)]);
 
 export const orderEvents = pgTable('order_events', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -144,6 +173,8 @@ export type AnalyticsEventName =
   | 'page_view'
   | 'view_item'
   | 'add_to_cart'
+  | 'view_cart'
+  | 'remove_from_cart'
   | 'begin_checkout';
 
 export const analyticsEvents = pgTable('analytics_events', {

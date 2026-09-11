@@ -1,0 +1,13 @@
+id,status,platform,format,topic,objective,asset_source,cta,approval,publish_at,metricool_id,notes
+IG-001,scheduled,Instagram,carousel,NOVELLA'ya hoş geldiniz,brand_trust,studio/out/hafta-2026-09-08/ig-001-01..06.png,Profildeki bağlantıdan keşfet,published-approved,2026-09-08T20:00,371016499,Metricool'a planlandı · autoPublish · 6 kare · Sabit aday (yayından sonra elle sabitle)
+TH-001,ready,Threads,text,Sade mi katmanlı mı,conversation,none,Cevabını yaz,text-approved,2026-09-09T13:00,,Hafta 1 · metin onaylı · Threads bağlı değil -> manuel paylaşım
+IG-002,scheduled,Instagram,reel,Gerçek ürün yakın planı,product_discovery,studio/out/hafta-2026-09-08/ig-002-detay-reel.mp4,Detayları ürün sayfasında incele,published-approved,2026-09-10T20:00,371016693,Metricool'a planlandı · autoPublish · 12 sn · 3 küpe model-closeup
+TH-002,ready,Threads,text,Takı seçerken ilk baktığın detay,conversation,none,Yorumda paylaş,text-approved,2026-09-11T13:00,,Hafta 1 · metin onaylı · manuel · yanıtlar SSS içeriğine
+IG-003,scheduled,Instagram,carousel,316L ne anlatır,education,studio/out/hafta-2026-09-08/ig-003-01..07.png,Kaydet + sorunu yoruma bırak,published-approved,2026-09-12T19:00,371016897,Metricool'a planlandı · autoPublish · 7 bilgi kartı · Sabit aday (yayından sonra elle sabitle)
+IG-004,idea,Instagram,reel,NOVELLA kutusunun açılışı,packaging_trust,public/media kutu videoları (kök .mp4 — gerçek çekim),Kutuyu keşfet,pending,,,Hafta 2 adayı · kök public/media içinde 4 kutu .mp4 var
+IG-005,idea,Instagram,carousel,Bilezik seçkisi,product_discovery,catalog: 18 bilezik (Vercel Blob),Seçkide gezin,pending,,,Hafta 2 adayı · bilezik fotoğrafları doğrulandı
+IG-006,idea,Instagram,carousel,Sipariş nasıl ilerler,checkout_trust,website-flow (Sipariş Deneyimi 4 adım),Sipariş sürecini incele,pending,,,Hafta 2 adayı · Sabit aday
+IG-007,idea,Instagram,reel,Küpe seçkisi,product_discovery,catalog: 46 küpe (Vercel Blob),Seçkide gezin,pending,,,
+IG-008,idea,Instagram,carousel,Takı bakım kartı,saves,src/data/rehber.ts (taki-bakim-rehberi),Kaydet,pending,,,
+IG-009,idea,Instagram,carousel,Sık sorulan 5 soru,objection_handling,src/data/sss.ts,Sorunu yorumlara bırak,pending,,,
+YUZUK-AUDIT,blocked,-,-,Yüzük görsel eşleştirme denetimi,data_integrity,social-media-hq/yuzuk-gorsel-denetimi.md,-,pending,,,30 üründe görsel↔ürün karışık · 3 ürün sitede kırık · yüzük içeriği bu çözülene kadar beklemede

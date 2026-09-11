@@ -1,7 +1,8 @@
 'use client';
 
 import { trackBeginCheckout } from '@/lib/analytics';
-import { SHIPPING } from '@/lib/config';
+import { LEGAL_VERSION } from '@/lib/legal';
+import { SHIPPING, SITE } from '@/lib/config';
 import { ILLER } from '@/lib/turkiye';
 import { useCartHydrated } from '@/hooks/useCartHydrated';
 import { useCartStore } from '@/store/cartStore';
@@ -10,7 +11,7 @@ import { Check, CreditCard, Loader2, Lock, MapPin, ShoppingBag } from 'lucide-re
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { cloneElement, useId, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -25,10 +26,6 @@ const schema = z.object({
   district: z.string().min(2, 'İlçe girin'),
   address: z.string().min(10, 'Adres en az 10 karakter olmalı'),
   note: z.string().optional(),
-  // Hediye modu — not ve fiyatsız belge tercihi sipariş notuna işlenir.
-  hediye: z.boolean().optional(),
-  hediyeNotu: z.string().max(200, 'Hediye notu en fazla 200 karakter').optional(),
-  fiyatsizFatura: z.boolean().optional(),
   // Mesafeli Sözleşmeler Yönetmeliği m.6 — ön bilgilendirmenin teyidi zorunlu.
   // Onay alınmazsa sözleşme kurulmamış sayılır. Sunucu da bunu ayrıca şart koşar.
   sozlesme: z.literal(true, {
@@ -48,23 +45,82 @@ export default function OdemeClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
+  const [sessionState, setSessionState] = useState<'checking' | 'ready' | 'error'>('checking');
+  const [sessionCheck, setSessionCheck] = useState(0);
+  const [activeOrder, setActiveOrder] = useState<{ orderNo: string; total: number } | null>(null);
+  const [paymentPending, setPaymentPending] = useState(false);
+  const submitting = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function restorePayment() {
+      try {
+        const response = await fetch('/api/checkout', { cache: 'no-store' });
+        const result = await response.json();
+        if (cancelled) return;
+        if (!response.ok) throw new Error('Payment status unavailable');
+        if (result.type === 'redirect') {
+          router.replace(result.redirectUrl);
+          return;
+        }
+        if (result.type === 'pending') {
+          setPaymentPending(true);
+          setActiveOrder({ orderNo: result.orderNo, total: result.total });
+        } else {
+          setPaymentPending(false);
+          setActiveOrder(null);
+          if (result.previousFailed) {
+            setIframeUrl(null);
+            setError('Ödeme tamamlanamadı. Bilgilerinizi kontrol edip yeniden deneyebilirsiniz.');
+          }
+        }
+        setSessionState('ready');
+      } catch {
+        if (!cancelled) setSessionState('error');
+      }
+    }
+    void restorePayment();
+    return () => { cancelled = true; };
+  }, [router, sessionCheck]);
+
+  // Poll while the bank iframe is open and after a reload. Never reload the
+  // single-use iframe token or create a second order while its result is unknown.
+  useEffect(() => {
+    if (!activeOrder) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    async function check() {
+      try {
+        if (document.visibilityState === 'visible') {
+          const response = await fetch('/api/checkout', { cache: 'no-store', signal: AbortSignal.timeout(15_000) });
+          const result = await response.json();
+          if (cancelled) return;
+          if (response.ok && result.type === 'redirect') { router.replace(result.redirectUrl); return; }
+          if (response.ok && result.previousFailed) {
+            setIframeUrl(null); setPaymentPending(false); setActiveOrder(null);
+            setError('Ödeme tamamlanamadı. Yeniden deneyebilir veya başka bir kart kullanabilirsiniz.');
+            return;
+          }
+        }
+      } catch { /* A temporary network failure must not close an active payment. */ }
+      if (!cancelled) timer = setTimeout(check, 10_000);
+    }
+    timer = setTimeout(check, 10_000);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [activeOrder, router]);
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
-
-  // Hediye kutusu işaretlenince not ve fiyatsız belge alanları açılır.
-  const hediyeSecili = watch('hediye');
 
   // Boş sepette /sepet'e yönlendir — ama YALNIZCA rehydrate bitince.
   // Hydrate tamamlanmadan items hep boş görünür; erken karar verilirse
   // sepeti dolu müşteri sayfayı yenilediğinde /sepet'e geri atılıyordu.
   useEffect(() => {
-    if (hydrated && items.length === 0) router.replace('/sepet');
-  }, [hydrated, items.length, router]);
+    if (sessionState === 'ready' && !iframeUrl && !paymentPending && hydrated && items.length === 0) router.replace('/sepet');
+  }, [hydrated, items.length, router, sessionState, iframeUrl, paymentPending]);
 
   // GA4 begin_checkout — ödeme sayfası açıldığında bir kez (sepette ürün varsa).
   const izlendiRef = useRef(false);
@@ -72,10 +128,10 @@ export default function OdemeClient() {
     if (!hydrated || izlendiRef.current || items.length === 0) return;
     izlendiRef.current = true;
     trackBeginCheckout(
-      total,
-      items.map((i) => i.product)
+      subtotal,
+      items
     );
-  }, [hydrated, items, total]);
+  }, [hydrated, items, subtotal]);
 
   // PayTR iframe açıldığında formu gizle; iframeResizer script'ini yükle.
   useEffect(() => {
@@ -84,7 +140,7 @@ export default function OdemeClient() {
 
     const script = document.createElement('script');
     script.id = 'paytr-iframe-resizer';
-    script.src = 'https://www.paytr.com/js/iframeResizer.min.js';
+    script.src = 'https://www.paytr.com/js/iframeResizer.min.js?v2';
     script.onload = () => {
       // @ts-expect-error paytr iframeResizer global'i
       if (typeof window.iFrameResize === 'function') {
@@ -95,7 +151,17 @@ export default function OdemeClient() {
     document.body.appendChild(script);
   }, [iframeUrl]);
 
-  if (!hydrated || items.length === 0) return null;
+  if (sessionState !== 'ready') {
+    return (
+      <main className="min-h-[70vh] px-6 pt-28 pb-20 text-center">
+        <h1 className="font-serif text-2xl mb-5">Güvenli Ödeme</h1>
+        <p role="status" className="text-sm text-black/65">
+          {sessionState === 'checking' ? 'Devam eden ödemeniz kontrol ediliyor…' : 'Ödeme durumunuz kontrol edilemedi. Yeni işlem başlatmadan tekrar kontrol edin.'}
+        </p>
+        {sessionState === 'error' && <button className="btn-primary mt-6" onClick={() => { setSessionState('checking'); setSessionCheck((n) => n + 1); }}>Tekrar kontrol et</button>}
+      </main>
+    );
+  }
 
   if (iframeUrl) {
     return (
@@ -104,6 +170,8 @@ export default function OdemeClient() {
           <h1 className="font-serif font-light text-2xl text-black mb-6">
             Güvenli Ödeme
           </h1>
+          {activeOrder && <p className="text-sm text-black/60 mb-5">Sipariş {activeOrder.orderNo} · {activeOrder.total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TL</p>}
+          <p className="text-sm text-black/60 mb-5">Ödemenizi bu ekranda tamamlayın. Sonucu otomatik kontrol ediyoruz; işlem tamamlandığında yönlendirileceksiniz.</p>
           <iframe
             src={iframeUrl}
             id="paytriframe"
@@ -115,26 +183,37 @@ export default function OdemeClient() {
     );
   }
 
+  if (paymentPending && activeOrder) {
+    return (
+      <main className="min-h-[70vh] px-6 pt-28 pb-20">
+        <div className="max-w-xl mx-auto text-center">
+          <h1 className="font-serif text-2xl mb-5">Ödeme sonucu bekleniyor</h1>
+          <p className="text-sm mb-5">Sipariş {activeOrder.orderNo} · {activeOrder.total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TL</p>
+          <p role="status" className="text-sm text-black/65 leading-relaxed">Bu sipariş için ödeme başlatılmış. Ödeme ekranınız başka bir sekmede açıksa oradan devam edin. Sonucu otomatik kontrol ediyoruz.</p>
+          <p className="text-sm text-black/65 leading-relaxed mt-4">Ödeme ekranını kapattıysanız veya sayfa geçersiz uyarısı aldıysanız sipariş numaranızla bize ulaşın; ödeme sonucunu kontrol edip yeniden denemenize yardımcı olalım.</p>
+          <div className="flex flex-col gap-3 mt-6">
+            <button className="btn-primary" onClick={() => { setSessionState('checking'); setSessionCheck((n) => n + 1); }}>Ödeme durumunu kontrol et</button>
+            <a className="underline text-sm" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp destek</a>
+            <Link className="underline text-sm" href="/iletisim">Bize ulaşın</Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!hydrated || items.length === 0) return null;
+
   const onSubmit = async (data: FormData) => {
+    if (submitting.current) return;
+    submitting.current = true;
     setLoading(true);
     setError(null);
-
-    // Hediye tercihleri sipariş notuna işlenir — ayrı DB alanı/migration
-    // gerektirmeden depo ve faturalandırma tarafına ulaşır.
-    const notParcalari: string[] = [];
-    if (data.hediye) {
-      notParcalari.push('[HEDİYE PAKETİ]');
-      if (data.fiyatsizFatura) notParcalari.push('[FİYATSIZ BELGE]');
-      if (data.hediyeNotu?.trim())
-        notParcalari.push(`Hediye notu: "${data.hediyeNotu.trim()}"`);
-    }
-    if (data.note?.trim()) notParcalari.push(data.note.trim());
-    const birlesikNot = notParcalari.join(' • ') || undefined;
 
     // Sunucuya YALNIZCA ne istediğimizi gönderiyoruz.
     // Fiyat/kargo/toplam sunucuda PRODUCTS'tan yeniden hesaplanır —
     // buradan fiyat göndermek güvenlik açığıydı, bkz. lib/checkout/buildOrder.ts
     const payload = {
+      expectedTotal: total,
       items: items.map((i) => ({
         productId: i.product.id,
         variantId: i.variant.id,
@@ -149,9 +228,9 @@ export default function OdemeClient() {
         address: data.address,
         city: data.city,
         district: data.district,
-        note: birlesikNot,
+        note: data.note?.trim() || undefined,
       },
-      consent: { sozlesme: data.sozlesme, kvkk: data.kvkk },
+      consent: { version: LEGAL_VERSION, sozlesme: data.sozlesme, kvkk: data.kvkk },
     };
 
     try {
@@ -171,13 +250,19 @@ export default function OdemeClient() {
       // ödeme düşerse sepetini kaybetmemeli. Temizleme /odeme/sonuc sayfasında,
       // yalnızca ödeme başarılıysa yapılır.
       if (result.type === 'redirect') {
-        window.location.href = result.redirectUrl;
+        window.location.assign(result.redirectUrl);
       } else if (result.type === 'form') {
         const container = document.createElement('div');
         container.innerHTML = result.formHtml;
         document.body.appendChild(container);
       } else if (result.type === 'iframe') {
+        setActiveOrder({ orderNo: result.orderNo, total: result.total });
         setIframeUrl(result.iframeUrl);
+      } else if (result.type === 'pending') {
+        setActiveOrder({ orderNo: result.orderNo, total: result.total });
+        setPaymentPending(true);
+      } else if (result.type === 'none' && result.previousFailed) {
+        throw new Error('Önceki ödeme tamamlanmadı. Siparişi Tamamla düğmesiyle yeniden deneyebilirsiniz.');
       } else {
         throw new Error('Bilinmeyen ödeme yanıtı.');
       }
@@ -188,6 +273,8 @@ export default function OdemeClient() {
           : 'Bir hata oluştu, lütfen tekrar deneyin.'
       );
       setLoading(false);
+    } finally {
+      submitting.current = false;
     }
   };
 
@@ -232,12 +319,12 @@ export default function OdemeClient() {
           Ödeme
         </h1>
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-12">
+        <div className="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_360px] gap-8 lg:gap-12">
           {/* Form */}
           <form
             id="odeme-form"
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-8"
+            onSubmit={(event) => { void handleSubmit(onSubmit)(event); }}
+            className="min-w-0 space-y-8"
           >
             {/* Kişisel bilgiler */}
             <section>
@@ -314,53 +401,6 @@ export default function OdemeClient() {
                   />
                 </Field>
               </div>
-            </section>
-
-            {/* Hediye modu */}
-            <section className="rounded-xl border border-gold/25 bg-champagne/40 p-5">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  {...register('hediye')}
-                  className="mt-0.5 w-4 h-4 accent-black"
-                />
-                <span className="text-sm text-black/80">
-                  <span className="font-medium">Bu bir hediye</span>
-                  <span className="block text-xs text-black/50 mt-0.5">
-                    Özel kutusunda, isteğe bağlı el yazısı notuyla hazırlanır.
-                  </span>
-                </span>
-              </label>
-
-              {hediyeSecili && (
-                <div className="mt-4 space-y-4">
-                  <Field
-                    label="Hediye Notu (karta yazılır)"
-                    error={errors.hediyeNotu?.message}
-                  >
-                    <textarea
-                      {...register('hediyeNotu')}
-                      rows={2}
-                      placeholder="İyi ki doğdun…"
-                      className={`${inputCls(!!errors.hediyeNotu)} resize-none`}
-                    />
-                  </Field>
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      {...register('fiyatsizFatura')}
-                      className="mt-0.5 w-4 h-4 accent-black"
-                    />
-                    <span className="text-sm text-black/70">
-                      Pakete fiyat bilgisi konulmasın
-                      <span className="block text-xs text-black/45 mt-0.5">
-                        Fatura size e-posta ile gönderilir, kutuya fiyatlı belge
-                        eklenmez.
-                      </span>
-                    </span>
-                  </label>
-                </div>
-              )}
             </section>
 
             {/* Sipariş notu */}
@@ -541,7 +581,7 @@ export default function OdemeClient() {
 }
 
 function inputCls(hasError: boolean) {
-  return `w-full px-4 py-3 text-sm bg-white border ${
+  return `min-w-0 max-w-full w-full px-4 py-3 text-sm bg-white border ${
     hasError ? 'border-red-400' : 'border-black/12'
   } rounded-lg focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all duration-200`;
 }
@@ -553,15 +593,16 @@ function Field({
 }: {
   label: string;
   error?: string;
-  children: React.ReactNode;
+  children: React.ReactElement<{ id?: string; 'aria-invalid'?: boolean; 'aria-describedby'?: string }>;
 }) {
+  const id = useId();
   return (
-    <div>
-      <label className="block text-xs font-medium text-black/50 mb-2 uppercase tracking-wide">
+    <div className="min-w-0">
+      <label htmlFor={id} className="block text-xs font-medium text-black/50 mb-2 uppercase tracking-wide">
         {label}
       </label>
-      {children}
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {cloneElement(children, { id, 'aria-invalid': !!error, 'aria-describedby': error ? `${id}-error` : undefined })}
+      {error && <p id={`${id}-error`} role="alert" className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 }

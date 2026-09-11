@@ -32,7 +32,8 @@ const MAX_QUANTITY_PER_ITEM = 20;
 export async function buildOrder(
   rawItems: unknown,
   customer: OrderCustomer,
-  orderId: string
+  orderId: string,
+  resolveProduct = getCatalogProductById
 ): Promise<BuildOrderResult> {
   if (!Array.isArray(rawItems) || rawItems.length === 0) {
     return { ok: false, error: 'Sepetiniz boş.' };
@@ -44,6 +45,7 @@ export async function buildOrder(
 
   const items: OrderItem[] = [];
   let subtotal = 0;
+  const quantities = new Map<string, number>();
 
   for (const raw of rawItems) {
     const req = raw as Partial<CheckoutRequestItem>;
@@ -58,7 +60,7 @@ export async function buildOrder(
     }
 
     // Ürünü client'tan değil, kendi verimizden buluyoruz.
-    const product = await getCatalogProductById(req.productId);
+    const product = await resolveProduct(req.productId);
     if (!product) {
       return { ok: false, error: 'Ürün bulunamadı.' };
     }
@@ -70,7 +72,10 @@ export async function buildOrder(
 
     // Stok kontrolü aktif katalog katmanından gelir. Dinamik ürünlerde kaynak
     // Neon DB, yalnızca veritabanı yoksa statik katalog geri dönüşüdür.
-    if (variant.stock < quantity) {
+    const key = JSON.stringify([product.id, variant.id]);
+    const combinedQuantity = (quantities.get(key) ?? 0) + quantity;
+    quantities.set(key, combinedQuantity);
+    if (variant.stock < combinedQuantity || combinedQuantity > MAX_QUANTITY_PER_ITEM) {
       return {
         ok: false,
         error:
@@ -91,6 +96,8 @@ export async function buildOrder(
       name: product.name,
       price,
       quantity,
+      image: variant.images[0] ?? product.images?.[0],
+      customization: typeof req.customization === 'string' ? req.customization.trim().slice(0, 60) : undefined,
     });
   }
 

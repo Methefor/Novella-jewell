@@ -5,7 +5,8 @@
 
 'use client';
 
-import { getAllProducts } from '@/data/products';
+import { useCatalogProducts } from '@/hooks/useCatalogProducts';
+import { searchCatalogProducts } from '@/lib/catalog-search';
 import type { Product } from '@/types/product';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -13,6 +14,7 @@ const RECENT_SEARCHES_KEY = 'novella-recent-searches';
 const MAX_RECENT_SEARCHES = 5;
 
 export function useProductSearch() {
+  const { products: allProducts, status, load } = useCatalogProducts();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -41,26 +43,12 @@ export function useProductSearch() {
     setIsSearching(true);
 
     const timeoutId = setTimeout(() => {
-      const allProducts = getAllProducts();
-      const searchTerm = query.toLowerCase().trim();
-
-      const filtered = allProducts.filter((product) => {
-        return (
-          product.name.toLowerCase().includes(searchTerm) ||
-          product.description.toLowerCase().includes(searchTerm) ||
-          product.category.toLowerCase().includes(searchTerm) ||
-          product.features.some((feature) =>
-            feature.toLowerCase().includes(searchTerm)
-          )
-        );
-      });
-
-      setResults(filtered);
+      setResults(searchCatalogProducts(allProducts, query));
       setIsSearching(false);
     }, 300); // 300ms debounce
 
     return () => clearTimeout(timeoutId);
-  }, [query]);
+  }, [query, allProducts]);
 
   // Save search to recent
   const saveSearch = useCallback((searchTerm: string) => {
@@ -87,7 +75,9 @@ export function useProductSearch() {
     query,
     setQuery,
     results,
-    isSearching,
+    isSearching: isSearching || status === 'idle' || status === 'loading',
+    catalogError: status === 'error',
+    retryCatalog: load,
     recentSearches,
     saveSearch,
     clearRecentSearches,

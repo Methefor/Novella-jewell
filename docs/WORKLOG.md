@@ -1,6 +1,28 @@
 # Novella Jewell — Çalışma Günlüğü
 
-Bu günlük yalnızca Git geçmişi, mevcut kaynak kodu ve 4 Ağustos 2026 tarihinde çalıştırılan kontrollerle doğrulanan işleri içerir.
+Bu günlük Git geçmişi ve tarihli doğrulama kayıtlarını içerir. 3 Eylül ekleri mevcut çalışma ağacından üretime dağıtıldı; commit/push yapılmadı.
+
+## 4 Eylül 2026 — açılış vitrini ve iletişim doğrulaması
+
+- Novella kutusu ana sayfanın ilk bölümüne, yüzük seçkisi altına taşındı; kutu mesajı sayfanın tek H1 başlığı yapıldı.
+- Instagram ve Threads profilleri `@novellajewellofficial`; PayTR yetkili e-postası, Resend production yanıt adresi ve sitedeki Gmail birbiriyle eşleşti.
+- Production Resend göndericisi `NOVELLA <siparis@novellajewell.com>` olarak doğrulandı. Sipariş durum e-postalarına merkezi WhatsApp, Gmail ve Instagram bağlantıları eklendi; sitedeki sabit iletişim bağlantıları merkezi ayara bağlandı.
+- TypeScript, ESLint, yerel ve Vercel üretim derlemesi geçti. Deployment `dpl_C4y6Zgks7RNAj8emXibfdnmFiZEY` Ready; `novellajewell.com` ve `www` alias'ları bağlı. Canlı DOM'da kutu → yüzük sırası ve tek H1 doğrulandı.
+- Müşteriye gösterilen `0545 112 50 59` destek numarası ve Hürriyet Mahallesi merkez adresi kullanıcı tarafından doğrulandı. PayTR'daki farklı numaranın yetkilinin şahsi telefonu olduğu açıklandı.
+- Merkez adresi, ev adresi mahremiyeti için global footer'dan kaldırıldı; Yönetmelik md. 5 gereği ana sayfadan doğrudan erişilen İletişim sayfasında ve zorunlu sözleşme/iade metinlerinde tutuldu.
+- Yeni tespit: işletmenin tacir/esnaf statüsüne göre VKN veya MERSİS, KEP ve meslek odası bilgilerinin İletişim sayfasına eklenmesi gerekiyor.
+
+## 3 Eylül 2026 — satış öncesi tamamlamalar
+
+- Gerçek NJ-2026-0009 ödeme ve tam banka iadesi doğrulandı; eski siparişe yeni çekim/iade/e-posta oluşturulmadı.
+- 0017 migration ile e-posta outbox ve PayTR durum takip alanları; kalıcı/tekil gönderim, ödeme ve banka iade tamamlanma uzlaştırması.
+- /admin/takip, müşteri kargo/iade durumu, güvenli ödeme dönüş çerezi ve günlük cron. Üretim hedefi/alan adı otomatik ataması düzeltildi; cron GET 200 ile doğrulandı.
+- GA4 komut kuyruğu düzeltildi; gerçek zamanlı hesapta ziyaret alındı. Search Console yanlış sitemap gönderimleri temizlendi; 119 adresli gerçek sitemap başarılı.
+- Mobil okunabilirlik, breadcrumb, telefon/WhatsApp desteği, ilk HTML görünürlüğü ve görsel önceliği. Clerk arayüzü yalnızca admin bölümüne taşındı; sunucu yönetici yetkisi korunuyor.
+- 30 test, lint, TypeScript, üretim derlemesi; 125 sayfalık tarama ve izole mobil tarayıcı kontrolleri. Hız ölçümleri ve sınırları ayrıntılı raporda.
+- Açık: Pro ücret onayı / sık cron; fatura-kargo-fiziksel stok işletme teyidi; Meta hesabı ve gerçek Purchase kabulü.
+
+Kanıt ve son dağıtım: [Satışa hazırlık](audits/2026-09-03-satisa-hazirlik.md).
 
 ## 3 Ağustos 2026
 

@@ -53,7 +53,7 @@ export default function SepetHatirlatici() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-md"
+          className="fixed left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-md bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] lg:bottom-5"
           role="status"
         >
           <div className="flex items-center gap-4 rounded-2xl bg-black text-white shadow-2xl px-5 py-4">

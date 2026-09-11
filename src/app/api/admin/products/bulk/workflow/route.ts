@@ -16,6 +16,7 @@ import type { Product } from '@/types/product';
 import { eq, inArray } from 'drizzle-orm';
 import { del } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -213,7 +214,8 @@ export async function POST(request: Request) {
     revalidatePath('/');
     revalidatePath('/urunler');
     revalidatePath('/koleksiyonlar');
-    revalidatePath('/admin');
+    revalidateCatalog();
+  revalidatePath('/admin');
     revalidatePath('/admin/urunler');
     revalidatePath('/collections/[category]', 'page');
     rows.forEach((row) => revalidatePath(`/urun/${row.slug}`));

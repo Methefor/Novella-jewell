@@ -1,6 +1,10 @@
 'use client';
 
 import ProductCard from '@/components/product/ProductCard';
+import PackagingShowcase from '@/components/product/PackagingShowcase';
+import { SITE } from '@/lib/config';
+import { getHomeCategories } from '@/lib/home-categories';
+import { getPurchasableVariant, OUT_OF_STOCK_LABEL } from '@/lib/products';
 import type { Product } from '@/types/product';
 import Hero from '@/sections/Hero';
 import { motion } from 'framer-motion';
@@ -29,31 +33,8 @@ const fadeUp = {
   }),
 };
 
-const categoryShowcase = [
-  {
-    title: 'Yüzükler',
-    eyebrow: 'Yeni sezon',
-    href: '/collections/yuzuk',
-    image: '/media/yuzuk/yuzuk-16c.jpg',
-    position: 'object-[50%_55%]',
-  },
-  {
-    title: 'Küpeler',
-    eyebrow: 'Zarif detay',
-    href: '/collections/kupe',
-    image: '/media/kupe/kupe-1.jpg',
-    position: 'object-center',
-  },
-  {
-    title: 'Bileklikler',
-    eyebrow: 'Günlük ışıltı',
-    href: '/collections/bilezik',
-    image: '/media/bileklik/bileklik-1.jpg',
-    position: 'object-center',
-  },
-] as const;
-
 export default function HomeClient({ products }: { products: Product[] }) {
+  const categoryShowcase = getHomeCategories(products);
 
   // Ana vitrinde en yeni yüzükler otomatik olarak editoryal sıraya girer.
   const featuredRings = products
@@ -80,7 +61,10 @@ export default function HomeClient({ products }: { products: Product[] }) {
 
   return (
     <main>
-      {/* Hero */}
+      {/* Açılış: müşterinin siparişi nasıl teslim alacağını gösterir. */}
+      <PackagingShowcase />
+
+      {/* Ürün seçkisi */}
       <Hero products={heroRings} />
 
       {/* İlk kaydırmada mağazanın ürün kapsamını açıkça gösterir. */}
@@ -93,7 +77,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 Stilinin parçasını seç.
               </h2>
             </div>
-            <Link href="/urunler" className="hidden items-center gap-2 text-sm text-black/50 transition-colors hover:text-black sm:inline-flex">
+            <Link href="/urunler" className="hidden items-center gap-2 text-sm text-black/60 transition-colors hover:text-black sm:inline-flex">
               Tüm ürünler <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -113,10 +97,10 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 >
                   <Image
                     src={category.image}
-                    alt={`${category.title} kategorisi`}
+                    alt={category.alt}
                     fill
                     sizes="(max-width: 767px) 100vw, 33vw"
-                    className={`object-cover transition-transform duration-700 group-hover:scale-[1.035] ${category.position}`}
+                    className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.035]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-white md:p-6">
@@ -124,7 +108,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                       <p className="text-[10px] uppercase tracking-[0.2em] text-white/70">
                         {category.eyebrow}
                       </p>
-                      <h3 className="mt-1 font-serif text-3xl font-light">
+                      <h3 className="mt-1 font-serif text-3xl font-light text-white">
                         {category.title}
                       </h3>
                     </div>
@@ -162,14 +146,14 @@ export default function HomeClient({ products }: { products: Product[] }) {
               >
                 Yeni Yüzükler
               </h2>
-              <p className="mt-3 max-w-xl text-sm leading-relaxed text-black/50 md:text-base">
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-black/60 md:text-base">
                 Yeni sezonun seçili tasarımları, güçlü parçadan zarif tektaşa
                 uzanan editoryal bir seçkide.
               </p>
             </div>
             <Link
               href="/collections/yuzuk"
-              className="inline-flex items-center gap-2 text-sm font-sans font-medium text-black/50 hover:text-black transition-colors duration-200 group flex-shrink-0"
+              className="inline-flex items-center gap-2 text-sm font-sans font-medium text-black/60 hover:text-black transition-colors duration-200 group flex-shrink-0"
             >
               Tüm Yüzükleri Gör
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -237,7 +221,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
             </div>
             <Link
               href="/koleksiyonlar"
-              className="inline-flex items-center gap-2 text-sm font-sans font-medium text-black/50 hover:text-black transition-colors duration-200 group flex-shrink-0"
+              className="inline-flex items-center gap-2 text-sm font-sans font-medium text-black/60 hover:text-black transition-colors duration-200 group flex-shrink-0"
             >
               Tüm Koleksiyon
               <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
@@ -426,7 +410,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 <span className="italic text-gold-dark">ruh hali.</span>
               </h2>
             </div>
-            <p className="max-w-sm text-sm font-light leading-6 text-black/50 md:text-right">
+            <p className="max-w-sm text-sm font-light leading-6 text-black/60 md:text-right">
               Yakın plandan günlük stile: parçaların ölçüsünü, ışıltısını ve eldeki
               duruşunu satın almadan önce görün.
             </p>
@@ -499,13 +483,13 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 <p className="font-serif text-2xl font-light md:text-3xl">
                   Yeni stiller, bakım notları ve perde arkası.
                 </p>
-                <p className="mt-2 text-sm text-black/45">
+                <p className="mt-2 text-sm text-black/60">
                   Novella&apos;yı günlük akışında takip et.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="https://www.instagram.com/novellajewellofficial/"
+                  href={SITE.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-dark"
@@ -514,7 +498,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                   Instagram
                 </a>
                 <a
-                  href="https://www.threads.com/@novellajewellofficial"
+                  href={SITE.threads}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-black/20 px-5 py-3 text-sm font-medium transition-colors hover:border-black hover:bg-white"
@@ -536,7 +520,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
             <h2 className="font-serif text-3xl font-light tracking-[-0.025em] md:text-5xl">
               Seçiminden teslimata, özenle.
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-black/50">
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-black/60">
               Kendiniz için ya da hediye olarak seçin; siparişiniz korunaklı,
               sunuma hazır ve takip edilebilir şekilde hazırlanır.
             </p>
@@ -545,7 +529,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
           <div className="relative mt-12 grid gap-4 md:grid-cols-4 md:gap-0">
             <div className="absolute left-[12.5%] right-[12.5%] top-7 hidden h-px bg-gold/30 md:block" />
             {[
-              { icon: Gift, step: '01', title: 'Özel kutusunda', body: 'Takınız sunuma hazır Novella kutusunda hazırlanır.' },
+              { icon: Gift, step: '01', title: 'Özel kutusunda', body: 'Seçtiğiniz ürün, Novella kartvizitiyle birlikte kutusunda hazırlanır.' },
               { icon: PackageCheck, step: '02', title: 'Kontrollü paketleme', body: 'Ürün, sipariş bilgileriyle eşleştirilerek korunaklı paketlenir.' },
               { icon: Truck, step: '03', title: 'Takipli teslimat', body: 'Kargoya verildiğinde sipariş durumunu takip edebilirsiniz.' },
               { icon: RotateCcw, step: '04', title: '14 gün cayma hakkı', body: 'Yasal istisnalar dışında iade talebinizi kolayca oluşturabilirsiniz.' },
@@ -564,7 +548,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 </div>
                 <p className="mt-5 text-[9px] font-semibold uppercase tracking-[0.18em] text-gold-dark/70">{step}</p>
                 <h3 className="mt-2 font-serif text-xl font-light">{title}</h3>
-                <p className="mt-2 text-xs leading-5 text-black/45">{body}</p>
+                <p className="mt-2 text-xs leading-5 text-black/60">{body}</p>
               </motion.div>
             ))}
           </div>
@@ -638,6 +622,7 @@ function EditorialFeature({ product }: { product: Product }) {
           <p className="mt-3 text-sm text-white/80">
             {product.price.toLocaleString('tr-TR')} ₺
           </p>
+          {!getPurchasableVariant(product) && <p className="mt-2 text-sm text-white">{OUT_OF_STOCK_LABEL}</p>}
         </div>
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/40 bg-white/10 backdrop-blur-md transition-colors group-hover:bg-white group-hover:text-black">
           <ArrowRight className="h-5 w-5" />

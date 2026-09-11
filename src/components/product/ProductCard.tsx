@@ -2,7 +2,7 @@
 
 import FavoriButton from '@/components/product/FavoriButton';
 import { trackAddToCart } from '@/lib/analytics';
-import { dusukStok } from '@/lib/products';
+import { dusukStok, getPurchasableVariant, OUT_OF_STOCK_LABEL } from '@/lib/products';
 import { useCartStore } from '@/store/cartStore';
 import type { Product } from '@/types/product';
 import { ShoppingBag } from 'lucide-react';
@@ -30,6 +30,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const img1 = gallery[0];
   const img2 = gallery[1] ?? null;
   const stokBilgi = dusukStok(product);
+  const purchaseVariant = getPurchasableVariant(product);
 
   const hasDiscount =
     product.compareAtPrice && product.compareAtPrice > product.price;
@@ -42,7 +43,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     : 0;
 
   const handleAddToCart = () => {
-    addToCart(product, product.defaultVariant, 1);
+    if (!purchaseVariant) return;
+    addToCart(product, purchaseVariant.id, 1);
     trackAddToCart(product, 1);
   };
 
@@ -88,6 +90,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="absolute top-3 left-3 z-10 flex flex-col gap-1.5"
             aria-label="Ürün etiketleri"
           >
+            {!purchaseVariant && (
+              <span className="rounded-full border border-black/10 bg-cream px-2.5 py-1 text-[10px] font-medium text-black">
+                Yakında gelecek
+              </span>
+            )}
             {product.isNew && (
               <span
                 className="rounded-full bg-black px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-white"
@@ -135,6 +142,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
+        {!purchaseVariant && <p className="mt-1.5 text-xs font-medium text-black/60">{OUT_OF_STOCK_LABEL}</p>}
         {stokBilgi.goster && (
           <p className="mt-1.5 text-xs font-medium text-[#80683c]">
             Son {stokBilgi.adet} adet
@@ -144,11 +152,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         <button
           type="button"
           onClick={handleAddToCart}
-          className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-black bg-black px-3 py-2.5 text-[12px] font-medium tracking-[0.04em] text-white transition-all duration-200 hover:border-gold-dark hover:bg-gold-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 sm:text-[13px]"
-          aria-label={`${product.name} ürününü sepete ekle`}
+          disabled={!purchaseVariant}
+          className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-black bg-black px-3 py-2.5 text-[12px] font-medium tracking-[0.04em] text-white transition-all duration-200 hover:border-gold-dark hover:bg-gold-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-black/10 disabled:bg-black/5 disabled:text-black/50 sm:text-[13px]"
+          aria-label={purchaseVariant ? `${product.name} ürününü sepete ekle` : `${product.name}: ${OUT_OF_STOCK_LABEL}`}
         >
           <ShoppingBag className="h-4 w-4 shrink-0" aria-hidden="true" />
-          <span>Sepete Ekle</span>
+          <span>{purchaseVariant ? 'Sepete Ekle' : 'Stokta yok'}</span>
         </button>
       </div>
     </article>

@@ -1,0 +1,85 @@
+{
+  "ga": [
+    {
+      "event": "page_view",
+      "measurementId": "G-QJJ8TD7PHZ",
+      "page": "https://novellajewell.com/"
+    }
+  ],
+  "meta": [],
+  "tagLoaded": true,
+  "failures": [
+    {
+      "host": "www.google-analytics.com",
+      "reason": "net::ERR_ABORTED"
+    }
+  ],
+  "trackingRequests": [
+    {
+      "host": "connect.facebook.net",
+      "path": "/en_US/fbevents.js"
+    },
+    {
+      "host": "connect.facebook.net",
+      "path": "/signals/config/2493642484483617"
+    },
+    {
+      "host": "www.google-analytics.com",
+      "path": "/g/collect"
+    }
+  ],
+  "diagnostics": [],
+  "beforeConsent": {
+    "ga": 0,
+    "meta": 0
+  },
+  "afterConsent": {
+    "ga": 1,
+    "meta": 0
+  },
+  "queue": [
+    {
+      "type": "[object Arguments]",
+      "command": "consent"
+    },
+    {
+      "type": "[object Arguments]",
+      "command": "js"
+    },
+    {
+      "type": "[object Arguments]",
+      "command": "consent"
+    },
+    {
+      "type": "[object Arguments]",
+      "command": "consent"
+    },
+    {
+      "type": "[object Arguments]",
+      "command": "config"
+    },
+    {
+      "type": "[object Arguments]",
+      "command": "event"
+    },
+    {
+      "type": "[object Object]",
+      "command": "gtm.dom"
+    },
+    {
+      "type": "[object Object]",
+      "command": "gtm.load"
+    }
+  ],
+  "pixel": {
+    "initialized": true,
+    "engineReady": true,
+    "queue": []
+  },
+  "tags": [
+    "https://www.googletagmanager.com/gtag/js?id=G-QJJ8TD7PHZ",
+    "https://connect.facebook.net/signals/config/2493642484483617",
+    "https://connect.facebook.net/en_US/fbevents.js"
+  ],
+  "overflow": false
+}

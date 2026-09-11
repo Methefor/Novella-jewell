@@ -1,6 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from './schema';
+import { transaction } from './transaction';
 
 /**
  * Neon Postgres bağlantısı (Drizzle, neon-http driver).
@@ -16,9 +17,13 @@ import * as schema from './schema';
  */
 export const dbYok = !process.env.DATABASE_URL;
 
-export const db = dbYok
+const httpDb = dbYok
   ? // Tip uyumu için; dbYok true iken hiç kullanılmaz.
     (null as unknown as ReturnType<typeof drizzle<typeof schema>>)
   : drizzle(neon(process.env.DATABASE_URL!), { schema });
+
+// One-shot queries remain HTTP; interactive transactions require WebSockets.
+// Native WebSocket is available in the supported Node.js >=22 runtime.
+export const db = httpDb ? Object.assign(httpDb, { transaction }) : httpDb;
 
 export { schema };

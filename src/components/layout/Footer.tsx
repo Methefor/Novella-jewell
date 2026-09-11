@@ -1,6 +1,7 @@
 import { Instagram, MessageCircle } from 'lucide-react';
 import { SITE } from '@/lib/config';
 import { COMPANY } from '@/lib/legal';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const quickLinks = [
@@ -38,10 +39,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 mb-10 md:mb-14">
           {/* Brand column */}
           <div>
-            <Link href="/" className="inline-block mb-5">
-              <span className="font-serif text-2xl font-light tracking-[0.15em]">
-                NOVELLA
-              </span>
+            <Link href="/" className="inline-block mb-5" aria-label="NovellaJewell ana sayfa">
+              <Image
+                src="/brand/novellajewell-logo-white.svg"
+                alt="NovellaJewell"
+                width={512}
+                height={126}
+                className="h-auto w-[190px]"
+              />
             </Link>
             <p className="font-sans font-light leading-relaxed mb-6 text-white/55 text-sm">
               El seçimi 316L paslanmaz çelik takılar.
@@ -61,7 +66,7 @@ export default function Footer() {
                 <Instagram className="w-4 h-4 text-white/55" />
               </a>
               <a
-                href="https://api.whatsapp.com/send?phone=905451125059"
+                href={`https://api.whatsapp.com/send?phone=${SITE.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -74,7 +79,7 @@ export default function Footer() {
 
           {/* Quick links */}
           <div>
-            <p className="section-label text-white/35 mb-5">Sayfalar</p>
+            <p className="section-label text-white/65 mb-5">Sayfalar</p>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
@@ -91,7 +96,7 @@ export default function Footer() {
 
           {/* Help + contact */}
           <div>
-            <p className="section-label text-white/35 mb-5">Yardım</p>
+            <p className="section-label text-white/65 mb-5">Yardım</p>
             <ul className="space-y-3 mb-8">
               {helpLinks.map((link) => (
                 <li key={link.label}>
@@ -104,19 +109,14 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            <p className="section-label text-white/35 mb-3">İletişim</p>
+            <p className="section-label text-white/65 mb-3">İletişim</p>
             <address className="not-italic space-y-2 font-sans font-light text-sm text-white/55">
               <p>
-                <span className="text-white/35">Telefon: </span>
-                <a
-                  href={`tel:+90${COMPANY.telefon.replace(/\D/g, '').replace(/^0/, '')}`}
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  {COMPANY.telefon}
-                </a>
+                <span className="text-white/65">Telefon: </span>
+                <span>{COMPANY.telefon}</span>
               </p>
               <p>
-                <span className="text-white/35">E-posta: </span>
+                <span className="text-white/65">E-posta: </span>
                 <a
                   href={`mailto:${COMPANY.email}`}
                   className="hover:text-white transition-colors duration-200 break-all"
@@ -124,12 +124,14 @@ export default function Footer() {
                   {COMPANY.email}
                 </a>
               </p>
-              <p className="leading-relaxed">
-                <span className="text-white/35">Adres: </span>
-                {COMPANY.adres}
-              </p>
+              <Link
+                href="/iletisim"
+                className="inline-block hover:text-white transition-colors duration-200"
+              >
+                Satıcı ve adres bilgileri
+              </Link>
               <a
-                href="https://api.whatsapp.com/send?phone=905451125059"
+                href={`https://api.whatsapp.com/send?phone=${SITE.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block hover:text-white transition-colors duration-200"
@@ -151,7 +153,7 @@ export default function Footer() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className="font-sans font-light text-[11px] text-white/40 hover:text-white/75 transition-colors duration-200"
+                  className="font-sans font-light text-[11px] text-white/65 hover:text-white/75 transition-colors duration-200"
                 >
                   {link.label}
                 </Link>
@@ -162,10 +164,10 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/7">
-          <span className="font-sans font-light text-[11px] text-white/30 text-center sm:text-left">
+          <span className="font-sans font-light text-[11px] text-white/65 text-center sm:text-left">
             © {year} Novella. Tüm hakları saklıdır.
           </span>
-          <span className="flex items-center gap-1.5 font-sans font-light text-[11px] text-white/30">
+          <span className="flex items-center gap-1.5 font-sans font-light text-[11px] text-white/65">
             <span className="w-[5px] h-[5px] rounded-full flex-shrink-0 bg-gold" />
             316L Paslanmaz Çelik
           </span>

@@ -3,15 +3,15 @@
 import { LOW_STOCK_THRESHOLD } from '@/lib/config';
 import type { Product } from '@/types/product';
 
-export {
-  getAllProducts,
-  getProductBySlug,
-  getProductsByCategory,
-  getProductsByCollection,
-  getNewProducts,
-  getBestSellers,
-  getRelatedProducts,
-} from '@/data/products';
+/** Keep the preferred variant when available; never offer an unavailable variant for purchase. */
+export function getPurchasableVariant(product: Product) {
+  return product.variants.find((variant) => variant.id === product.defaultVariant && variant.stock > 0)
+    ?? product.variants.find((variant) => variant.stock > 0);
+}
+
+export const OUT_OF_STOCK_LABEL = 'Stokta yok · Yakında gelecek';
+
+// Storefront reads use lib/catalog on the server and useCatalogProducts in clients.
 
 /** Bir ürünün tüm varyantlarındaki toplam stok. */
 export function toplamStok(product: Product): number {

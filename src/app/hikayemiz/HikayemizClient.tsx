@@ -3,6 +3,7 @@
 import { COLLECTIONS } from '@/data/collections';
 import { SHIPPING } from '@/lib/config';
 import { CAYMA_SURESI_GUN } from '@/lib/legal';
+import { PRODUCT_CARE } from '@/lib/product-care';
 import { motion } from 'framer-motion';
 import { Droplets, Gift, ShieldCheck, Sparkles } from 'lucide-react';
 import Link from 'next/link';
@@ -22,23 +23,23 @@ const fadeUp = {
 const promises = [
   {
     icon: ShieldCheck,
-    title: '316L cerrahi çelik',
-    body: 'Ameliyat aletlerinde kullanılan alaşım. Nikel salınımı düşük olduğu için hassas ciltlerde bile kızarıklık yapmaz.',
+    title: 'Malzeme bilgisi',
+    body: PRODUCT_CARE.allergy,
   },
   {
     icon: Droplets,
-    title: 'Suyla arası iyi',
-    body: 'Duşta, denizde, havuzda çıkarmanız gerekmez. Krom oksit tabakası çeliği oksitlenmeye karşı korur.',
+    title: 'Özenli kullanım',
+    body: PRODUCT_CARE.water,
   },
   {
     icon: Sparkles,
-    title: 'Kararmaz, solmaz',
-    body: 'Gümüş gibi kararmaz, kaplama takılar gibi birkaç ayda rengini bırakmaz. İlk günkü tonunu korur.',
+    title: 'Yüzey ve kaplama',
+    body: PRODUCT_CARE.finish,
   },
   {
     icon: Gift,
     title: 'Hediye kutusunda',
-    body: 'Her sipariş, üzerine not yazabileceğiniz özel kutusunda ve keten kesesinde gelir.',
+    body: 'Seçtiğiniz ürün, Novella kartvizitiyle birlikte özel kutusunda hazırlanır.',
   },
 ];
 
@@ -144,8 +145,8 @@ export default function HikayemizClient() {
                 <strong className="font-medium text-black">
                   316L cerrahi çelikte
                 </strong>{' '}
-                karar kıldık — ameliyathanede güvenilen, suyla ve terle sorunu
-                olmayan, kararmayan bir alaşım.
+                karar kıldık. Her ürünün kaplamasını, ölçüsünü ve bakım ihtiyacını
+                kendi özellikleriyle değerlendiriyoruz.
               </p>
               <p
                 className="font-sans font-light text-black/70"
@@ -153,8 +154,8 @@ export default function HikayemizClient() {
               >
                 Bu seçim bize bir söz verdirdi: Novella&apos;dan aldığınız bir
                 parçayı <em className="italic">özel gün</em> beklemeden takın.
-                Duşta çıkarmayın, denize girerken düşünmeyin, kutuya
-                kaldırmayın.
+                Günlük stilinize katın; kullanım sonrası bakımını yapıp
+                özenle saklayın.
               </p>
             </motion.div>
           </div>

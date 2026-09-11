@@ -1,16 +1,21 @@
-import { getProductBySlug, getAllProducts } from '@/lib/products';
+import { getCatalogProductBySlug, getCatalogProducts } from '@/lib/catalog';
+export const revalidate = 60;
 import { ImageResponse } from 'next/og';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
+const logoData = await readFile(join(process.cwd(), 'public/brand/novellajewell-logo-black-2048.png'), 'base64');
+const logoSrc = `data:image/png;base64,${logoData}`;
 
 export async function generateStaticParams() {
-  return getAllProducts().map((p) => ({ slug: p.slug }));
+  return (await getCatalogProducts()).map((p) => ({ slug: p.slug }));
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getCatalogProductBySlug(slug);
 
   const name = product?.name ?? 'NOVELLA';
   // "₺" yerine "TL": OG görseli satori ile üretiliyor ve ₺ karakteri için
@@ -53,13 +58,15 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             position: 'absolute',
             top: '64px',
             right: '64px',
-            fontSize: 20,
-            fontWeight: 300,
-            color: '#1A1A1A',
-            letterSpacing: '-1px',
+            display: 'flex',
+            width: '250px',
+            height: '62px',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
           }}
         >
-          NOVELLA
+          {/* eslint-disable-next-line @next/next/no-img-element -- ImageResponse renders embedded data URLs with img. */}
+          <img src={logoSrc} width={250} height={62} alt="NovellaJewell" />
         </div>
       </div>
     ),

@@ -1,3 +1,4 @@
+import { revalidateCatalog } from '@/lib/catalog-revalidation';
 import { db, dbYok } from '@/db';
 import {
   inventory,
@@ -9,6 +10,10 @@ import {
 import { PRODUCTS } from '@/data/products';
 import { and, eq, sql } from 'drizzle-orm';
 import type { Order } from './checkout/types';
+import type { LegalAcceptance } from './legal-acceptance';
+import { lockOrderPayments, reserveOrderStock, releasePaymentToCustomer } from './checkout/stock-reservation';
+import { enqueueEmail } from './email-outbox';
+import { buildOrderConfirmationEmail } from './email';
 
 /**
  * Sipariş kalıcı kaydı — Neon Postgres (Drizzle).
@@ -25,7 +30,8 @@ import type { Order } from './checkout/types';
  */
 export async function createPendingOrder(
   order: Order,
-  randomNr: string
+  randomNr: string,
+  legalAcceptance: LegalAcceptance
 ): Promise<{ orderNo: string; id: string } | null> {
   if (dbYok) {
     console.warn('[orders] DATABASE_URL yok — pending sipariş kaydedilmedi', {
@@ -41,9 +47,12 @@ export async function createPendingOrder(
     ad: i.name,
     adet: i.quantity,
     birimFiyat: i.price,
+    image: i.image,
+    customization: i.customization,
   }));
 
   const row = await db.transaction(async (tx) => {
+    await lockOrderPayments(tx);
     for (const item of order.items) {
       const product = PRODUCTS.find((p) => p.id === item.productId);
       const variant = product?.variants.find((v) => v.id === item.variantId);
@@ -59,20 +68,8 @@ export async function createPendingOrder(
           .onConflictDoNothing();
       }
 
-      const [available] = await tx
-        .select({ stock: inventory.stock })
-        .from(inventory)
-        .where(
-          and(
-            eq(inventory.productId, item.productId),
-            eq(inventory.variantId, item.variantId)
-          )
-        )
-        .limit(1);
-      if (!available || available.stock < item.quantity) {
-        throw new Error(`${item.name} için yeterli stok yok.`);
-      }
     }
+    await reserveOrderStock(tx, order.items);
 
     const [created] = await tx.insert(orders).values({
       status: 'pending',
@@ -88,12 +85,19 @@ export async function createPendingOrder(
         not: order.customer.note,
       },
       randomNr,
+      legalAcceptance,
+      checkoutReserved: true,
       // orderNo, id, createdAt → DB default
     }).returning({ orderNo: orders.orderNo, id: orders.id });
     return created;
   });
 
   return row ?? null;
+}
+
+export async function markPaymentReady(orderNo: string): Promise<boolean> {
+  if (dbYok) return false;
+  return db.transaction((tx) => releasePaymentToCustomer(tx, orderNo));
 }
 
 /**
@@ -104,21 +108,21 @@ export async function createPendingOrder(
  */
 export async function markOrderPaid(
   orderNo: string,
-  paymentProviderId?: string
+  paymentProviderId?: string,
+  database = db,
+  invalidate = revalidateCatalog
 ): Promise<
   | { ok: true; zatenPaid: boolean; order: typeof orders.$inferSelect | null }
   | { ok: false }
 > {
-  if (dbYok) {
+  if (!database) {
     console.warn('[orders] DATABASE_URL yok — paid işaretlenemedi', { orderNo });
     return { ok: false };
   }
 
-  const updated = await db.transaction(async (tx) => {
-    const locked = await tx.execute(
-      sql`select * from orders where order_no = ${orderNo} for update`
-    );
-    const current = locked.rows[0] as typeof orders.$inferSelect | undefined;
+  const updated = await database.transaction(async (tx) => {
+    await lockOrderPayments(tx);
+    const [current] = await tx.select().from(orders).where(eq(orders.orderNo, orderNo)).for('update');
     if (!current || current.status !== 'pending') return null;
 
     for (const item of current.items) {
@@ -204,19 +208,22 @@ export async function markOrderPaid(
         status: 'paid',
         paymentProviderId: paymentProviderId ?? null,
         paidAt: new Date(),
+        updatedAt: new Date(),
       })
       .where(and(eq(orders.orderNo, orderNo), eq(orders.status, 'pending')))
       .returning();
+    if (paid) await enqueueEmail(tx, paid.id, 'order_confirmation', `${paid.orderNo}/paid`, buildOrderConfirmationEmail(paid));
     return paid ?? null;
   });
 
   if (updated) {
+    invalidate();
     // Bu çağrı pending → paid geçişini yaptı (ilk kez).
     return { ok: true, zatenPaid: false, order: updated };
   }
 
   // 0 satır: ya kayıt yok ya zaten paid/failed. Durumu kontrol et.
-  const [mevcut] = await db
+  const [mevcut] = await database
     .select()
     .from(orders)
     .where(eq(orders.orderNo, orderNo))
@@ -234,10 +241,12 @@ export async function markOrderFailed(orderNo: string): Promise<boolean> {
     console.warn('[orders] DATABASE_URL yok — failed işaretlenemedi', { orderNo });
     return false;
   }
-  const res = await db
-    .update(orders)
-    .set({ status: 'failed' })
-    .where(and(eq(orders.orderNo, orderNo), eq(orders.status, 'pending')))
-    .returning({ id: orders.id });
-  return res.length > 0;
+  return db.transaction(async (tx) => {
+    await lockOrderPayments(tx);
+    const res = await tx.update(orders)
+      .set({ status: 'failed', updatedAt: new Date() })
+      .where(and(eq(orders.orderNo, orderNo), eq(orders.status, 'pending')))
+      .returning({ id: orders.id });
+    return res.length > 0;
+  });
 }

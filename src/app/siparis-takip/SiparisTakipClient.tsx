@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Package, Search } from 'lucide-react';
+import { SITE } from '@/lib/config';
 import { useState } from 'react';
 
 interface DurumSonucu {
@@ -11,6 +12,9 @@ interface DurumSonucu {
   items: { ad: string; adet: number }[];
   total: string;
   createdAt: string;
+  carrier?: string | null;
+  trackingNumber?: string | null;
+  refund?: string | null;
 }
 
 /**
@@ -119,6 +123,8 @@ export default function SiparisTakipClient() {
                 </div>
               </div>
               <p className="text-sm text-black/60 mb-4">{sonuc.aciklama}</p>
+              {sonuc.trackingNumber && <div className="mb-4 rounded-lg bg-white p-4 text-sm"><p className="font-medium">{sonuc.carrier || 'Kargo'} takip numarası</p><p className="mt-2 select-all break-all">{sonuc.trackingNumber}</p></div>}
+              {sonuc.refund && <p role="status" className="mb-4 rounded-lg bg-white p-4 text-sm">{sonuc.refund}</p>}
               <ul className="text-sm text-black/70 space-y-1 border-t border-gold/20 pt-4">
                 {sonuc.items.map((i, idx) => (
                   <li key={idx} className="flex justify-between">
@@ -137,7 +143,7 @@ export default function SiparisTakipClient() {
           <p className="mt-10 text-xs text-black/40">
             Sorun mu yaşıyorsunuz?{' '}
             <a
-              href="https://wa.me/905451125059"
+              href={`https://wa.me/${SITE.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-gold-dark hover:underline"

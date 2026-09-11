@@ -21,7 +21,9 @@ export const SITE = {
   tagline: 'Özgün Tasarımlar, Zamansız Işıltı',
   whatsapp: '905451125059',
   instagram: 'https://www.instagram.com/novellajewellofficial/',
+  instagramHandle: '@novellajewellofficial',
   threads: 'https://www.threads.com/@novellajewellofficial',
+  threadsHandle: '@novellajewellofficial',
 } as const;
 
 /**

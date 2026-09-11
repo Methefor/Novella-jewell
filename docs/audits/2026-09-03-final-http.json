@@ -1,0 +1,1675 @@
+{
+  "checkedAt": "2026-09-03T16:30:28.883Z",
+  "base": "https://novellajewell.com",
+  "catalogProducts": 94,
+  "sitemapUrls": 119,
+  "pagesChecked": 125,
+  "missingFromSitemap": [],
+  "failures": [],
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "NOVELLA — Özgün 316L Çelik Takılar",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/arama?q=Celeste",
+      "status": 200,
+      "title": "Arama Sonuçları | NOVELLA",
+      "h1Count": 1,
+      "noindex": true,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/cerez-politikasi",
+      "status": 200,
+      "title": "Çerez Politikası | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/collections/bilezik",
+      "status": 200,
+      "title": "Bileklikler | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/collections/cok-satanlar",
+      "status": 200,
+      "title": "Çok Satanlar | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/collections/kupe",
+      "status": 200,
+      "title": "Küpeler | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/collections/yeni-gelenler",
+      "status": 200,
+      "title": "Yeni Gelenler | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/collections/yuzuk",
+      "status": 200,
+      "title": "Yüzükler | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/gizlilik",
+      "status": 200,
+      "title": "Gizlilik Politikası | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/hikayemiz",
+      "status": 200,
+      "title": "Hikayemiz | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "AboutPage"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/iade",
+      "status": 200,
+      "title": "İade &amp; Cayma Hakkı | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/iletisim",
+      "status": 200,
+      "title": "İletişim | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/kargo",
+      "status": 200,
+      "title": "Kargo &amp; Teslimat | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/koleksiyonlar",
+      "status": 200,
+      "title": "Koleksiyonlar | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/koleksiyonlar/barcelona",
+      "status": 200,
+      "title": "Barcelona Koleksiyonu | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/koleksiyonlar/klasikler",
+      "status": 200,
+      "title": "Klasikler Koleksiyonu | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/koleksiyonlar/paris",
+      "status": 200,
+      "title": "Paris Koleksiyonu | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/koleksiyonlar/stockholm",
+      "status": 200,
+      "title": "Stockholm Koleksiyonu | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/kvkk",
+      "status": 200,
+      "title": "KVKK Aydınlatma Metni | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/mesafeli-satis-sozlesmesi",
+      "status": 200,
+      "title": "Mesafeli Satış Sözleşmesi | NOVELLA",
+      "h1Count": 1,
+      "noindex": true,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/on-bilgilendirme",
+      "status": 200,
+      "title": "Ön Bilgilendirme Formu | NOVELLA",
+      "h1Count": 1,
+      "noindex": true,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/presales-missing-page",
+      "status": 404,
+      "title": "Sayfa Bulunamadı | NOVELLA",
+      "h1Count": 1,
+      "noindex": true,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/rehber",
+      "status": 200,
+      "title": "Takı Rehberi | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/rehber/316l-celik-nedir",
+      "status": 200,
+      "title": "316L Çelik Nedir? Takı Alırken Nelere Bakılmalı? | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Article"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/rehber/celik-taki-kararir-mi",
+      "status": 200,
+      "title": "Çelik Takı Kararır mı? Malzeme ve Kaplama Farkı | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Article"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/rehber/kupe-hijyeni-ve-yeni-delinmis-kulak",
+      "status": 200,
+      "title": "Küpe Seçimi: Hijyen ve Malzeme Bilgisi | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Article"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/rehber/taki-bakim-rehberi",
+      "status": 200,
+      "title": "Takı Bakım Rehberi: Temizlik ve Saklama | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Article"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "h1Count": 0,
+      "noindex": false,
+      "schemaTypes": [],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/sss",
+      "status": 200,
+      "title": "Sık Sorulan Sorular | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "FAQPage"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/urun/barcelona-amour-cok-sirali-kalp-yuzuk",
+      "status": 200,
+      "title": "Barcelona Amour Çok Sıralı Kalp Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-amour-pembe-mine-kalp-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Amour Pembe Mine Kalp Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-astra-uc-yildiz-yuzuk",
+      "status": 200,
+      "title": "Barcelona Astra Üç Yıldız Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-bold-gurmet-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Barcelona Bold Gurmet Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-cadence-tas-seritli-altin-bileklik",
+      "status": 200,
+      "title": "Barcelona Cadence Taş Şeritli Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-carre-kare-tasli-yuzuk",
+      "status": 200,
+      "title": "Barcelona Carré Kare Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-celeste-yildizli-denizanasi-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Celeste Yıldızlı Denizanası Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-coeur-baget-kalp-yuzuk",
+      "status": 200,
+      "title": "Barcelona Cœur Baget Detaylı Kalp Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-coquille-dokulu-damla-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Coquille Dokulu Damla Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-daisy-mavi-cicek-kupe",
+      "status": 200,
+      "title": "Barcelona Daisy Mavi Çiçek Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-fuego-mine-dalga-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Fuego Mine Dalga Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-goutte-tas-cizgili-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Goutte Taş Çizgili Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-grid-tasli-geometrik-altin-bileklik",
+      "status": 200,
+      "title": "Barcelona Grid Taşlı Geometrik Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-honey-kalp-plakali-altin-bileklik",
+      "status": 200,
+      "title": "Barcelona Honey Kalp Plakalı Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-mare-dalga-yuzuk",
+      "status": 200,
+      "title": "Barcelona Mare Dalga Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-nazar-goz-sallantili-gumus-kupe",
+      "status": 200,
+      "title": "Barcelona Nazar Göz Sallantılı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-papillon-uc-kelebek-yuzuk",
+      "status": 200,
+      "title": "Barcelona Papillon Üç Kelebek Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-prism-renkli-tasli-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Prism Renkli Taşlı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-prisma-geometrik-yuzuk",
+      "status": 200,
+      "title": "Barcelona Prisma Geometrik Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-ritm-altin-yuzuk",
+      "status": 200,
+      "title": "Barcelona Ritm Altın Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-rouge-mine-halka-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Rouge Mine Halka Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-rouge-mine-kalp-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Rouge Mine Kalp Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-rouge-zincir-gecisli-kupe",
+      "status": 200,
+      "title": "Barcelona Rouge Zincir Geçişli Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-sol-tasli-yuzuk",
+      "status": 200,
+      "title": "Barcelona Sol Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-spine-geometrik-sallantili-altin-kupe",
+      "status": 200,
+      "title": "Barcelona Spine Geometrik Sallantılı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-tempo-saat-kordonu-altin-bileklik",
+      "status": 200,
+      "title": "Barcelona Tempo Saat Kordonu Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/barcelona-triad-geometrik-altin-yuzuk",
+      "status": 200,
+      "title": "Barcelona Triad Geometrik Altın Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/new-york-edge-zincir-bileklik",
+      "status": 200,
+      "title": "Sayfa Bulunamadı | NOVELLA",
+      "h1Count": 0,
+      "noindex": true,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    },
+    {
+      "path": "/urun/paris-amour-kalp-motifli-cift-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Paris Amour Kalp Motifli Çift Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-amour-pave-kalp-altin-kupe",
+      "status": 200,
+      "title": "Paris Amour Pavé Kalp Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-amour-sirali-kalp-tasli-yuzuk",
+      "status": 200,
+      "title": "Paris Amour Sıralı Kalp Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-amour-zincir-yuzuk",
+      "status": 200,
+      "title": "Paris Amour Zincir Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-cascade-inci-zincir-gumus-kupe",
+      "status": 200,
+      "title": "Paris Cascade İnci Zincir Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-coeur-baget-tasli-kalp-altin-kupe",
+      "status": 200,
+      "title": "Paris Cœur Baget Taşlı Kalp Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-coeur-cift-kalp-gumus-kupe",
+      "status": 200,
+      "title": "Paris Cœur Çift Kalp Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-coeur-kalp-tasli-cift-bant-yuzuk",
+      "status": 200,
+      "title": "Paris Cœur Kalp Taşlı Çift Bant Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-coeur-renkli-tasli-inci-gumus-kupe",
+      "status": 200,
+      "title": "Paris Cœur Renkli Taşlı İnci Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-eclat-markiz-tasli-yuzuk",
+      "status": 200,
+      "title": "Paris Éclat Markiz Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-eclat-pave-bloklu-altin-bileklik",
+      "status": 200,
+      "title": "Paris Éclat Pavé Bloklu Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-elan-inci-sallantili-altin-kupe",
+      "status": 200,
+      "title": "Paris Élan İnci Sallantılı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-elan-zincir-sallantili-altin-kupe",
+      "status": 200,
+      "title": "Paris Élan Zincir Sallantılı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-elise-damla-tasli-yuzuk",
+      "status": 200,
+      "title": "Paris Élise Damla Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-etoile-cerceveli-yildizli-altin-bileklik",
+      "status": 200,
+      "title": "Paris Étoile Çerçeveli Yıldızlı Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-fleur-cicek-tasli-yuzuk",
+      "status": 200,
+      "title": "Paris Fleur Çiçek Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-grace-tektas-yuzuk",
+      "status": 200,
+      "title": "Paris Grace Tektaş Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-halo-kare-tasli-halka-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Paris Halo Kare Taşlı Halka Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-halo-pave-daire-gumus-kupe",
+      "status": 200,
+      "title": "Paris Halo Pavé Daire Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-laurel-yaprak-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Paris Laurel Yaprak Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-lien-kalp-detayli-gumus-kupe",
+      "status": 200,
+      "title": "Paris Lien Kalp Detaylı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-lien-zincir-detayli-yuzuk",
+      "status": 200,
+      "title": "Paris Lien Zincir Detaylı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-lumiere-baget-sallantili-altin-kupe",
+      "status": 200,
+      "title": "Paris Lumière Baget Sallantılı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-lumiere-baget-sallantili-gumus-kupe",
+      "status": 200,
+      "title": "Paris Lumière Baget Sallantılı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-papillon-cift-kelebek-yuzuk",
+      "status": 200,
+      "title": "Paris Papillon Çift Kelebek Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-perle-burgu-inci-altin-kupe",
+      "status": 200,
+      "title": "Paris Perle Burgu İnci Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-perle-damla-inci-gumus-kupe",
+      "status": 200,
+      "title": "Paris Perle Damla İnci Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-perle-pave-kalp-inci-gumus-kupe",
+      "status": 200,
+      "title": "Paris Perle Pavé Kalp İnci Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-pluie-inci-sallantili-gumus-kupe",
+      "status": 200,
+      "title": "Paris Pluie İnci Sallantılı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-pluie-kristal-inci-sallantili-altin-kupe",
+      "status": 200,
+      "title": "Paris Pluie Kristal ve İnci Sallantılı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-riviere-uc-sira-tasli-halka-altin-kupe",
+      "status": 200,
+      "title": "Paris Rivière Üç Sıra Taşlı Halka Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-rouge-kare-tasli-altin-kupe",
+      "status": 200,
+      "title": "Paris Rouge Kare Taşlı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-royale-markiz-tasli-altin-yuzuk",
+      "status": 200,
+      "title": "Paris Royale Markiz Taşlı Altın Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-solitaire-kare-tasli-halka-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Paris Solitaire Kare Taşlı Halka Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-tria-uc-tas-yuzuk",
+      "status": 200,
+      "title": "Paris Tria Üç Taş Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/paris-twist-burgulu-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Paris Twist Burgulu Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-aile-kristal-kanat-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Aile Kristal Kanat Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-arc-oval-tasli-altin-yuzuk",
+      "status": 200,
+      "title": "Stockholm Arc Oval Taşlı Altın Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-buckle-kristal-detay-altin-kupe",
+      "status": 200,
+      "title": "Stockholm Buckle Kristal Detay Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-buckle-tokali-tasli-yuzuk",
+      "status": 200,
+      "title": "Stockholm Buckle Tokalı Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-cascade-kristal-sacak-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Cascade Kristal Saçak Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-celeste-charmli-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Celeste Charmlı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-deco-geometrik-baglantili-altin-bileklik",
+      "status": 200,
+      "title": "Stockholm Deco Geometrik Bağlantılı Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-disc-dokulu-oval-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Disc Dokulu Oval Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-duo-cift-sira-baget-yuzuk",
+      "status": 200,
+      "title": "Stockholm Duo Çift Sıra Baget Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-eclat-yelpaze-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Éclat Yelpaze Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-eternite-baget-tamtur-yuzuk",
+      "status": 200,
+      "title": "Stockholm Éternité Baget Tamtur Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-flow-cok-sirali-yuzuk",
+      "status": 200,
+      "title": "Stockholm Flow Çok Sıralı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-fold-tas-sallantili-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Fold Taş Sallantılı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-halo-tam-tur-tasli-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Halo Tam Tur Taşlı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-kakadu-kristal-sallantili-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Kakadu Kristal Sallantılı Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-knot-baget-tasli-dugum-yuzuk",
+      "status": 200,
+      "title": "Stockholm Knot Baget Taşlı Düğüm Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-layer-baget-cok-sirali-yuzuk",
+      "status": 200,
+      "title": "Stockholm Layer Baget Çok Sıralı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-leaf-tasli-kontur-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Leaf Taşlı Kontur Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-line-buyuk-halka-altin-kupe",
+      "status": 200,
+      "title": "Stockholm Line Büyük Halka Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-line-buyuk-halka-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Line Büyük Halka Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-linea-italyan-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Stockholm Linea İtalyan Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-nova-yildiz-yuzuk",
+      "status": 200,
+      "title": "Stockholm Nova Yıldız Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-pearl-boncuk-zincir-altin-bileklik",
+      "status": 200,
+      "title": "Stockholm Pearl Boncuk Zincir Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-ribbed-bombe-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Ribbed Bombé Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-rivet-dort-sira-boncuk-dokulu-altin-bileklik",
+      "status": 200,
+      "title": "Stockholm Rivet Dört Sıra Boncuk Dokulu Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-riviere-akis-tasli-yaprak-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Rivière Akış Taşlı Yaprak Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-signet-kare-tasli-yuzuk",
+      "status": 200,
+      "title": "Stockholm Signet Kare Taşlı Yüzük | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-soleil-dokulu-statement-gumus-kupe",
+      "status": 200,
+      "title": "Stockholm Soleil Dokulu Statement Gümüş Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-soleil-isinli-altin-kupe",
+      "status": 200,
+      "title": "Stockholm Soleil Işınlı Altın Küpe | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-triad-kare-tasli-gurmet-altin-bileklik",
+      "status": 200,
+      "title": "Stockholm Triad Kare Taşlı Gurmet Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urun/stockholm-weave-dort-sira-orgu-altin-bileklik",
+      "status": 200,
+      "title": "Stockholm Weave Dört Sıra Örgü Altın Bileklik | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization",
+        "Product",
+        "BreadcrumbList"
+      ],
+      "brokenCatalogLinks": [],
+      "hasReturnPolicy": true
+    },
+    {
+      "path": "/urunler",
+      "status": 200,
+      "title": "Tüm Ürünler | NOVELLA",
+      "h1Count": 1,
+      "noindex": false,
+      "schemaTypes": [
+        "Organization"
+      ],
+      "brokenCatalogLinks": []
+    }
+  ]
+}

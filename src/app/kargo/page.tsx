@@ -74,24 +74,12 @@ export default function KargoPage() {
 
       <h2>Paketleme</h2>
       <p>
-        Her sipariş, üzerine not yazabileceğiniz özel kutusunda ve keten kesesi
-        içinde gönderilir. Hediye olarak gönderiyorsanız sipariş notuna
-        yazmanız yeterli — fatura tutarını görünmeyecek şekilde ayarlıyoruz.
+        Seçtiğiniz ürün, Novella kartvizitiyle birlikte özel kutusunda
+        korunaklı olarak paketlenir. Kutu içeriği ürün ve kartvizittir.
       </p>
 
       <h2>Hasarlı teslimat</h2>
-      <p>
-        Kargo paketinde ezilme, yırtılma veya ıslanma görürseniz{' '}
-        <strong>teslim almadan önce</strong> kargo görevlisine tutanak
-        tutturun. Tutanaksız teslim alınan hasarlı ürünlerde sorumluluk kargo
-        firmasına geçtiği için süreç uzayabilir.
-      </p>
-      <p>
-        Paketi açtığınızda ürünün hasarlı olduğunu fark ederseniz, kutuyu
-        açarken çekilmiş bir video veya fotoğrafla birlikte 48 saat içinde bize
-        ulaşın. Hasarlı ürünün kargo masrafı bize aittir.
-      </p>
-
+      <p>Paket veya üründe hasar görürseniz bize ulaşın. Fotoğraf ve kargo tutanağı incelemeyi kolaylaştırır; bunların bulunmaması veya 48 saat içinde bildirim yapılmaması yasal haklarınızı ortadan kaldırmaz. Hasarlı ürünün iade kargo masrafı bize aittir.</p>
       <h2>Adres hataları</h2>
       <p>
         Sipariş sırasında girilen adresin doğruluğu alıcının sorumluluğundadır.

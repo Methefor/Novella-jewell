@@ -1,7 +1,13 @@
+import './OfflineGoogleFonts';
 import React from 'react';
 import { Composition } from 'remotion';
 import { FORMAT_DIKEY, FORMAT_DORT_BES, FORMAT_KARE } from './brand';
 import { HeroDongu, type HeroDonguProps } from './HeroDongu';
+import {
+  DetayYakinPlanReel,
+  HaftaKarusel,
+  type HaftaKaruselProps,
+} from './Hafta20260908';
 import { UrunReklami, type UrunReklamiProps } from './UrunReklami';
 import { YuzukLansmani, type YuzukLansmaniProps } from './YuzukLansmani';
 
@@ -30,6 +36,48 @@ const yuzukLansmaniProps = {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {[1, 2, 3, 4, 5, 6].map((slide) => (
+        <Composition
+          key={`Karusel-IG001-${String(slide).padStart(2, '0')}`}
+          id={`Karusel-IG001-${String(slide).padStart(2, '0')}`}
+          component={HaftaKarusel}
+          durationInFrames={1}
+          fps={FORMAT_DORT_BES.fps}
+          width={FORMAT_DORT_BES.width}
+          height={FORMAT_DORT_BES.height}
+          defaultProps={
+            {
+              seri: 'ig001',
+              slide,
+            } satisfies HaftaKaruselProps
+          }
+        />
+      ))}
+      {[1, 2, 3, 4, 5, 6, 7].map((slide) => (
+        <Composition
+          key={`Karusel-IG003-${String(slide).padStart(2, '0')}`}
+          id={`Karusel-IG003-${String(slide).padStart(2, '0')}`}
+          component={HaftaKarusel}
+          durationInFrames={1}
+          fps={FORMAT_DORT_BES.fps}
+          width={FORMAT_DORT_BES.width}
+          height={FORMAT_DORT_BES.height}
+          defaultProps={
+            {
+              seri: 'ig003',
+              slide,
+            } satisfies HaftaKaruselProps
+          }
+        />
+      ))}
+      <Composition
+        id="Reels-DetayYakinPlan"
+        component={DetayYakinPlanReel}
+        durationInFrames={360}
+        fps={FORMAT_DIKEY.fps}
+        width={FORMAT_DIKEY.width}
+        height={FORMAT_DIKEY.height}
+      />
       <Composition id="Novella-YuzukLansmani-Story" component={YuzukLansmani} durationInFrames={210} fps={FORMAT_DIKEY.fps} width={FORMAT_DIKEY.width} height={FORMAT_DIKEY.height} defaultProps={yuzukLansmaniProps} />
       <Composition id="Novella-YuzukLansmani-Feed" component={YuzukLansmani} durationInFrames={210} fps={FORMAT_DORT_BES.fps} width={FORMAT_DORT_BES.width} height={FORMAT_DORT_BES.height} defaultProps={yuzukLansmaniProps} />
       <Composition id="Novella-YuzukLansmani-Square" component={YuzukLansmani} durationInFrames={210} fps={FORMAT_KARE.fps} width={FORMAT_KARE.width} height={FORMAT_KARE.height} defaultProps={yuzukLansmaniProps} />

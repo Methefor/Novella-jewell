@@ -8,6 +8,7 @@ import Link from 'next/link';
 interface CollectionWithMeta extends Collection {
   productCount: number;
   coverImage: string | null;
+  comingSoon: boolean;
 }
 
 interface Props {
@@ -61,7 +62,7 @@ function CollectionCard({
   collection: CollectionWithMeta;
   index: number;
 }) {
-  const { slug, sehir, ton, aciklamaKisa, productCount, coverImage } =
+  const { slug, sehir, ton, aciklamaKisa, productCount, coverImage, comingSoon } =
     collection;
 
   return (
@@ -100,6 +101,12 @@ function CollectionCard({
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
+          {comingSoon && (
+            <span className="absolute right-4 top-4 rounded-full border border-white/35 bg-black/20 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-md">
+              Yakında
+            </span>
+          )}
+
           {/* Overlay text */}
           <div className="absolute inset-x-0 bottom-0 p-5">
             <p className="text-[10px] uppercase tracking-widest text-white/60 mb-1">
@@ -123,7 +130,7 @@ function CollectionCard({
             {aciklamaKisa}
           </p>
           <span className="text-xs text-black/35 whitespace-nowrap ml-3">
-            {productCount} parça
+            {comingSoon ? 'Yeni seçki hazırlanıyor' : `${productCount} parça`}
           </span>
         </div>
       </Link>
