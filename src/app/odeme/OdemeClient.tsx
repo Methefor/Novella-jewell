@@ -336,6 +336,7 @@ export default function OdemeClient() {
                   <input
                     {...register('name')}
                     placeholder="Ada"
+                    autoComplete="given-name"
                     className={inputCls(!!errors.name)}
                   />
                 </Field>
@@ -343,6 +344,7 @@ export default function OdemeClient() {
                   <input
                     {...register('surname')}
                     placeholder="Yıldız"
+                    autoComplete="family-name"
                     className={inputCls(!!errors.surname)}
                   />
                 </Field>
@@ -350,14 +352,19 @@ export default function OdemeClient() {
                   <input
                     {...register('email')}
                     type="email"
+                    inputMode="email"
                     placeholder="ada@novella.com"
+                    autoComplete="email"
                     className={inputCls(!!errors.email)}
                   />
                 </Field>
                 <Field label="Telefon" error={errors.phone?.message}>
                   <input
                     {...register('phone')}
+                    type="tel"
+                    inputMode="tel"
                     placeholder="05xx xxx xx xx"
+                    autoComplete="tel"
                     className={inputCls(!!errors.phone)}
                   />
                 </Field>
@@ -373,6 +380,7 @@ export default function OdemeClient() {
                 <Field label="İl" error={errors.city?.message}>
                   <select
                     {...register('city')}
+                    autoComplete="address-level1"
                     className={inputCls(!!errors.city)}
                   >
                     <option value="">Seçin…</option>
@@ -387,6 +395,7 @@ export default function OdemeClient() {
                   <input
                     {...register('district')}
                     placeholder="Kadıköy"
+                    autoComplete="address-level2"
                     className={inputCls(!!errors.district)}
                   />
                 </Field>
@@ -397,6 +406,7 @@ export default function OdemeClient() {
                     {...register('address')}
                     rows={3}
                     placeholder="Mahalle, sokak, kapı numarası…"
+                    autoComplete="street-address"
                     className={`${inputCls(!!errors.address)} resize-none`}
                   />
                 </Field>
@@ -581,7 +591,7 @@ export default function OdemeClient() {
 }
 
 function inputCls(hasError: boolean) {
-  return `min-w-0 max-w-full w-full px-4 py-3 text-sm bg-white border ${
+  return `min-w-0 max-w-full w-full px-4 py-3 text-base bg-white border ${
     hasError ? 'border-red-400' : 'border-black/12'
   } rounded-lg focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all duration-200`;
 }

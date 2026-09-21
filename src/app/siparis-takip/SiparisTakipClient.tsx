@@ -50,7 +50,7 @@ export default function SiparisTakipClient() {
   };
 
   const inputCls =
-    'w-full px-4 py-3 border border-black/15 rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40 transition-colors bg-white';
+    'w-full px-4 py-3 border border-black/15 rounded-lg text-base focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40 transition-colors bg-white';
 
   return (
     <main className="min-h-[70vh] bg-white pt-28 pb-24 px-6">
