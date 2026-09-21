@@ -48,7 +48,7 @@ c:\Projects\Novella-Jewell
 │   │   └── search/           # Arama bileşeni
 │   ├── data/
 │   │   ├── collections.ts    # 4 şehir koleksiyonu ve hikayeleri
-│   │   ├── products.ts       # Tek ürün kataloğu kaynağı
+│   │   ├── products.ts       # LEGACY statik liste — katalog kaynağı DEĞİL (ADR-013)
 │   │   └── sss.ts            # Sık sorulan sorular
 │   ├── db/
 │   │   ├── index.ts          # Neon/Drizzle bağlantısı (DATABASE_URL)
@@ -93,7 +93,7 @@ c:\Projects\Novella-Jewell
 - **İstemci bileşenleri** mümkün olduğunca küçük tutulur ve prop ile beslenir.
   - Zustand yalnızca kullanıcı arayüzü durumu (sepet, favori, filtre) için kullanılır; veritabanı istemcisine doğrudan erişemez.
 - **Tek veri kaynağı:**
-  - Ürün kataloğu: `src/data/products.ts`.
+  - Ürün kataloğu: Neon Postgres `catalog_products` tablosu (`src/lib/catalog.ts`, ADR-013). `src/data/products.ts` katalog kaynağı değildir; yalnızca eski analitik olaylarının ürün adlarını okunabilir kılmak için salt okunur kullanılır.
   - Koleksiyonlar: `src/data/collections.ts`.
   - Siparişler: Neon Postgres `orders` tablosu.
   - Şirket bilgileri: `src/lib/legal.ts`.
@@ -132,7 +132,7 @@ Açıklamalar ve değer örnekleri için `.env.example` dosyasına bak. Gerçek 
 
 ## Güvenlik ve İş Akışı Notları
 
-- **Fiyat asla client'tan alınmaz.** `/api/checkout` yalnızca `productId`, `variantId` ve `quantity` kabul eder; fiyat/kargo/total `src/lib/checkout/buildOrder.ts` içinde sunucuda `PRODUCTS`'tan yeniden hesaplanır.
+- **Fiyat asla client'tan alınmaz.** `/api/checkout` yalnızca `productId`, `variantId` ve `quantity` kabul eder; fiyat/kargo/total `src/lib/checkout/buildOrder.ts` içinde sunucuda veritabanı kataloğundan (`catalog_products`) yeniden hesaplanır.
 - **Mesafeli Sözleşmeler Yönetmeliği m.6:** `consent.sozlesme` ve `consent.kvkk` onayları `/api/checkout` gövdesinde `z.literal(true)` ile şart koşulur.
 - **Çerez onayı:** Google Analytics yalnızca `src/lib/cookies.ts` üzerinden `accepted` onayı alınırsa yüklenir.
 - **Sipariş onay e-postası:** `src/lib/email.ts` ile Resend üzerinden gönderilir; e-posta gönderilemese bile sipariş akışı kırılmaz.

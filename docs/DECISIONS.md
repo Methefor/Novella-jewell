@@ -25,7 +25,7 @@ Bu kayıt yalnızca mevcut kaynak kodunda veya Git geçmişinde uygulanmış old
 
 ## ADR-004 — Katalog dinamik veritabanı ve statik geri dönüşü birlikte kullanır
 
-- **Durum:** Kabul edildi; eski “yalnızca statik katalog” kararı bununla değiştirilmiştir.
+- **Durum:** **DEĞİŞTİRİLDİ (SUPERSEDED)** — bkz. ADR-013. Aşağıdaki metin tarihçe olarak korunur ve artık geçerli değildir. (Önceki durum: Kabul edildi; eski “yalnızca statik katalog” kararı bununla değiştirilmişti.)
 - **Kanıt:** `src/lib/catalog.ts`, `drizzle/0004_catalog_products.sql`
 - **Karar:** Veritabanı varsa yayınlanmış dinamik ürünler kullanılır; veritabanı yoksa `src/data/products.ts` geri dönüş kaynağıdır. Dinamik taslak/yayından kaldırılmış kayıt, aynı kimlikli statik ürünü gizler.
 - **Sonuç:** Admin paneli ürün yayınını yönetebilir; veritabanı erişilemezse statik katalog servis vermeyi sürdürebilir.
@@ -85,3 +85,17 @@ Bu kayıt yalnızca mevcut kaynak kodunda veya Git geçmişinde uygulanmış old
 - **Kanıt:** `src/lib/admin-auth.ts`, `src/db/schema.ts`, `src/app/api/admin/media-assets/upload/route.ts`, `/admin/icerik-uret`
 - **Karar:** Clerk yalnızca admin kimlik doğrulamasını yapar. Ürün ve medya kayıtları Neon Postgres'te, sitede kullanılacak gerçek dosyalar Vercel Blob'da tutulur. Google Drive site çalışma zamanının parçası değildir; ham/orijinal çekimler için işletme arşivi olarak kullanılabilir.
 - **Sonuç:** Drive veya Clerk ürün kataloğunun ikinci kopyası yapılmaz. İçerik Üret ekranı katalog ve AI medya kütüphanesindeki görselleri yeniden kullanır; AI çıktıları mağazada otomatik yayınlanmadan ürüne geri bağlanır.
+
+## ADR-013 — Katalog tek gerçek kaynağı veritabanıdır
+
+- **Durum:** Kabul edildi; ADR-004'ün “statik geri dönüş” kararını değiştirir. (Kod hazır; production'a henüz dağıtılmadı.)
+- **Kanıt:** `src/lib/catalog.ts`, `src/lib/orders.ts`, `src/app/error.tsx`, `src/components/catalog/`, `tests/catalog-source-of-truth.test.ts`, `tests/catalog-orders.test.ts`
+- **Karar:** Ürün kataloğunun tek kaynağı Neon Postgres `catalog_products` tablosudur. `src/data/products.ts` mağaza, sipariş, stok veya yönetim paneli için geri dönüş kaynağı DEĞİLDİR ve hiçbir kaydı veritabanına otomatik tohumlamaz (seed etmez). Üç durum birbirine karıştırılmaz:
+  - **Veritabanı erişilemiyor** → `CatalogUnavailableError`. Sessiz statik geri dönüş yoktur; sayfa Novella hata durumunu gösterir. ISR yenilemesinde hata fırlatıldığı için son başarılı sayfa sunulmaya devam eder; ürün silinmiş gibi 404 verilmez. Checkout bu durumda 503 döner.
+  - **Veritabanı erişilebilir, katalog boş** → normal boş liste (`[]`) ve “Şu anda vitrinde ürün bulunmuyor” durumu. Bu bir arıza sayılmaz.
+  - **Veritabanı erişilebilir, istenen ürün yok** → `undefined` → gerçek 404.
+- **Sipariş/stok:** Sipariş yalnızca veritabanı kataloğunda yayında olan ürün ve varyant için açılır; aksi halde `CatalogProductMissingError` ile fail closed olur (checkout 409). Ödeme alındıktan sonra (`markOrderPaid`) katalog aynası eksikse sipariş başarısız sayılmaz: stok defteri (`inventory`) atomik düşer, statik veriden katalog kaydı üretilmez. Fiyat, kargo ve toplam sunucuda, veritabanı kataloğundan hesaplanır (ADR-001 değişmedi).
+- **Yönetim paneli:** Ürün listeleri, stok ve yayın işlemleri yalnızca `catalog_products`'ı kullanır; veritabanında olmayan ürün statik veriden oluşturulmaz.
+- **Salt okunur legacy istisna:** `src/app/admin/analitik/page.tsx`, eski analitik olaylarındaki ürün kimliklerini okunabilir isme çevirmek için `src/data/products.ts`'i salt okunur kullanır. Bu bir kaynak-doğruluk istisnası değil, geçmiş olayları görüntüleme yardımcısıdır; vitrini, siparişi, stoğu veya fiyatı etkilemez ve hiçbir şey yazmaz. Dosyanın tamamen kaldırılması ayrı bir temizlik kararıdır.
+- **Derleme:** Katalog sayfaları derleme sırasında veritabanına ihtiyaç duyar; veritabanı yoksa derleme başarısız olur ve önceki dağıtım yayında kalır (bilinçli fail-safe).
+- **Sonuç:** Eski/stale ürün bilgisi, fiyatı veya stoğu müşteriye gösterilmez ve siparişe dönüşmez.

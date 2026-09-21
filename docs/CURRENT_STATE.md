@@ -19,6 +19,12 @@ Son doğrulama: **4 Eylül 2026**. Güncel kabul kaydı ve açık işler: [Satı
 - Mobil PageSpeed ilk 62 → son 91; FCP 1,4 sn, LCP 3,5 sn, TBT 10 ms, CLS 0. Erişilebilirlik/iyi uygulamalar/temel SEO 100. İlk HTML görünür; genel yükleme perdesi ve sürekli görsel büyütme kaldırıldı; kritik görsel önceliği iyileştirildi; Clerk yalnızca admin bölümünde yükleniyor.
 - 30 otomatik test, lint, TypeScript ve üretim derlemesi başarılı. Üretim bağımlılığı taraması temiz; geliştirme araçları dahil taramada bulgular ayrıca mevcut.
 
+## Kod tabanında hazır, henüz yayınlanmadı (20 Eylül 2026)
+
+- **Katalog tek kaynağı veritabanı** (ADR-013, `DECISIONS.md`): `src/data/products.ts` artık vitrin, sipariş, stok veya admin için geri dönüş/tohum kaynağı değil. Veritabanı erişilemezse Novella hata durumu, katalog boşsa boş vitrin durumu, olmayan ürün için 404; checkout kesintide 503, katalogda olmayan ürün için 409 döner. ADR-004 “değiştirildi” olarak işaretlendi.
+- Checkout formu mobil iyileştirmeleri (16 px alanlar, `autocomplete`/`inputMode`). Commit/push/deploy yapılmadı.
+- `paris-grace-tektas-yuzuk` galerisindeki yanlış ürüne ait ikinci görsel canlı katalogdan kaldırıldı (yalnızca `yuzuk-19.jpg` kaldı). Kalıcı çözüm: doğru ürünü yeniden fotoğraflayıp Vercel Blob'a yüklemek.
+
 ## Kalan onay ve doğrulamalar
 
 - Vercel ücretli paket yükseltmesi kullanıcı tarafından sonraya bırakıldı. Yükseltme yapıldığında görev 5 dakikaya alınmalı; mevcut günlük görev hızlı yeniden deneme garantisi değil.

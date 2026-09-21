@@ -2,6 +2,14 @@
 
 Bu günlük Git geçmişi ve tarihli doğrulama kayıtlarını içerir. 3 Eylül ekleri mevcut çalışma ağacından üretime dağıtıldı; commit/push yapılmadı.
 
+## 20 Eylül 2026 — katalog tek kaynağı veritabanı (commit/push/deploy yapılmadı)
+
+- ADR-013: `catalog_products` tek kaynak; statik `PRODUCTS` fallback/seed kaldırıldı. `catalog.ts` üç durumu ayırır (kesinti → `CatalogUnavailableError`, boş → `[]`, olmayan ürün → `undefined`/404).
+- `orders.ts`: `createPendingOrder` DB'de yayında olmayan ürün/varyantta fail closed (`CatalogProductMissingError`); `markOrderPaid` statik veriden katalog kaydı üretmez. Checkout: kesinti 503, ürün yok 409. PayTR akışı değişmedi.
+- Admin: stok/ürün/kampanya/toplu işlem ve liste ekranlarındaki PRODUCTS fallback ve otomatik seed kaldırıldı. Analitik ürün adı çözümlemesi salt okunur legacy olarak korundu.
+- Testler artık `PRODUCTS` fixture'ına bağlı değil; kesinti/boş/dolu/bilinmeyen ürün, sipariş fail-closed, stok düşümü ve statik katalogdan tohum olmaması için yeni testler eklendi.
+- Canlı doğrulama: `/api/katalog` 94 ürün (90 `product-<uuid>`, 4 eski kimlikli); `yuzuk-19` galerisinden yanlış görsel kaldırıldı.
+
 ## 4 Eylül 2026 — açılış vitrini ve iletişim doğrulaması
 
 - Novella kutusu ana sayfanın ilk bölümüne, yüzük seçkisi altına taşındı; kutu mesajı sayfanın tek H1 başlığı yapıldı.

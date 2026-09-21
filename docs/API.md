@@ -41,7 +41,7 @@ Sipariş oluşturur, veritabanına `pending` kaydeder ve PayTR iFrame ödeme for
 
 - `items` en az 1 öğe içermeli; her öğe `quantity` 1-20 arasında tam sayı.
 - `consent.sozlesme` ve `consent.kvkk` `true` olmalı (Mesafeli Sözleşmeler Yönetmeliği m.6).
-- Fiyat, kargo ve toplam client'tan alınmaz; `src/lib/checkout/buildOrder.ts` içinde sunucudaki `PRODUCTS` verisinden yeniden hesaplanır.
+- Fiyat, kargo ve toplam client'tan alınmaz; `src/lib/checkout/buildOrder.ts` içinde sunucudaki veritabanı kataloğundan (`catalog_products`) yeniden hesaplanır. Katalog erişilemezse 503, ürün/varyant veritabanında yayında değilse 409 döner.
 
 **Başarılı yanıt (200):**
 
