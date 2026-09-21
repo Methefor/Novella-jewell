@@ -11,7 +11,7 @@ import type { Order, OrderCustomer, OrderItem } from './types';
  * geçerli oluyordu (çünkü bizim secret'ımızla imzalanıyordu).
  *
  * Kural: client YALNIZCA ne istediğini söyler (ürün + adet).
- * Fiyat, kargo ve toplam DAİMA burada, sunucuda, PRODUCTS'tan yeniden hesaplanır.
+ * Fiyat, kargo ve toplam DAİMA burada, sunucuda, veritabanı kataloğundan (catalog_products) yeniden hesaplanır.
  * Client'tan gelen hiçbir fiyat alanına güvenilmez.
  */
 
@@ -70,8 +70,8 @@ export async function buildOrder(
       return { ok: false, error: `${product.name} için geçersiz seçenek.` };
     }
 
-    // Stok kontrolü aktif katalog katmanından gelir. Dinamik ürünlerde kaynak
-    // Neon DB, yalnızca veritabanı yoksa statik katalog geri dönüşüdür.
+    // Stok kontrolü katalog katmanından gelir; tek kaynak Neon DB'dir (ADR-013).
+    // Katalog erişilemezse getCatalogProductById CatalogUnavailableError fırlatır.
     const key = JSON.stringify([product.id, variant.id]);
     const combinedQuantity = (quantities.get(key) ?? 0) + quantity;
     quantities.set(key, combinedQuantity);

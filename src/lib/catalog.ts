@@ -1,10 +1,42 @@
 import 'server-only';
 
-import { db, dbYok } from '@/db';
+import { db } from '@/db';
 import { catalogProducts } from '@/db/schema';
-import { PRODUCTS } from '@/data/products';
 import type { Product } from '@/types/product';
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
+
+/**
+ * Katalog tek kaynağı: Neon Postgres → catalogProducts (ADR-013).
+ *
+ * Üç durum KESİNLİKLE ayrı tutulur:
+ *  - Veritabanı erişilemiyor → CatalogUnavailableError fırlatılır. Sessiz
+ *    fallback yoktur; ISR yenilemesinde hata, son başarılı sayfanın
+ *    sunulmaya devam etmesini sağlar.
+ *  - Veritabanı erişilebilir, katalog boş → normal `[]`.
+ *  - Veritabanı erişilebilir, istenen ürün yok → `undefined` (çağıran 404 verir).
+ */
+export class CatalogUnavailableError extends Error {
+  constructor(options?: { cause?: unknown }) {
+    super('Ürün kataloğu şu anda kullanılamıyor.', options);
+    this.name = 'CatalogUnavailableError';
+  }
+}
+
+/** Testlerde gerçek bağlantı yerine geçirilebilir; varsayılan uygulama bağlantısıdır. */
+type CatalogDatabase = typeof db;
+
+function connection(database: CatalogDatabase): NonNullable<CatalogDatabase> {
+  if (!database) throw new CatalogUnavailableError();
+  return database;
+}
+
+async function read<T>(query: () => Promise<T>): Promise<T> {
+  try {
+    return await query();
+  } catch (cause) {
+    throw new CatalogUnavailableError({ cause });
+  }
+}
 
 function hydrate(data: typeof catalogProducts.$inferSelect.data): Product {
   return {
@@ -14,62 +46,47 @@ function hydrate(data: typeof catalogProducts.$inferSelect.data): Product {
   };
 }
 
-export async function getCatalogProducts(options?: {
-  includeHidden?: boolean;
-}): Promise<Product[]> {
-  const staticProducts = options?.includeHidden
-    ? PRODUCTS
-    : PRODUCTS.filter((product) => !product.hidden);
-
-  if (dbYok) return staticProducts;
-
-  const rows = await db
-    .select({
-      data: catalogProducts.data,
-      published: catalogProducts.published,
-    })
-    .from(catalogProducts);
-  const dynamicProducts = rows
+export async function getCatalogProducts(
+  options?: { includeHidden?: boolean },
+  database: CatalogDatabase = db
+): Promise<Product[]> {
+  const conn = connection(database);
+  const rows = await read(() =>
+    conn
+      .select({ data: catalogProducts.data, published: catalogProducts.published })
+      .from(catalogProducts)
+  );
+  return rows
     .filter(({ published, data }) => published && !data.deletedAt && (options?.includeHidden || !data.hidden))
     .map(({ data }) => hydrate(data));
-  if (rows.length > 0) return dynamicProducts;
-  return staticProducts;
 }
 
 export async function getCatalogProductBySlug(
-  slug: string
+  slug: string,
+  database: CatalogDatabase = db
 ): Promise<Product | undefined> {
-  if (!dbYok) {
-    const [row] = await db
-      .select({
-        data: catalogProducts.data,
-        published: catalogProducts.published,
-      })
+  const conn = connection(database);
+  const [row] = await read(() =>
+    conn
+      .select({ data: catalogProducts.data, published: catalogProducts.published })
       .from(catalogProducts)
       .where(eq(catalogProducts.slug, slug))
-      .limit(1);
-    if (row) return row.published && !row.data.deletedAt ? hydrate(row.data) : undefined;
-    const [{ count }] = await db.select({ count: sql<number>`count(*)::int` }).from(catalogProducts);
-    if (count > 0) return undefined;
-  }
-  return PRODUCTS.find((product) => product.slug === slug);
+      .limit(1)
+  );
+  return row && row.published && !row.data.deletedAt ? hydrate(row.data) : undefined;
 }
 
 export async function getCatalogProductById(
-  id: string
+  id: string,
+  database: CatalogDatabase = db
 ): Promise<Product | undefined> {
-  if (!dbYok) {
-    const [row] = await db
-      .select({
-        data: catalogProducts.data,
-        published: catalogProducts.published,
-      })
+  const conn = connection(database);
+  const [row] = await read(() =>
+    conn
+      .select({ data: catalogProducts.data, published: catalogProducts.published })
       .from(catalogProducts)
       .where(eq(catalogProducts.id, id))
-      .limit(1);
-    if (row) return row.published && !row.data.deletedAt ? hydrate(row.data) : undefined;
-    const [{ count }] = await db.select({ count: sql<number>`count(*)::int` }).from(catalogProducts);
-    if (count > 0) return undefined;
-  }
-  return PRODUCTS.find((product) => product.id === id);
+      .limit(1)
+  );
+  return row && row.published && !row.data.deletedAt ? hydrate(row.data) : undefined;
 }

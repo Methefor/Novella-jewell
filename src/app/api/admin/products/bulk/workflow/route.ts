@@ -1,4 +1,3 @@
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import {
   campaignItems,
@@ -33,40 +32,6 @@ export async function POST(request: Request) {
   const parsed = schema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: 'Geçersiz toplu işlem.' }, { status: 400 });
   const { action, ids, confirmation } = parsed.data;
-
-  // Eski statik katalog ürünleri ilk toplu işlemde veritabanına taşınır.
-  // Böylece yayından kaldırma geri alınabilir olur; ürün verisi silinmez.
-  const existingRows = await db
-    .select({ id: catalogProducts.id })
-    .from(catalogProducts)
-    .where(inArray(catalogProducts.id, ids));
-  const existingIds = new Set(existingRows.map((row) => row.id));
-  const missingProducts = ids
-    .filter((id) => !existingIds.has(id))
-    .map((id) => PRODUCTS.find((product) => product.id === id))
-    .filter((product): product is NonNullable<typeof product> => Boolean(product));
-  if (existingRows.length + missingProducts.length !== ids.length) {
-    return NextResponse.json(
-      { error: 'Ürünlerden biri bulunamadı.' },
-      { status: 404 }
-    );
-  }
-  if (missingProducts.length) {
-    const now = new Date();
-    await db.insert(catalogProducts).values(
-      missingProducts.map((product) => ({
-        id: product.id,
-        slug: product.slug,
-        published: !product.hidden,
-        data: {
-          ...product,
-          createdAt: product.createdAt.toISOString(),
-          updatedAt: now.toISOString(),
-        },
-        updatedAt: now,
-      }))
-    );
-  }
 
   const rows = await db
     .select()

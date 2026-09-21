@@ -1,5 +1,6 @@
 'use client';
 
+import CatalogEmpty from '@/components/catalog/CatalogEmpty';
 import ProductCard from '@/components/product/ProductCard';
 import PackagingShowcase from '@/components/product/PackagingShowcase';
 import { SITE } from '@/lib/config';
@@ -58,6 +59,15 @@ export default function HomeClient({ products }: { products: Product[] }) {
     .filter((p) => p.isBestSeller)
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     .slice(0, 6);
+
+  if (products.length === 0) {
+    return (
+      <main>
+        <PackagingShowcase />
+        <CatalogEmpty />
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -424,7 +434,7 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 alt: 'Stockholm Nova Yıldız Yüzük model üzerinde',
                 mood: 'Cesur detay',
                 name: 'Stockholm Nova',
-                className: 'md:col-span-5 md:mt-16',
+                className: 'md:col-span-6 md:mt-16',
                 aspect: 'aspect-[4/5]',
               },
               {
@@ -433,17 +443,8 @@ export default function HomeClient({ products }: { products: Product[] }) {
                 alt: 'Paris Amour Zincir Yüzük model üzerinde',
                 mood: 'Günlük zarafet',
                 name: 'Paris Amour',
-                className: 'md:col-span-4',
+                className: 'md:col-span-6',
                 aspect: 'aspect-[3/4]',
-              },
-              {
-                href: '/urun/paris-grace-tektas-yuzuk',
-                image: '/media/yuzuk/yuzuk-19b.jpg',
-                alt: 'Paris Grace Tektaş Yüzük model üzerinde',
-                mood: 'Modern klasik',
-                name: 'Paris Grace',
-                className: 'md:col-span-3 md:mt-28',
-                aspect: 'aspect-[4/5]',
               },
             ].map((look, index) => (
               <motion.div

@@ -194,7 +194,9 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={
           {
             gorsel: 'media/yuzuk/yuzuk-19.jpg',
-            gorselModel: 'media/yuzuk/yuzuk-19b.jpg',
+            // TODO(QA): yuzuk-19b.jpg farklı bir yüzük; Paris Grace'in doğrulanmış model fotoğrafı
+            // çekilip yüklenene kadar gorselModel VERİLMEZ (kompozisyon tek görselle kalır).
+            // Render öncesi fiyat da canlı katalogla (649 ₺) doğrulanmalı.
             urunAdi: 'Paris Grace Tektaş Yüzük',
             fiyat: 519,
             hikaye: 'Tek taş, tek cümle.',

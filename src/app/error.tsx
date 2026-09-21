@@ -1,6 +1,13 @@
 'use client';
 
+import CatalogUnavailable from '@/components/catalog/CatalogUnavailable';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+// Production'da sunucu hata mesajı istemciye taşınmaz (yalnızca digest), bu yüzden
+// CatalogUnavailableError türü burada ayırt edilemez. Ürün kataloğunu okuyan
+// sayfalarda tek gerçekçi hata kaynağı katalog kesintisidir.
+const CATALOG_ROUTES = /^\/(urunler|urun\/|koleksiyonlar|collections\/|arama)|^\/$/;
 
 export default function Error({
   reset,
@@ -8,6 +15,9 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const pathname = usePathname();
+  if (CATALOG_ROUTES.test(pathname)) return <CatalogUnavailable reset={reset} />;
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-cream px-4">
       <div className="text-center max-w-md">

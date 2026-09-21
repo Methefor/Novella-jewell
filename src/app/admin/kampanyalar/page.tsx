@@ -1,4 +1,3 @@
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import {
   campaignItems,
@@ -102,7 +101,7 @@ export default async function CampaignsPage({
       createdAt: new Date(row.data.createdAt),
       updatedAt: new Date(row.data.updatedAt),
     }));
-  const products: Product[] = catalogRows.length > 0 ? dynamicProducts : PRODUCTS;
+  const products: Product[] = dynamicProducts;
   const productById = new Map(products.map((product) => [product.id, product]));
   const selectedProductIds = new Set(selectedItems.map((item) => item.productId));
   const availableProducts = products

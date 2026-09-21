@@ -1,6 +1,5 @@
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import FollowupNotice from '@/components/admin/FollowupNotice';
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts, orders } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -58,7 +57,7 @@ export default async function AdminPage() {
       createdAt: new Date(row.data.createdAt),
       updatedAt: new Date(row.data.updatedAt),
     }));
-  const adminProducts = catalogRows.length > 0 ? dynamicProducts : PRODUCTS;
+  const adminProducts = dynamicProducts;
   const draftProductIds = adminProducts
     .filter((product) => {
       const row = catalogById.get(product.id);

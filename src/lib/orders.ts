@@ -3,11 +3,11 @@ import { db, dbYok } from '@/db';
 import {
   inventory,
   catalogProducts,
+  orderEvents,
   orders,
   stockMovements,
   type OrderItemRow,
 } from '@/db/schema';
-import { PRODUCTS } from '@/data/products';
 import { and, eq, sql } from 'drizzle-orm';
 import type { Order } from './checkout/types';
 import type { LegalAcceptance } from './legal-acceptance';
@@ -23,17 +23,30 @@ import { buildOrderConfirmationEmail } from './email';
  * çökmemesi. Production'da DATABASE_URL Vercel Storage tarafından sağlanır.
  */
 
+/** Sipariş kalemi, veritabanı kataloğunda yayında bir ürün/varyant olarak bulunamadı. */
+export class CatalogProductMissingError extends Error {
+  constructor(message = 'Sepetinizdeki bir ürün artık satışta değil.') {
+    super(message);
+    this.name = 'CatalogProductMissingError';
+  }
+}
+
 /**
  * Ödeme başlamadan ÖNCE pending sipariş yaratır.
  * order_no DB tarafında otomatik üretilir (NJ-2026-0001) ve döndürülür;
  * PayTR merchant_oid değeri bu sipariş numarasından üretilir.
+ *
+ * Katalog tek kaynağı catalogProducts'tır (ADR-013): kalemin ürünü/varyantı
+ * DB'de yayında değilse sipariş AÇILMAZ (fail closed). Statik katalogdan
+ * (src/data/products.ts) hiçbir kayıt üretilmez.
  */
 export async function createPendingOrder(
   order: Order,
   randomNr: string,
-  legalAcceptance: LegalAcceptance
+  legalAcceptance: LegalAcceptance,
+  database = db
 ): Promise<{ orderNo: string; id: string } | null> {
-  if (dbYok) {
+  if (!database) {
     console.warn('[orders] DATABASE_URL yok — pending sipariş kaydedilmedi', {
       total: order.total,
     });
@@ -51,23 +64,29 @@ export async function createPendingOrder(
     customization: i.customization,
   }));
 
-  const row = await db.transaction(async (tx) => {
+  const row = await database.transaction(async (tx) => {
     await lockOrderPayments(tx);
     for (const item of order.items) {
-      const product = PRODUCTS.find((p) => p.id === item.productId);
-      const variant = product?.variants.find((v) => v.id === item.variantId);
+      const [catalogRow] = await tx
+        .select({ data: catalogProducts.data, published: catalogProducts.published })
+        .from(catalogProducts)
+        .where(eq(catalogProducts.id, item.productId))
+        .limit(1);
+      const variant =
+        catalogRow && catalogRow.published && !catalogRow.data.deletedAt
+          ? catalogRow.data.variants.find((v) => v.id === item.variantId)
+          : undefined;
+      if (!variant) throw new CatalogProductMissingError(`${item.name} artık satışta değil.`);
 
-      if (variant) {
-        await tx
-          .insert(inventory)
-          .values({
-            productId: item.productId,
-            variantId: item.variantId,
-            stock: variant.stock,
-          })
-          .onConflictDoNothing();
-      }
-
+      // Envanter satırı henüz yoksa başlangıç değeri veritabanı kataloğundan gelir.
+      await tx
+        .insert(inventory)
+        .values({
+          productId: item.productId,
+          variantId: item.variantId,
+          stock: variant.stock,
+        })
+        .onConflictDoNothing();
     }
     await reserveOrderStock(tx, order.items);
 
@@ -119,6 +138,9 @@ export async function markOrderPaid(
     console.warn('[orders] DATABASE_URL yok — paid işaretlenemedi', { orderNo });
     return { ok: false };
   }
+
+  // Katalog aynası eksik kalemler: tx commit olduktan SONRA loglanır (geri alınan ödeme için yanlış alarm olmaz).
+  const missingMirror: { productId: string; variantId: string }[] = [];
 
   const updated = await database.transaction(async (tx) => {
     await lockOrderPayments(tx);
@@ -179,26 +201,18 @@ export async function markOrderPaid(
           })
           .where(eq(catalogProducts.id, item.productId));
       } else {
-        const staticProduct = PRODUCTS.find(
-          (product) => product.id === item.productId
-        );
-        if (staticProduct) {
-          await tx.insert(catalogProducts).values({
-            id: staticProduct.id,
-            slug: staticProduct.slug,
-            published: !staticProduct.hidden,
-            data: {
-              ...staticProduct,
-              variants: staticProduct.variants.map((variant) =>
-                variant.id === item.variantId
-                  ? { ...variant, stock: stockRow.stock }
-                  : variant
-              ),
-              createdAt: staticProduct.createdAt.toISOString(),
-              updatedAt: now.toISOString(),
-            },
-          });
-        }
+        // catalogRow yoksa yalnızca görüntüleme aynası atlanır: stok defteri
+        // (inventory) yukarıda atomik olarak düşüldü ve ödeme zaten alındı.
+        // Statik katalogdan (PRODUCTS) DB kaydı ÜRETİLMEZ. Ödeme/stok davranışı değişmez;
+        // ihlal aynı tx içinde sipariş olayı olarak kaydedilir (idempotent: yalnızca pending → paid geçişinde).
+        await tx.insert(orderEvents).values({
+          orderId: current.id,
+          eventType: 'catalog_mirror_missing',
+          toValue: `${item.productId}/${item.variantId}`,
+          note: 'Ödeme onaylandı; ürün katalog kaydı bulunamadı, stok defteri düşüldü. Kataloğu kontrol edin.',
+          createdBy: 'system:payment-callback',
+        });
+        missingMirror.push({ productId: item.productId, variantId: item.variantId });
       }
     }
 
@@ -217,6 +231,10 @@ export async function markOrderPaid(
   });
 
   if (updated) {
+    // Yalnızca sipariş no ve ürün/varyant kimliği: müşteri, ödeme veya kart verisi loglanmaz.
+    for (const line of missingMirror) {
+      console.error('[orders] Paid order line has no catalog record', { orderNo, ...line });
+    }
     invalidate();
     // Bu çağrı pending → paid geçişini yaptı (ilk kez).
     return { ok: true, zatenPaid: false, order: updated };

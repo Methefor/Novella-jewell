@@ -1,4 +1,7 @@
-import { PRODUCTS } from '@/data/products';
+// LEGACY (yalnızca analitik etiket çözümleme, salt okunur): src/data/products.ts katalog kaynağı DEĞİLDİR (ADR-013).
+// Eski analitik olaylarındaki ürün kimliklerini okunabilir isme çevirmek için kullanılır;
+// vitrini, siparişi, stoğu veya fiyatı etkilemez ve hiçbir şey yazmaz.
+import { PRODUCTS as LEGACY_PRODUCT_NAMES } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { analyticsEvents, catalogProducts, orders } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -48,7 +51,7 @@ export default async function AnalyticsPage({
     .map(([source, data]) => ({ source, sessions: data.sessions.size, events: data.events }))
     .sort((a, b) => b.sessions - a.sessions);
   const productNames = new Map([
-    ...PRODUCTS.map((product) => [product.id, product.name] as const),
+    ...LEGACY_PRODUCT_NAMES.map((product) => [product.id, product.name] as const),
     ...catalogRows.map((row) => [row.id, row.data.name] as const),
   ]);
   const productMap = new Map<string, { views: number; carts: number }>();

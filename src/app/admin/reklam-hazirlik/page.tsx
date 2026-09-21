@@ -1,4 +1,3 @@
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -32,7 +31,7 @@ export default async function AdReadinessPage({
     createdAt: new Date(row.data.createdAt),
     updatedAt: new Date(row.data.updatedAt),
   }));
-  const products = rows.length > 0 ? dynamicProducts : PRODUCTS;
+  const products = dynamicProducts;
 
   const productStates = products.map((product) => {
     const readiness = getProductReadiness(product);

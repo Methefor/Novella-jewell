@@ -1,7 +1,6 @@
 'use server';
 
 import { db, dbYok } from '@/db';
-import { PRODUCTS } from '@/data/products';
 import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { writeAdminAuditLog } from '@/lib/admin-audit';
@@ -89,25 +88,8 @@ export async function adjustStock(formData: FormData) {
         })
         .where(eq(catalogProducts.id, input.productId));
     } else {
-      const staticProduct = PRODUCTS.find(
-        (product) => product.id === input.productId
-      );
-      if (!staticProduct) throw new Error('Ürün kataloğu bulunamadı.');
-      await tx.insert(catalogProducts).values({
-        id: staticProduct.id,
-        slug: staticProduct.slug,
-        published: !staticProduct.hidden,
-        data: {
-          ...staticProduct,
-          variants: staticProduct.variants.map((variant) =>
-            variant.id === input.variantId
-              ? { ...variant, stock: input.newStock }
-              : variant
-          ),
-          createdAt: staticProduct.createdAt.toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      });
+      // Katalog tek kaynağı DB'dir (ADR-013); eksik kayıt statik veriden üretilmez.
+      throw new Error('Ürün kataloğu bulunamadı.');
     }
 
     if (previousStock !== input.newStock) {

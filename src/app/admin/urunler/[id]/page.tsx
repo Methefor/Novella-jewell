@@ -1,8 +1,7 @@
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
-import { count, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import ProductForm, { type ProductFormInitial } from '../ProductForm';
@@ -17,20 +16,13 @@ export default async function EditProductPage({
   const admin = await getAdminAuth();
   if (admin.state !== 'admin') redirect('/admin/giris');
   const { id } = await params;
-  const [row] = dbYok
-    ? []
-    : await db
-        .select()
-        .from(catalogProducts)
-        .where(eq(catalogProducts.id, id))
-        .limit(1);
-  const [{ value: databaseProductCount } = { value: 0 }] = dbYok
-    ? []
-    : await db.select({ value: count() }).from(catalogProducts);
-  const staticProduct = databaseProductCount === 0
-    ? PRODUCTS.find((product) => product.id === id)
-    : undefined;
-  const data = row?.data ?? staticProduct;
+  if (dbYok) throw new Error('Veritabanı bağlantısı yok.');
+  const [row] = await db
+    .select()
+    .from(catalogProducts)
+    .where(eq(catalogProducts.id, id))
+    .limit(1);
+  const data = row?.data;
   if (!data) notFound();
   const variant = data.variants.find((item) => item.id === data.defaultVariant) ?? data.variants[0];
   const initialProduct: ProductFormInitial = {
@@ -50,7 +42,7 @@ export default async function EditProductPage({
     features: data.features,
     isNew: Boolean(data.isNew),
     isBestSeller: Boolean(data.isBestSeller),
-    published: row?.published ?? !staticProduct?.hidden,
+    published: row?.published ?? false,
     adChecklist: data.adChecklist ?? {
       visualMatchApproved: false,
       copyApproved: false,

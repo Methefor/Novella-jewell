@@ -1,6 +1,5 @@
 'use server';
 
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -35,18 +34,8 @@ export async function setProductPublished(formData: FormData) {
       .set({ published, updatedAt: new Date() })
       .where(eq(catalogProducts.id, input.id));
   } else {
-    const product = PRODUCTS.find((item) => item.id === input.id);
-    if (!product) throw new Error('Ürün bulunamadı.');
-    await db.insert(catalogProducts).values({
-      id: product.id,
-      slug: product.slug,
-      published,
-      data: {
-        ...product,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    });
+    // Katalog tek kaynağı DB'dir (ADR-013); eksik kayıt statik veriden üretilmez.
+    throw new Error('Ürün bulunamadı.');
   }
 
   await writeAdminAuditLog({
@@ -61,5 +50,5 @@ export async function setProductPublished(formData: FormData) {
   revalidateCatalog();
   revalidatePath('/admin');
   revalidatePath('/admin/urunler');
-  revalidatePath(`/urun/${existing?.slug ?? PRODUCTS.find((item) => item.id === input.id)?.slug ?? ''}`);
+  revalidatePath(`/urun/${existing.slug}`);
 }

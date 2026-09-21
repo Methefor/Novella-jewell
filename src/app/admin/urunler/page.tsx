@@ -1,4 +1,3 @@
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -51,7 +50,7 @@ export default async function ProductsAdminPage({
     createdAt: new Date(row.data.createdAt),
     updatedAt: new Date(row.data.updatedAt),
   }));
-  const products = rows.length > 0 ? dynamicProducts : PRODUCTS;
+  const products = dynamicProducts;
   const activeProducts = products.filter((product) => !product.deletedAt);
   const readyCount = activeProducts.filter((product) => getProductReadiness(product).ready).length;
   const publishedCount = activeProducts.filter((product) => {

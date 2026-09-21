@@ -1,4 +1,5 @@
 import CategoryClient from '@/app/collections/[category]/CategoryClient';
+import CatalogEmpty from '@/components/catalog/CatalogEmpty';
 import { getCatalogProducts } from '@/lib/catalog';
 import type { Metadata } from 'next';
 export const revalidate = 60;
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 
 export default async function ProductsPage() {
   const products = await getCatalogProducts();
+  if (products.length === 0) return <main className="min-h-[60vh]"><CatalogEmpty /></main>;
 
   return <CategoryClient category="tum-urunler" products={products} />;
 }

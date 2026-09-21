@@ -3,11 +3,17 @@ import { test } from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import ProductCard from '../src/components/product/ProductCard';
-import { PRODUCTS } from '../src/data/products';
+import type { Product } from '../src/types/product';
 import { getHomeCategories } from '../src/lib/home-categories';
 import { getPurchasableVariant, OUT_OF_STOCK_LABEL } from '../src/lib/products';
 
-const original = PRODUCTS.find((product) => product.category === 'yuzuk')!;
+// Katalog kaynağı DB'dir (ADR-013); test statik katalogdan bağımsız, minimal bir ürün kullanır.
+const original: Product = {
+  id: 'fixture-ring', slug: 'fixture-ring', name: 'Fixture Yüzük', description: 'Test ürünü', story: '',
+  category: 'yuzuk', collection: 'paris', price: 500, material: 'altin-kaplama', defaultVariant: 'v1',
+  features: [], createdAt: new Date('2026-01-01'), updatedAt: new Date('2026-01-01'),
+  variants: [{ id: 'v1', color: 'altin', material: 'altin-kaplama', stock: 5, images: ['/fixture-main.jpg'] }],
+};
 const soldOut = { ...original, hidden: false, variants: original.variants.map((variant) => ({ ...variant, stock: 0 })) };
 
 test('sold-out products keep their detail link and show a disabled purchase button', () => {

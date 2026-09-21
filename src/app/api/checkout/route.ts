@@ -1,7 +1,8 @@
 import { getCheckoutProvider } from '@/lib/checkout';
 import { buildOrder } from '@/lib/checkout/buildOrder';
-import { createPendingOrder, markOrderFailed, markPaymentReady } from '@/lib/orders';
+import { CatalogProductMissingError, createPendingOrder, markOrderFailed, markPaymentReady } from '@/lib/orders';
 import { StockUnavailableError } from '@/lib/checkout/stock-reservation';
+import { CatalogUnavailableError } from '@/lib/catalog';
 import { createLegalAcceptance } from '@/lib/create-legal-acceptance';
 import { LEGAL_VERSION } from '@/lib/legal';
 import crypto from 'crypto';
@@ -166,6 +167,12 @@ export async function POST(req: NextRequest) {
     }
     if (err instanceof StockUnavailableError) {
       return NextResponse.json({ error: err.message }, { status: 409 });
+    }
+    if (err instanceof CatalogUnavailableError) {
+      return NextResponse.json({ error: 'Ürünlerimiz şu anda doğrulanamıyor. Lütfen birkaç dakika sonra tekrar deneyin.' }, { status: 503 });
+    }
+    if (err instanceof CatalogProductMissingError) {
+      return NextResponse.json({ error: 'Sepetinizdeki bir ürün artık satışta değil. Sepetinizi güncelleyip tekrar deneyin.' }, { status: 409 });
     }
     console.error('[/api/checkout]', err);
     return NextResponse.json(

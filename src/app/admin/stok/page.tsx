@@ -1,4 +1,3 @@
-import { PRODUCTS } from '@/data/products';
 import { db, dbYok } from '@/db';
 import { catalogProducts, inventory, stockMovements } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
@@ -40,7 +39,7 @@ export default async function StockPage({
       createdAt: new Date(row.data.createdAt),
       updatedAt: new Date(row.data.updatedAt),
     }));
-  const products: Product[] = catalogRows.length > 0 ? dynamicProducts : PRODUCTS;
+  const products: Product[] = dynamicProducts;
   const productById = new Map(products.map((product) => [product.id, product]));
   const inventoryByVariant = new Map(
     inventoryRows.map((row) => [`${row.productId}:${row.variantId}`, row])

@@ -1,7 +1,6 @@
 'use server';
 
 import { db, dbYok } from '@/db';
-import { PRODUCTS } from '@/data/products';
 import {
   campaignItems,
   campaignMediaAssets,
@@ -204,7 +203,7 @@ export async function generateCampaignItemDraft(formData: FormData) {
         createdAt: new Date(catalogProduct.data.createdAt),
         updatedAt: new Date(catalogProduct.data.updatedAt),
       }
-    : PRODUCTS.find((item) => item.id === input.productId);
+    : undefined;
 
   if (!product) throw new Error('Ürün bulunamadı.');
 
@@ -358,7 +357,7 @@ export async function generateCampaignMediaDraft(formData: FormData) {
   if (!media.productIds.length) throw new Error('Bu videoya bağlı ürün bulunmuyor. Videoyu İçerik Üret merkezinden yeniden aktarın.');
   const rows = await db.select({ id: catalogProducts.id, data: catalogProducts.data }).from(catalogProducts);
   const rowById = new Map(rows.map((row) => [row.id, row.data]));
-  const products = media.productIds.map((id) => rowById.get(id) ?? PRODUCTS.find((product) => product.id === id)).filter((product): product is NonNullable<typeof product> => Boolean(product));
+  const products = media.productIds.map((id) => rowById.get(id)).filter((product): product is NonNullable<typeof product> => Boolean(product));
   if (!products.length) throw new Error('Bağlı ürünler katalogda bulunamadı.');
   const names = products.map((product) => product.name);
   const nameText = names.length === 1 ? names[0] : `${names.slice(0, -1).join(', ')} ve ${names.at(-1)}`;

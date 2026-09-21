@@ -2,6 +2,7 @@ import { SITE } from '@/lib/config';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import CategoryClient from './CategoryClient';
+import CatalogEmpty from '@/components/catalog/CatalogEmpty';
 import { getCatalogProducts } from '@/lib/catalog';
 
 interface CategoryPageProps {
@@ -87,5 +88,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   if (!CATEGORIES[category]) notFound();
 
   const products = await getCatalogProducts();
+  if (products.length === 0) return <main className="min-h-[60vh]"><CatalogEmpty /></main>;
   return <CategoryClient category={category} products={products} />;
 }
