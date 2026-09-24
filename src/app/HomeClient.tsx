@@ -63,18 +63,15 @@ export default function HomeClient({ products }: { products: Product[] }) {
   if (products.length === 0) {
     return (
       <main>
-        <PackagingShowcase />
         <CatalogEmpty />
+        <PackagingShowcase />
       </main>
     );
   }
 
   return (
     <main>
-      {/* Açılış: müşterinin siparişi nasıl teslim alacağını gösterir. */}
-      <PackagingShowcase />
-
-      {/* Ürün seçkisi */}
+      {/* İlk ekranda ürün ve alışveriş yolu görünür. */}
       <Hero products={heroRings} />
 
       {/* İlk kaydırmada mağazanın ürün kapsamını açıkça gösterir. */}
@@ -132,6 +129,9 @@ export default function HomeClient({ products }: { products: Product[] }) {
           </div>
         </div>
       </section>
+
+      {/* Ürün keşfinden sonra kutu deneyimini anlat. */}
+      <PackagingShowcase />
 
       {/* Yeni yüzük vitrini */}
       <section className="py-16 md:py-24 bg-cream">
