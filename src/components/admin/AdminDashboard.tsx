@@ -131,7 +131,7 @@ export default function AdminDashboard({
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <article key={card.label} className="rounded-2xl border border-[#e3d9c8] bg-white p-5 shadow-[0_8px_30px_rgba(77,61,35,0.05)]">
+            <article key={card.label} className="admin-card admin-metric rounded-2xl border border-[#e3d9c8] bg-white p-5 shadow-[0_8px_30px_rgba(77,61,35,0.05)]">
               <div className="flex items-start justify-between gap-4">
                 <div className="rounded-xl bg-[#f6f2eb] p-2.5 text-[#8d7c55]"><Icon className="h-5 w-5" strokeWidth={1.7} /></div>
                 {'change' in card && typeof card.change === 'number' && <ChangeBadge value={card.change} />}
@@ -203,7 +203,7 @@ export default function AdminDashboard({
             {daily.map((day, index) => (
               <div key={`${day.label}-${index}`} className="group flex min-w-0 flex-1 flex-col items-center justify-end gap-2">
                 <div className="relative flex h-40 w-full items-end">
-                  <div className="w-full rounded-t-md bg-gradient-to-t from-[#9e8e63] to-[#d9ccaa] transition-all group-hover:from-black group-hover:to-[#9e8e63]" style={{ height: `${Math.max((day.value / maxDaily) * 100, day.value ? 8 : 2)}%` }} title={`${day.label}: ${formatTRY(day.value)}`} />
+                  <div className="admin-chart-bar w-full rounded-t-md bg-gradient-to-t from-[#9e8e63] to-[#d9ccaa] transition-all group-hover:from-black group-hover:to-[#9e8e63]" style={{ height: `${Math.max((day.value / maxDaily) * 100, day.value ? 8 : 2)}%`, animationDelay: `${index * 35}ms` }} title={`${day.label}: ${formatTRY(day.value)}`} />
                 </div>
                 <span className={`text-[9px] text-neutral-400 ${index % 2 ? 'hidden sm:block' : ''}`}>{day.label}</span>
               </div>
