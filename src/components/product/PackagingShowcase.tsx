@@ -14,13 +14,13 @@ export default function PackagingShowcase() {
   const [failedClip, setFailedClip] = useState<string | null>(null);
 
   return (
-    <section id="novella-kutusu" aria-labelledby="packaging-title" className="scroll-mt-24 flex min-h-[calc(100svh-var(--navbar-h))] items-center bg-[#f4efe6] py-12 md:py-20">
+    <section id="novella-kutusu" aria-labelledby="packaging-title" className="scroll-mt-24 flex items-center bg-[#f4efe6] py-16 md:py-24">
       <div className="container-custom grid items-center gap-9 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <div className="max-w-md">
           <p className="section-label mb-4">Novella kutusu</p>
-          <h1 id="packaging-title" className="font-serif text-4xl font-light leading-[1.1] tracking-[-0.03em] md:text-5xl">
+          <h2 id="packaging-title" className="font-serif text-4xl font-light leading-[1.1] tracking-[-0.03em] md:text-5xl">
             Küçük bir kutu.<br /><span className="italic text-[#75603b]">Özenli bir başlangıç.</span>
-          </h1>
+          </h2>
           <p className="mt-6 text-sm leading-7 text-black/65">
             Seçtiğiniz parça, Novella kartvizitiyle birlikte özel kutusunda hazırlanır.
             Kutunun dışını ve içindeki sunumu yakından keşfedin.
