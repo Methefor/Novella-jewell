@@ -1,6 +1,6 @@
 'use client';
 
-import { trackBeginCheckout } from '@/lib/analytics';
+import { trackBeginCheckout, trackFirstPartyEvent } from '@/lib/analytics';
 import { LEGAL_VERSION } from '@/lib/legal';
 import { SHIPPING, SITE } from '@/lib/config';
 import { ILLER } from '@/lib/turkiye';
@@ -234,6 +234,7 @@ export default function OdemeClient() {
     };
 
     try {
+      trackFirstPartyEvent('checkout_submit', { value: total });
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -243,6 +244,7 @@ export default function OdemeClient() {
       const result = await res.json();
 
       if (!res.ok) {
+        trackFirstPartyEvent('checkout_error', { metadata: { stage: 'server', status: res.status, reason: String(result?.error ?? '').slice(0, 120) } });
         throw new Error(result?.error ?? 'Ödeme başlatılamadı.');
       }
 
@@ -323,7 +325,11 @@ export default function OdemeClient() {
           {/* Form */}
           <form
             id="odeme-form"
-            onSubmit={(event) => { void handleSubmit(onSubmit)(event); }}
+            onSubmit={(event) => {
+              void handleSubmit(onSubmit, (invalid) => {
+                trackFirstPartyEvent('checkout_error', { metadata: { stage: 'validation', fields: Object.keys(invalid).join(',') } });
+              })(event);
+            }}
             className="min-w-0 space-y-8"
           >
             {/* Kişisel bilgiler */}

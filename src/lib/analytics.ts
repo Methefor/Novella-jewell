@@ -49,7 +49,9 @@ type FirstPartyEventName =
   | 'add_to_cart'
   | 'view_cart'
   | 'remove_from_cart'
-  | 'begin_checkout';
+  | 'begin_checkout'
+  | 'checkout_submit'
+  | 'checkout_error';
 
 export function trackFirstPartyEvent(
   eventName: FirstPartyEventName,
