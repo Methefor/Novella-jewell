@@ -50,18 +50,16 @@ export default function CookieBanner() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 24 }}
           transition={{ duration: 0.45, ease }}
-          className="fixed bottom-0 left-0 right-0 z-[60] p-3 sm:p-5"
+          className="fixed bottom-0 left-0 right-0 z-[60] p-2 sm:p-5"
           role="dialog"
           aria-live="polite"
           aria-label="Çerez tercihi"
         >
-          <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-white/95 backdrop-blur-md shadow-lg p-4 sm:p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-              <p className="font-sans font-light text-[13px] leading-relaxed text-black/70 flex-1">
-                Sepetin çalışması için zorunlu çerezler kullanıyoruz. Ziyaret
-                istatistiklerini ve reklam dönüşümlerini ölçmemizi sağlayan
-                analitik ve pazarlama çerezleri ise yalnızca izin verirsen
-                çalışır.{' '}
+          <div className="mx-auto max-w-3xl rounded-2xl border border-gold/30 bg-white/95 backdrop-blur-md shadow-lg p-3 sm:p-5">
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-6">
+              <p className="font-sans font-light text-[12px] sm:text-[13px] leading-snug sm:leading-relaxed text-black/70 flex-1">
+                Zorunlu çerezler sepet için gerekli. Analitik ve pazarlama
+                çerezleri yalnızca izin verirsen çalışır.{' '}
                 <Link
                   href="/cerez-politikasi"
                   className="text-black underline underline-offset-2 hover:text-gold-dark whitespace-nowrap"
@@ -70,18 +68,18 @@ export default function CookieBanner() {
                 </Link>
               </p>
 
-              <div className="flex gap-2.5 flex-shrink-0">
+              <div className="flex gap-2 sm:gap-2.5 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => choose('rejected')}
-                  className="flex-1 sm:flex-none min-h-[44px] px-5 rounded-full border border-black/20 text-[13px] font-medium text-black/70 hover:border-black/45 hover:text-black transition-colors"
+                  className="flex-1 sm:flex-none min-h-[44px] px-4 sm:px-5 rounded-full border border-black/20 text-[13px] font-medium text-black/70 hover:border-black/45 hover:text-black transition-colors"
                 >
                   Sadece zorunlu
                 </button>
                 <button
                   type="button"
                   onClick={() => choose('accepted')}
-                  className="flex-1 sm:flex-none min-h-[44px] px-5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-gold transition-colors"
+                  className="flex-1 sm:flex-none min-h-[44px] px-4 sm:px-5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-gold transition-colors"
                 >
                   Tümüne izin ver
                 </button>
