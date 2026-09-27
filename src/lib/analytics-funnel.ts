@@ -1,4 +1,6 @@
 export const TEST_PRODUCT_IDS: readonly string[] = ['presales-live-payment-test-v1'];
+// Ürün id'siyle yakalanamayan, elle doğrulanmış test siparişleri.
+export const KNOWN_TEST_ORDER_NOS: readonly string[] = ['NJ-2026-0001'];
 
 export type FunnelEvent = {
   sessionId: string;

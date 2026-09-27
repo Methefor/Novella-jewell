@@ -140,6 +140,60 @@ export function TrendChart({ points }: { points: DayPoint[] }) {
   );
 }
 
+export type AreaPoint = { label: string; value: number };
+
+/** Tek serili yumuşak eğri + alan grafiği (örn. günlük ciro). Değerler önceden biçimlendirilir. */
+export function AreaChart({ points, formatted, unit }: { points: AreaPoint[]; formatted: string[]; unit: string }) {
+  const [hover, setHover] = useState<number | null>(null);
+  const reduce = useReducedMotion();
+  const geometry = useMemo(() => {
+    const max = Math.max(...points.map((p) => p.value), 1) * 1.15;
+    const step = points.length > 1 ? (W - PAD * 2) / (points.length - 1) : 0;
+    const x = (i: number) => PAD + i * step;
+    const y = (v: number) => H - PAD - (v / max) * (H - PAD * 2);
+    const line = curve(points.map((p) => p.value), x, y);
+    return { x, y, step, line, area: line ? `${line} L${x(points.length - 1)},${H - PAD} L${x(0)},${H - PAD}Z` : '' };
+  }, [points]);
+
+  return (
+    <div className="relative mt-2">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        preserveAspectRatio="none"
+        className="h-[230px] w-full overflow-visible"
+        role="img"
+        aria-label={`Günlük ${unit} grafiği`}
+        onMouseMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          const index = Math.round(((event.clientX - rect.left) / rect.width * W - PAD) / (geometry.step || 1));
+          setHover(Math.max(0, Math.min(points.length - 1, index)));
+        }}
+        onMouseLeave={() => setHover(null)}
+      >
+        <defs>
+          <linearGradient id="area-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#c5a46d" stopOpacity="0.35" />
+            <stop offset="1" stopColor="#c5a46d" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[0, 0.5, 1].map((f) => <line key={f} x1={PAD} x2={W - PAD} y1={PAD + f * (H - PAD * 2)} y2={PAD + f * (H - PAD * 2)} stroke="rgba(158,142,99,0.2)" strokeDasharray="3 5" vectorEffect="non-scaling-stroke" />)}
+        <path d={geometry.area} fill="url(#area-fill)" />
+        <motion.path d={geometry.line} fill="none" stroke="#c5a46d" strokeWidth={3} strokeLinecap="round" vectorEffect="non-scaling-stroke" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease: EASE }} />
+        {hover != null && <line x1={geometry.x(hover)} x2={geometry.x(hover)} y1={PAD} y2={H - PAD} stroke="rgba(23,23,19,0.18)" vectorEffect="non-scaling-stroke" />}
+      </svg>
+      {hover != null && (
+        <div
+          className="pointer-events-none absolute whitespace-nowrap rounded-[10px] bg-[#171713] px-3 py-2 text-xs text-white"
+          style={{ left: `${(geometry.x(hover) / W) * 100}%`, top: `${(geometry.y(points[hover].value) / H) * 100}%`, transform: 'translate(-50%, -125%)' }}
+        >
+          <b>{points[hover].label}</b> · {formatted[hover]}
+        </div>
+      )}
+      <div className="mt-1 flex justify-between text-[10px] text-[#7b7466]"><span>{points[0]?.label}</span><span>{points[points.length - 1]?.label}</span></div>
+    </div>
+  );
+}
+
 export type FunnelStep = { label: string; value: number };
 
 export function FunnelBars({ steps }: { steps: FunnelStep[] }) {

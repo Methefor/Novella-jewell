@@ -2,12 +2,14 @@
 // Eski analitik olaylarındaki ürün kimliklerini okunabilir isme çevirmek için kullanılır;
 // vitrini, siparişi, stoğu veya fiyatı etkilemez ve hiçbir şey yazmaz.
 import { PRODUCTS as LEGACY_PRODUCT_NAMES } from '@/data/products';
+import AdminFrame from '@/components/admin/AdminFrame';
+import { UserButton } from '@clerk/nextjs';
 import { FunnelBars, GlassCard, StatCard, TrendChart } from '@/components/admin/analytics/DashboardWidgets';
 import { db, dbYok } from '@/db';
 import { analyticsEvents, catalogProducts, orders } from '@/db/schema';
 import { getAdminAuth } from '@/lib/admin-auth';
 import { averagePerDay, dailySeries, periodDelta, sourceRows } from '@/lib/analytics-dashboard';
-import { buildFunnel, cleanEvents, isTestOrder } from '@/lib/analytics-funnel';
+import { buildFunnel, cleanEvents, isTestOrder, KNOWN_TEST_ORDER_NOS } from '@/lib/analytics-funnel';
 import { and, desc, eq, gte } from 'drizzle-orm';
 import { Check, Eye, ShoppingBag, Users } from 'lucide-react';
 import Link from 'next/link';
@@ -16,8 +18,6 @@ import { redirect } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 
 const DAY = 86_400_000;
-// Ürün id'siyle yakalanamayan, elle doğrulanmış test siparişleri.
-const EXCLUDED_ORDER_NOS: readonly string[] = ['NJ-2026-0001'];
 const CHART_DAYS = 30;
 
 const money = (value: number) => value.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' });
@@ -58,7 +58,7 @@ export default async function AnalyticsPage({
   const realOrders = paidOrders.filter(
     (order) => !isTestOrder(
       { orderNo: order.orderNo, total: Number(order.total), productIds: order.items.map((item) => item.productId ?? '') },
-      EXCLUDED_ORDER_NOS
+      KNOWN_TEST_ORDER_NOS
     )
   );
   const excludedOrders = paidOrders.length - realOrders.length;
@@ -108,9 +108,8 @@ export default async function AnalyticsPage({
   const toRate = (part: number, whole: number) => (whole ? `%${((part / whole) * 100).toLocaleString('tr-TR', { maximumFractionDigits: 1 })}` : '—');
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f6f2eb] px-4 py-8 text-[#171713] sm:px-8 sm:py-10">
-      <div aria-hidden className="pointer-events-none absolute -right-32 -top-40 h-[520px] w-[520px] rounded-full bg-[#ecd9ae] opacity-55 blur-[90px]" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-44 -left-36 h-[460px] w-[460px] rounded-full bg-[#e9c9a4] opacity-40 blur-[90px]" />
+    <AdminFrame userSlot={<UserButton />}>
+    <main className="relative min-h-screen px-4 py-8 text-[#171713] sm:px-8 sm:py-10">
 
       <div className="relative mx-auto max-w-7xl">
         <header className="flex flex-wrap items-end justify-between gap-5">
@@ -237,5 +236,6 @@ export default async function AnalyticsPage({
         </section>
       </div>
     </main>
+    </AdminFrame>
   );
 }
